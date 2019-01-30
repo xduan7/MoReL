@@ -181,18 +181,20 @@ If a GPU has faster training progress than the others, it will have to wait soon
 The synchronization will indeed introduce overhead and lower GPU ultilization, especially if the learning jobs running together have very different training time per batch. 
 We are hoping that by putting the jobs with similar number of neurons together, the synchronization overhead will be negligible. 
 
-Note that in most cases, a learning job can be executed on a single GPU. 
+The reason for why we stick to "one GPU per instance" is solely based on performance. 
+In most cases, a learning job can be executed on a single GPU. 
 By using more than one GPUs for a single job, the speedup is usually significantly lower than the number of GPUs we used. 
-And because of the huge combinatorial number of jobs to run, the system can almost always arrange similar jobs to execute together. 
+This means that "one GPU per instance" and trying to parallelize these instances is the way to go. 
+Fortunately, because of the huge combinatorial number of jobs to run, the mointoring system can almost always find and arrange similar jobs for such parallelization. 
 
-But in some scenarios, we might have a "standout" job that is not suitable for the arrangement:
+But in some scenarios, we might have a "isolated" job that is not suitable or feasible to be arranged with other jobs:
 \begin{itemize}
 	\item[$\bullet$]  Last job(s) for a certain kind of features;
 	\item[$\bullet$]  A job that has significantly more neurons than the rest;
 	\item[$\bullet$]  A job that requires multi-GPU to run properly; 
 \end{itemize}
-In these cases, the system will parallelize the "standout" jobs to all the GPUs avaible in order to finish it as soon as possible. 
-For example, if we only have 2 jobs left, then the system will run each job on dual GPU.
+In these cases, the system will instead parallelize the "isolated" jobs to all the GPUs avaible, in order to finish them as soon as possible. 
+For example, if we only have 2 jobs left, then the system will run each job on dual GPU in a non-synchronized way. 
 
 \subsection{Estimated Timeline} \label{sebsec_esttl}
 
@@ -228,7 +230,6 @@ The evaulation of this project can be divided into the following three parts in 
 	\item[$\bullet$]  We expect to see an average GPU ultilization level of at least 80\%. 
 		Higher ultilization indicates efficient data loading and job arrangement;
 \end{itemize}
-
 
 \begin{thebibliography}{}
 	\bibitem{ecfp} D. Rogers and M. Hahn, “Extended-Connectivity Fingerprints,” Journal of Chemical Information and Modeling, vol. 50, no. 5, pp. 742–754, 2010.
