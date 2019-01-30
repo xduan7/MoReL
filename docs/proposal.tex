@@ -1,237 +1,247 @@
-\documentclass[10pt,twocolumn]{article} 
-\usepackage{simpleConference}
-\usepackage{authblk}
-\usepackage{times}
+\documentclass[conference]{IEEEtran}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
 \usepackage{graphicx}
-\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+    
+\usepackage{float}
+\usepackage[caption=false]{subfig}
 \usepackage{url,hyperref}
 
 \begin{document}
 
-\title{MoReL: A Toolkit for Molecule Representation Learning }
+\title{MoReL: Molecule Representation Learning Toolkit\\
+	{
+		\footnotesize \textsuperscript{}
+	}
+		\thanks{}
+}
 
-
-\author[ ]{Jiang, Songhao\thanks{shjiang@uchicago.edu}}
-\author[ ]{Duan, Xiaotian\thanks{xduan7@uchicago.edu}}
-\affil[ ]{Department of Computer Science}
-\affil[ ]{The Univeristy of Chicago}
+\author{
+	\IEEEauthorblockN{
+		Songhao Jiang\IEEEauthorrefmark{1}, 
+		Xiaotian Duan\IEEEauthorrefmark{2},
+	}
+	\IEEEauthorblockA{
+		\textit{Department of Computer Science} \\
+		\textit{The University of Chicago}\\
+		Emails: \IEEEauthorrefmark{1}shjiang@uchicago.edu, \IEEEauthorrefmark{2}xduan7@uchicago.edu,
+	}
+}
 
 \maketitle
-\thispagestyle{empty}
 
 \begin{abstract}
 
-There are multiple ways to featurize molecules, and more than a couple of suitable deep learning models for any one of these features. Moreover, for each one of the feature and model combination, there are different sets of hyper-parameters to explore. The combinatorial number of training instances to run is in the scale of thousands if not more, which makes it crucial to have a robust and efficient system to help us with data loading, as well as the arrangement and parallelization of the jobs. 
+There are multiple ways to featurize molecules, and more than a couple of suitable deep learning models for any one of these features. 
+Moreover, for each one of the feature and model combination, there are different sets of hyper-parameters to explore. 
+The combinatorial number of learning instances to run is in the scale of thousands if not more, which makes it crucial to have a robust and efficient system to help us with data loading, as well as the arrangement and parallelization of the jobs. 
 We are planning on implementing a light-weight toolkit, MoRel, for this purpose. 
 
 \end{abstract}
 
+\begin{IEEEkeywords}
+deep learning, system, molecule, representation learning
+\end{IEEEkeywords}
 
-\section{Introduction}
+\section{Introduction} \label{sec_intro} 
 
-The properties of a molecule is at the heart of many problems, from drug synethsis to material discovery [citation]. 
+The properties of a molecule is at the heart of many problems, from drug synethsis to material discovery. 
 With the rising popularity of deep learning and the support of underlying hardwares, more and more efforts have been put into the research of representation learning of molecules using neural networks. 
-However, unlike images or natural language text, transforming molecules into vectors of numbers for statistical learning models is rather unintuitive. Different ways of featurization have been invented to counter this problem, like SMILES (Simplified molecular-input line-entry system) strings, fringerprints [citation], decriptors, and graphs. 
+However, unlike images or natural language corpora, featurizing (transforming into vectors of numbers for statistical learning) molecules is rather unintuitive. 
+Thus, different ways of featurization have been invented to incoorperate human understanding of the molecules into learning models, like SMILES (Simplified molecular-input line-entry system) strings, fringerprints \cite{ecfp}, decriptors, and graphs. 
 
-These ditinct molecule features are suitable for different sets of deep learning models. 
-For example, SMILES strings (e.g. C02, C1CCCCC1), which are entirely made of English characters and symbols, are preferably learned with NLP (natural language processing) models like RNN [citation] or Transformer [citation]. 
-Similarly, graph features of a molecule are usually feed into neural networks that are good for learning graphs, like GGNN [citation] or GCN [citation]. 
+Each of these ditinct molecular features are suitable for a different set of deep learning models. 
+For example, SMILES strings (e.g. "C02", "C1CCCCC1"), which are entirely made of ASCII characters, are preferably trained on NLP (natural language processing) models like LSTM \cite{lstm} or Transformer \cite{transformer}. 
+Similarly, molecular graph features are usually feed into neural networks that are designed for learning graphs, like GGNN \cite{ggnn} or GCN \cite{gcn}. 
 
-Moreover, for each feature and learning model combination, we need to try different hyper-parameters before having some notion about the performance of such combination. 
-For example, for the same model and features, we would like to test with different drop out ratios and optimizers.
-A model might behave badly or even unstable for one set of hyper-parameters but beat records with another set. 
+Moreover, for each combination of features and model, we need to experiment with different hyper-parameters, like drop out ratios and optimizers, in order to get better performance. 
+A model might behave badly or even unstable using one set of hyper-parameters but beat records using another set. 
 
-The combinatorial number of training instances is at least in the scale of a few thousands. 
-However, no matter which feature, model, and hyper-parameters we choose, the goal stays the same, that is, learning the correct and unique representation of a single molecule. 
-This ensures a fair comparison across all the combinations, which is the most important motivation of MoReL: to build a light-weight toolkit that efficiently enables the comparison between thousands of training instances for representation of learning. 
+To sum things up, the combinatorial number of learning instances is at least in the scale of thousands. 
+However, no matter which feature, model, and hyper-parameters we choose, the goal stays the same, that is, learning the meaningful and unique representation of a single molecule. 
+This ensures the fairness of comparison across all the combinations, which leads to the motivation of MoReL: to build a light-weight toolkit that efficiently enables the comparison between thousands of instances for molecular representation learning. 
 There are a few challenges for this project:
-\begin{description}
-	\item[$\bullet$]  There are about 97 million molecules to train with. In the most extreme case, the features of molecules will take up to 200GB when represented as graphs. The scale makes dataloading an easy bottleneck during training;
-	\item[$\bullet$]  There are only a limited number of GPUs and they are usually meant to be shared between multiple users. How to use them conservatively and efficiently is the core of this project; 
-	\item[$\bullet$]  Some training instances already have working Python scripts. We would like our toolkit to ultilize the existing code with minimal changes. This will not only save a lot work, but also make MoReL easy to be used on future projects that requires hyper-parameter optimization with existing training scripts. 
-\end{description}
+\begin{itemize}
+	\item[$\bullet$]  There are about 97 million molecules to train with, which takes up to 500GB after featurization. With such scale, dataloading can easily become the bottleneck for training; 
+	\item[$\bullet$]  There are only a limited number of GPUs availble and they are usually meant to be shared between multiple users. How to use them conservatively and efficiently is the core of this project; 
+	\item[$\bullet$]  Some learning methods already have their Python scripts. We would like our toolkit to ultilize the existing code with minimal changes. This will not only save a lot work, but also enable MoReL to be used on other projects that requires hyper-parameter optimization with existing training scripts. 
+\end{itemize}
 
 The layout of this paper are list as follows: 
-section \ref{prep} talks about some previous works that are similar or related to ours; 
-section \ref{body} contains planned implementation details and estimated timeline; 
-section \ref{eval} includes some possible methods to evaluate the system, which are subject to change drastically in the future. 
+section \ref{sec_rw} talks about some previous works that are similar or related to ours; 
+section \ref{sec_impl} contains planned implementation details and estimated timeline; 
+section \ref{sec_eval} includes some possible methods to evaluate the system, which are subject to change drastically in the future. 
 
-\section{Related Work} \label{prep}
+\begin{figure*}[!htb] 
+	\subfloat[]{\includegraphics[width=\linewidth]{train.png}}
 
-Significant number of works have been done involving comparison between different molecule represeantion learning methods. 
-For example, [citation: deeply learning molecularr ...] has evluated molecule with GGNN, GCN, and their varieties; [citation: the pacific national lab paper * 2] have tried different features and made interesting comparison on benchmarked datasets. 
-However, the comparison in these works are usually not comprehensive enough to cover different featurization methods or network structures. 
+	\caption{\small 
+		Training process flowchart. }
+	\label{fig:train}
+\end{figure*}
 
-More similar to our project, MoleculeNet [citation] is a framework that provides tools and environment for comparing a varity of features (fingerpints, graphs, etc.) using different learning algorithms including deep learning, by evaluating performances on benchmarked datasets (HIV [citation], MUV [citation]). 
-It serves to offer a benchark that users can evaluate their models back to back to existing ones. 
+\section{Related Work} \label{sec_rw}
+
+Significant works have been done for the comparison between different methods for molecule represeantion learning. 
+For example, \cite{gagcn} has compared the performances with GGNN, GCN, and some variations on molecular learning; \cite{smiles2vec}, \cite{chemception} have tried using SMILES strings and molecular images as features, and tested with some generic models on benchmarked datasets. 
+However, the comparison in these works are usually not comprehensive enough to cover a full spectrum of different featurization methods or network structures. 
+
+More similar to our project, MoleculeNet \cite{molnet} is a framework that provides all necessary tools and an environment for comparing a varity of features (fingerpints, graphs, etc.) using different learning algorithms including deep learning, by evaluating performances on benchmarked datasets (HIV, MUV, etc.). 
+It serves to offer a ready-to-launch benchark that users can evaluate their models back to back against existing ones. 
 Our work differs from MoleculeNet in the following aspects:
-\begin{description}
-	\item[$\bullet$]  MoReL focuses only on deep learning methods, with huge amount of training data. MoleculeNet is more inclusive in terms of learning algorithms, but only trained on benchmarked datasets;
-	\item[$\bullet$]  MoReL is able to train multiple instances if possible, and search for the best feature/model/hyper-parameters combination. MoleculeNet has no such function;
-	\item[$\bullet$]  The implementation of MoReL focus on the efficiency, and can be easily applied to any scenario that requires hyper-parameter searching; 
-\end{description}
+\begin{itemize}
+	\item[$\bullet$]  MoReL focuses only on deep learning models, with huge amount of training data (around 90 million). MoleculeNet is more inclusive in terms of learning algorithms, but only trained on benchmarked datasets in much smaller scale (less than 500 thousand);
+	\item[$\bullet$]  MoReL is designed to train multiple instances in parallel on multiple GPUs, and search for the best combination of features, model, and hyper-parameters. MoleculeNet has no such function;
+	\item[$\bullet$]  The implementation of MoReL focus on the efficiency, and can be easily applied to any deep learning project that requires hyper-parameter searching; 
+\end{itemize}
 
+\section{Implementation} \label{sec_impl} 
 
-\section{Implementation} \label{body}
+In this section we are going to discuss: \ref{subsec_feas} the feasibility of the project; \ref{subsec_struct} implementation structures in detail; and \ref{sebsec_esttl} estimated timeline and work plan. 
 
-\subsection{Feasibility}
+\subsection{Feasibility} \label{subsec_feas} 
 
-For the data of this project, we are using downloaded molecule InChI(The IUPAC International Chemical Identifier) from PubChem [citation], which is directly accessible from PubChem FTP server. 
-RDkit is an open-source cheminformatics software, that can extract features such as SMILES strings, fingerprints, and graph structures from almost all PubChem InChI data.
+For the input data in this project, we are using molecular InChI(The IUPAC International Chemical Identifier) from PubChem, which is directly accessible from PubChem FTP server. 
+To extract the training features, RDkit, an open-source cheminformatics software will be used to obtain SMILES strings and fingerpirnts directly from InChI with one-liner APIs. 
+As for graph features, there are open-source modules from existing work \cite{gcn_fp} that can be used directly in our project, extracting graph structures from molecules. 
+However, there might be some minor changes to be made as our project is much more demanding in performance and efficiency. 
 
-Also, the nerual network implemention is half-way done. 
-For most models planned in this project, we have individual scripts that takes a set of hyper-parameters and prints performance evalution. 
+Also, the nerual network implemention is almost half-way done. 
+For many models planned in this project, we have individual scripts that takes a set of hyper-parameters as arguments and prints performance evalution after training. 
 
 The most time consuming part in this project is writing a "monitor" program that does the following:
-\begin{description}
+\begin{itemize}
 	\item[$\bullet$]  Load and prepare training data;
 	\item[$\bullet$]  Arrange jobs to maximize the GPU ultilization;
 	\item[$\bullet$]  Save/load/synchronize deep learning jobs; 
-\end{description}
+\end{itemize}
 All these functions are simple and self-explaintory, which justifies the feasibility of this project. 
-The motivation and implemenation details of will be wriiten in \ref{projstruct}.
+The motivation and implemenation details of will be wriiten in \ref{subsec_struct}.
 
-In terms of hardware, we have two availble machines for testing and evaluation. 
+In terms of hardware, we have two availble machines for experiment and evaluation. 
 One is NVidia DGX statation (256GB RAM, 8TB SSD, 4 GPUs), shared between multiple users; the other one is a high-end PC (32GB RAM, 1TB SSD, 2 GPUs). 
 
-\subsection{Project Structure} \label{projstruct}
+\subsection{Project Structure} \label{subsec_struct}
 
-The core of this project is a "monitor" process that launches other python scripts that trains and evaluates the different models. 
-Our two major concerns are data and GPU ultilization.
+There are three main components in this projects from development point of view: featurizers, models, and the monitoring process. 
+An overall flowchart of featurizers and models in this project is shown in Figure \ref{fig:train}, which highlights the relations between all different kinds of features and models planned in this project. 
 
-\subsubsection*{data}
-Considering the initial estimation of the scale of features, we cannot fit all the featrur
+The core of this project is a "monitor" process that launches other python scripts that trains and evaluates different models. 
+Our major concern is GPU ultilization, which directly correlates to total running time. 
+And to achieve higher ultilization, data loading and job arrangement are two closely-related factors. 
 
-To extract different molecule features, 
+\paragraph{Data Loading} 
 
-As mentioned in the introduction, the challenges mainly come from huge samount of training data, and unpredicable hardware resources (number of GPUs, availble RAM). 
+Considering the estimated scale of features, we cannot fit all features of all molecules in memory, which makes dataloading a potential bottleneck during our training if not handled carefully. 
+For example, if there are 4 learning instances running on 4 GPUs separately at the same time, and they are all trying to access different chunks of data stored in SSD, the overhead of dataloading can result in suboptimal GPU ultilization. 
 
-\textbf{Guideline 1:} A clear new important technical contribution should have been articulated by the time the reader finishes page 3 i.e., a quarter of the way through the paper.
+To counter this problem, we have to take advantages of the fact that, there are multiple learning instances using the exact same features (but they are either using different models or running on different hyper-parameters). 
+If these instances are trained together in a synchronized fashion, then we only need to load the same small chunk of features at a time. 
+This not only reduce the number of SSD accesses, which is a potential bottleneck, but also alleviates redundant feature pre-processing like padding. 
+A comparison between the two data loading approaches is shown in Figure \ref{fig:dl}.
 
-\textbf{Guideline 2:} Every section of the paper should tell a story. Don't, however, fall into the common trap of telling the entire story of how you arrived at your results. Just tell the story of the results themselves. The story should be linear, keeping the reader engaged at every step and looking forward to the next step. There should be no significant interruptions -- those can go in the Appendix.
-\\
-\\
-Aside from these guidelines, which apply to every paper, the structure of the body varies a lot depending on content. Important components are:
-
-\begin{description}
-  \item[$\bullet$]  Running Example: When possible, use a running example throughout the paper. It can be introduced either as a subsection at the end of the Introduction, or its own Section 2 or 3 (depending on Related Work).
-  \item[$\bullet$]  Preliminaries: This section, which follows the Introduction and possibly Related Work and/or Running Example, sets up notation and terminology that is not part of the technical contribution. One important function of this section is to delineate material that's not original but is needed for the paper. Be concise -- remember Guideline 1.
-    \item[$\bullet$] Content: The meat of the paper includes algorithms, system descriptions, new language constructs, analyses, etc. Whenever possible use a ``top-down" description: readers should be able to see where the material is going, and they should be able to skip ahead and still get the idea.
-\end{description}
-
-
-\section{Evaluations} \label{eval}
-
-We could have an entire treatise on this topic alone and I am surely not the expert. Here are some random thoughts:
-
-\begin{description}
-  \item[$\bullet$]  Many conferences expect experiments.
-  \item[$\bullet$]  It's easy to do ``hokey" or meaningless experiments, and many papers do.
-  \item[$\bullet$]  It's easy to craft experiments to show your work in its best light, and most papers do.
-    \item[$\bullet$]  What should performance experiments measure? Possibilities:  
-    \begin{description}
-  	  \item[$\bullet$] Pure running time
-      \item[$\bullet$] Sensitivity to important parameters
-      \item[$\bullet$] Scalability in various aspects: data size, problem complexity, ...
-  \end{description}
-    \item[$\bullet$]  What should performance experiments show? Possibilities:
-        \begin{description}
-  	  \item[$\bullet$] Absolute performance i.e., it's acceptable/usable
-      \item[$\bullet$] Relative performance to naive approaches
-      \item[$\bullet$] Relative performance to previous approaches
-      \item[$\bullet$] Relative performance among different proposed approaches
-  \end{description}
-  \item[$\bullet$] 
-\end{description}
-
-
-\section{The Conclusions}
-
-In general a short summarizing paragraph will do, and under no circumstances should the paragraph simply repeat material from the Abstract or Introduction. In some cases it's possible to now make the original claims more concrete, e.g., by referring to quantitative performance results.
-
-\section{Future Work}
-
-This material is important -- part of the value of a paper is showing how the work sets new research directions. I like bullet lists here. A couple of things to keep in mind:
-\begin{description}
-  \item[$\bullet$]  If you're actively engaged in follow-up work, say so. E.g.: ``We are currently extending the algorithm to... blah blah, and preliminary results are encouraging." This statement serves to mark your territory.
-\item[$\bullet$]  Conversely, be aware that some researchers look to Future Work sections for research topics. My opinion is that there's nothing wrong with that -- consider it a compliment.
-\end{description}
-
-\section{The Acknowledgements}
-
-Don't forget them or you'll have people with hurt feelings. Acknowledge anyone who contributed in any way: through discussions, feedback on drafts, implementation, etc. If in doubt about whether to include someone, include them.
-
-
-\section{Citations}
-
-Spend the effort to make all citations complete and consistent. Do not just copy random inconsistent BibTex (or other) entries from the web and call it a day. Check over your final bibliography carefully and make sure every entry looks right.
-
-\section{Appendix A}
-This is a simple sample of a document created using \LaTeX
-   (specifically pdflatex) that includes a figure from the Vergil visual editor for Ptolemy II
-   that was created by printing to the Acrobat Distiller to get a PDF file.
-   It also illustrates a simple two-column conference paper style,
-   and use of bibtex to handle bibligraphies.
-
-This is a sample document for use with pdflatex, which is
-a program that is included with the Miktex distribution
-that directly produces PDF files from \LaTeX sources.
-To run \LaTeX on this file, you need the following files:
-\begin{enumerate}
-\item templatePDF.tex (this file)
-\item figure.pdf (the figure file)
-\item simpleConference.sty (style file)
-\item refs.bib (bibiliography file)
-\end{enumerate}
-\noindent
-To create a PDF file, execute the following commands:
-\begin{enumerate}
-\item pdflatex mainTemplatePDF
-\item bibtex mainTemplatePDF
-\item pdflatex mainTemplatePDF
-\item pdflatex mainTemplatePDF
-\end{enumerate}
-\noindent
-Yes (strangely) it is necessary to run pdflatex three times.
-The result will be a PDF file (plus several other files that \LaTeX
-produces).  You will need a mechanism, of course, for executing
-commands on the command line. If you are using Windows, I recommend
-installing Cygwin and using its bash shell.
-
-\section{Appendix B: How to Include Vergil Diagrams as Figures}
-\iffalse
-\begin{figure}[!b]
-  \begin{center}
-    \includegraphics[width=3.5in]{figure.pdf}
-  \end{center}
-
-  \caption{\small Figure caption. To get a figure to span two
-      columns, use the environment figure* rather than figure.}
-  \label{fig-label}
+\begin{figure}[!htb] 
+	\subfloat[Naive implementation of data loading]{%
+	  \includegraphics[width=.9\linewidth]{data_loading_a.png} 
+	  \label{dl_a} 
+	}
+	
+	\subfloat[Shared data loading]{%
+	  \includegraphics[width=.9\linewidth]{data_loading_b.png} 
+	  \label{dl_b} 
+	}
+	
+	\caption{\small 
+		Solution \hyperref[dl_a]{(a)}. introduces bottleneck during data retrival from SSD; 
+		in \hyperref[dl_b]{(b)}, learning instances sharing the same training data will be executed together to minimize SSD accesses and feature preparation. }
+	\label{fig:dl}
 \end{figure}
-\fi
 
-Suppose you wish to include a figure, like that in figure \ref{fig-label}.
-The simplest mechanism is to install Adobe Acrobat, which includes
-a ``printer'' called ``Acrobat Distiller.'' Printing to this printer
-creates a PDF file, which can be included in a document as shown
-here.  To include Ptolemy II models \cite{PtolemyVol1:04},
-just print to the distiller from within Vergil and reference
-the PDF file in your \LaTeX document.
+There are two ways to implement such data sharing between different learning instances (python processes): 
 
-There is a bit more work to do, however.
-The file that is produced by the distiller represents
-a complete page, not the individual figure.
-You can open it in using Acrobat (version 5.0 or later),
-and select Document $\rightarrow$ Crop Pages from the menu.
-In the resulting dialog, check ``Remove White Margins.''
-Save the modified PDF file in a file and then reference
-it in the \LaTeX file as shown in this example.
+\begin{itemize}
+	\item[1.]  using off-the-shelf database with in-memory caching;
+	\item[2.]  writing a customized pre-fetching dataloader that communicates with learning instances with signal and shares data with mmap;
+\end{itemize}
 
-An alternative is to generate EPS (encapsulated postscript),
-but the process is much more complex and fragile.
-I recommend using pdflatex and Adobe Acrobat.
+The customized dataloader is indeed more flexible and introduces less overhead. 
+But it also tricky to implement with some inter-process-communication and synchronization problems to take care of. 
+In this project, we will start with database and see if there is still need for a more efficent dataloader. 
+These are the two most straightforward ways that I can come up with at the planning stage. 
+There might be better implementation as we move along the project and gain more insights about the system. 
 
-\bibliographystyle{abbrv}
-\bibliography{refs}
+\paragraph{Job Arrangement}
+On the other hand, the data sharing approach shown in Figure \ref{fig:dl}\hyperref[dl_b]{(b)} requires training jobs to be executed in a synchronized way, that is, all the instances will fetch the next batch of data at relatively the same time. 
+If a GPU has faster training progress than the others, it will have to wait sooner or later (depending on synchronization granularity) to ensure the data sharing is still feasible. 
+The synchronization will indeed introduce overhead and lower GPU ultilization, especially if the learning jobs running together have very different training time per batch. 
+We are hoping that by putting the jobs with similar number of neurons together, the synchronization overhead will be negligible. 
+
+Note that in most cases, a learning job can be executed on a single GPU. 
+By using more than one GPUs for a single job, the speedup is usually significantly lower than the number of GPUs we used. 
+And because of the huge combinatorial number of jobs to run, the system can almost always arrange similar jobs to execute together. 
+
+But in some scenarios, we might have a "standout" job that is not suitable for the arrangement:
+\begin{itemize}
+	\item[$\bullet$]  Last job(s) for a certain kind of features;
+	\item[$\bullet$]  A job that has significantly more neurons than the rest;
+	\item[$\bullet$]  A job that requires multi-GPU to run properly; 
+\end{itemize}
+In these cases, the system will parallelize the "standout" jobs to all the GPUs avaible in order to finish it as soon as possible. 
+For example, if we only have 2 jobs left, then the system will run each job on dual GPU.
+
+\subsection{Estimated Timeline} \label{sebsec_esttl}
+
+The estimated timeline and milestones are shown in Table \ref{tl_tb}, which are suject to change with implementation progress. 
+
+\begin{table}[!htb]
+	\centering
+	\caption{\small 
+		Estimated timeline. }
+	\label{tl_tb}
+	\resizebox{0.8\linewidth}{!}{%
+	\begin{tabular}{|l|l|}
+		\hline
+		Time      & Milestone                       \\ \hline
+		Feb. 9th  & molecule featurizers            \\ \hline
+		Feb. 16th & neural network models           \\ \hline
+		Feb. 23rd & all individual learning scripts \\ \hline
+		Mar. 2nd  & job arrangement                 \\ \hline
+		Mar. 9th  & shared dataloader               \\ \hline
+		Mar. 14th & report and presentation         \\ \hline
+	\end{tabular}%
+	}
+\end{table}
+
+\section{Evaluations} \label{sec_eval}
+
+The evaulation of this project can be divided into the following three parts in order:
+\begin{itemize}
+	\item[$\bullet$]  Fundamentally, MoReL should be running flawlessly on both testing machines with shared hardware resources;
+	\item[$\bullet$]  Comparison of the running time between naive/indivudal and shared data loading approaches on idle environment. 
+		This will help us indentify whether SSD access becomes a bottleneck during the training. 
+		If not, the project still reduces the number of SSD accesses by 75\%, which is meaningful on a resource-sharing machine. 
+	\item[$\bullet$]  We expect to see an average GPU ultilization level of at least 80\%. 
+		Higher ultilization indicates efficient data loading and job arrangement;
+\end{itemize}
+
+
+\begin{thebibliography}{}
+	\bibitem{ecfp} D. Rogers and M. Hahn, “Extended-Connectivity Fingerprints,” Journal of Chemical Information and Modeling, vol. 50, no. 5, pp. 742–754, 2010.
+	\bibitem{lstm} S. Hochreiter and J. Schmidhuber, “Long Short-Term Memory,” Neural Computation, vol. 9, no. 8, pp. 1735–1780, 1997.
+	\bibitem{transformer} Vaswani, Ashish, Shazeer, Noam, Parmar, Niki, Jakob, Jones, Gomez, A. N., Kaiser, Lukasz, Polosukhin, and Illia, “Attention Is All You Need,” [astro-ph/0005112] A Determination of the Hubble Constant from Cepheid Distances and a Model of the Local Peculiar Velocity Field, 06-Dec-2017. [Online]. Available: https://arxiv.org/abs/1706.03762. [Accessed: 30-Jan-2019].
+	\bibitem{ggnn} Li, Yujia, Tarlow, Daniel, Brockschmidt, Marc, Zemel, and Richard, “Gated Graph Sequence Neural Networks,” [astro-ph/0005112] A Determination of the Hubble Constant from Cepheid Distances and a Model of the Local Peculiar Velocity Field, 22-Sep-2017. [Online]. Available: https://arxiv.org/abs/1511.05493. [Accessed: 30-Jan-2019].
+	\bibitem{gcn} T. N. and Max, “Semi-Supervised Classification with Graph Convolutional Networks,” [astro-ph/0005112] A Determination of the Hubble Constant from Cepheid Distances and a Model of the Local Peculiar Velocity Field, 22-Feb-2017. [Online]. Available: https://arxiv.org/abs/1609.02907. [Accessed: 30-Jan-2019].
+	\bibitem{gagcn} Ryu, Seongok, Lim, Jaechang, S. Hwan, Kim, and W. Youn, “Deeply learning molecular structure-property relationships using attention- and gate-augmented graph convolutional network,” [astro-ph/0005112] A Determination of the Hubble Constant from Cepheid Distances and a Model of the Local Peculiar Velocity Field, 08-Oct-2018. [Online]. Available: https://arxiv.org/abs/1805.10988. [Accessed: 30-Jan-2019].
+	\bibitem{smiles2vec} Goh, G. B., Hodas, N. O., Siegel, Charles, and Abhinav, “SMILES2Vec: An Interpretable General-Purpose Deep Neural Network for Predicting Chemical Properties,” [astro-ph/0005112] A Determination of the Hubble Constant from Cepheid Distances and a Model of the Local Peculiar Velocity Field, 18-Mar-2018. [Online]. Available: https://arxiv.org/abs/1712.02034. [Accessed: 30-Jan-2019].
+	\bibitem{chemception} Goh, Garrett, Siegel, Charles, Abhinav, Hodas, N. O., Baker, and Nathan, “Chemception: A Deep Neural Network with Minimal Chemistry Knowledge Matches the Performance of Expert-developed QSAR/QSPR Models,” [astro-ph/0005112] A Determination of the Hubble Constant from Cepheid Distances and a Model of the Local Peculiar Velocity Field, 20-Jun-2017. [Online]. Available: https://arxiv.org/abs/1706.06689. [Accessed: 30-Jan-2019].
+	\bibitem{molnet} Wu, Bharath, Feinberg, E. N., Gomes, Joseph, Geniesse, Caleb, Pappu, Karl, and Vijay, “MoleculeNet: A Benchmark for Molecular Machine Learning,” [astro-ph/0005112] A Determination of the Hubble Constant from Cepheid Distances and a Model of the Local Peculiar Velocity Field, 26-Oct-2018. [Online]. Available: https://arxiv.org/abs/1703.00564. [Accessed: 30-Jan-2019].
+	\bibitem{gcn_fp} David, Maclaurin, Jorge, Gómez-Bombarelli, Rafael, Hirzel, Alán, Adams, and R. P., “Convolutional Networks on Graphs for Learning Molecular Fingerprints,” [astro-ph/0005112] A Determination of the Hubble Constant from Cepheid Distances and a Model of the Local Peculiar Velocity Field, 03-Nov-2015. [Online]. Available: https://arxiv.org/abs/1509.09292. [Accessed: 30-Jan-2019].
+\end{thebibliography}
+
+
 \end{document}
