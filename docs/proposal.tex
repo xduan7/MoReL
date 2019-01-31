@@ -38,7 +38,8 @@
 \begin{abstract}
 
 There are multiple ways to featurize molecules, and more than a couple of suitable deep learning models for any one of these features. 
-Moreover, for each one of the feature and model combination, there are different sets of hyper-parameters to explore. 
+
+Moreover, for each one of the combinations between feature and model, there are different sets of hyper-parameters to explore. 
 The combinatorial number of learning instances to run is in the scale of thousands if not more, which makes it crucial to have a robust and efficient system to help us with data loading, as well as the arrangement and parallelization of the jobs. 
 We are planning on implementing a light-weight toolkit, MoRel, for this purpose. 
 
@@ -53,26 +54,26 @@ deep learning, system, molecule, representation learning
 The properties of a molecule is at the heart of many problems, from drug synethsis to material discovery. 
 With the rising popularity of deep learning and the support of underlying hardwares, more and more efforts have been put into the research of representation learning of molecules using neural networks. 
 However, unlike images or natural language corpora, featurizing (transforming into vectors of numbers for statistical learning) molecules is rather unintuitive. 
-Thus, different ways of featurization have been invented to incoorperate human understanding of the molecules into learning models, like SMILES (Simplified molecular-input line-entry system) strings, fringerprints \cite{ecfp}, decriptors, and graphs. 
+Thus, different ways of featurization have been invented to incorporate human understanding of the molecules into learning models, like SMILES (Simplified molecular-input line-entry system) strings, fingerprints \cite{ecfp}, descriptors, and graphs. 
 
-Each of these ditinct molecular features are suitable for a different set of deep learning models. 
-For example, SMILES strings (e.g. "C02", "C1CCCCC1"), which are entirely made of ASCII characters, are preferably trained on NLP (natural language processing) models like LSTM \cite{lstm} or Transformer \cite{transformer}. 
-Similarly, molecular graph features are usually feed into neural networks that are designed for learning graphs, like GGNN \cite{ggnn} or GCN \cite{gcn}. 
+Each of these distinct molecular features is suitable for a different set of deep learning models. 
+For example, SMILES strings (e.g. "CO2", "C1CCCCC1"), which are entirely made of ASCII characters, are preferably trained on NLP (natural language processing) models like LSTM \cite{lstm} or Transformer \cite{transformer}. 
+Similarly, molecular graph features are usually fed into neural networks that are designed for learning graphs, like GGNN \cite{ggnn} or GCN \cite{gcn}. 
 
 Moreover, for each combination of features and model, we need to experiment with different hyper-parameters, like drop out ratios and optimizers, in order to get better performance. 
 A model might behave badly or even unstable using one set of hyper-parameters but beat records using another set. 
 
 To sum things up, the combinatorial number of learning instances is at least in the scale of thousands. 
-However, no matter which feature, model, and hyper-parameters we choose, the goal stays the same, that is, learning the meaningful and unique representation of a single molecule. 
+However, no matter which feature, model, and hyper-parameters we choose, the goal stays the same. That is, learning the meaningful and unique representation of a single molecule. 
 This ensures the fairness of comparison across all the combinations, which leads to the motivation of MoReL: to build a light-weight toolkit that efficiently enables the comparison between thousands of instances for molecular representation learning. 
 There are a few challenges for this project:
 \begin{itemize}
-	\item[$\bullet$]  There are about 97 million molecules to train with, which takes up to 500GB after featurization. With such scale, dataloading can easily become the bottleneck for training; 
-	\item[$\bullet$]  There are only a limited number of GPUs availble and they are usually meant to be shared between multiple users. How to use them conservatively and efficiently is the core of this project; 
-	\item[$\bullet$]  Some learning methods already have their Python scripts. We would like our toolkit to ultilize the existing code with minimal changes. This will not only save a lot work, but also enable MoReL to be used on other projects that requires hyper-parameter optimization with existing training scripts. 
+	\item[$\bullet$]  There are about 97 million molecules to train with, which take up to 500GB after featurization. With such scale, dataloading can easily become the bottleneck for training; 
+	\item[$\bullet$]  There are only a limited number of GPUs available and they are usually meant to be shared between multiple users. How to use them conservatively and efficiently is the core of this project; 
+	\item[$\bullet$]  Some learning methods already have their Python scripts. We would like our toolkit to utilize the existing code with minimal changes. This will not only save a lot work, but also enable MoReL to be used on other projects that requires hyper-parameter optimization with existing training scripts. 
 \end{itemize}
 
-The layout of this paper are list as follows: 
+The layout of this paper is list as follows: 
 section \ref{sec_rw} talks about some previous works that are similar or related to ours; 
 section \ref{sec_impl} contains planned implementation details and estimated timeline; 
 section \ref{sec_eval} includes some possible methods to evaluate the system, which are subject to change drastically in the future. 
@@ -87,15 +88,15 @@ section \ref{sec_eval} includes some possible methods to evaluate the system, wh
 
 \section{Related Work} \label{sec_rw}
 
-Significant works have been done for the comparison between different methods for molecule represeantion learning. 
-For example, \cite{gagcn} has compared the performances with GGNN, GCN, and some variations on molecular learning; \cite{smiles2vec}, \cite{chemception} have tried using SMILES strings and molecular images as features, and tested with some generic models on benchmarked datasets. 
-However, the comparison in these works are usually not comprehensive enough to cover a full spectrum of different featurization methods or network structures. 
+Significant works have been done for the comparison between different methods for molecule representation learning. 
+For example, \cite{gagcn} has compared the performances with GGNN, GCN, and some variations on molecular learning; \cite{smiles2vec}, \cite{chemception} have tried using SMILES strings and molecular images as features, and tested with some generic models on benchmark datasets. 
+However, the comparisons in these works are usually not comprehensive enough to cover a full spectrum of different featurization methods or network structures. 
 
-More similar to our project, MoleculeNet \cite{molnet} is a framework that provides all necessary tools and an environment for comparing a varity of features (fingerpints, graphs, etc.) using different learning algorithms including deep learning, by evaluating performances on benchmarked datasets (HIV, MUV, etc.). 
+More similar to our project, MoleculeNet \cite{molnet} is a framework that provides all necessary tools and an environment for comparing a variety of features (fingerprints, graphs, etc.) using different learning algorithms including deep learning, by evaluating performances on benchmark datasets (HIV, MUV, etc.). 
 It serves to offer a ready-to-launch benchark that users can evaluate their models back to back against existing ones. 
 Our work differs from MoleculeNet in the following aspects:
 \begin{itemize}
-	\item[$\bullet$]  MoReL focuses only on deep learning models, with huge amount of training data (around 90 million). MoleculeNet is more inclusive in terms of learning algorithms, but only trained on benchmarked datasets in much smaller scale (less than 500 thousand);
+	\item[$\bullet$]  MoReL focuses only on deep learning models, with huge amount of training data (around 90 million). MoleculeNet is more inclusive in terms of learning algorithms, but only trained on benchmark datasets in much smaller scale (less than 500 thousand);
 	\item[$\bullet$]  MoReL is designed to train multiple instances in parallel on multiple GPUs, and search for the best combination of features, model, and hyper-parameters. MoleculeNet has no such function;
 	\item[$\bullet$]  The implementation of MoReL focus on the efficiency, and can be easily applied to any deep learning project that requires hyper-parameter searching; 
 \end{itemize}
@@ -132,17 +133,17 @@ There are three main components in this projects from development point of view:
 An overall flowchart of featurizers and models in this project is shown in Figure \ref{fig:train}, which highlights the relations between all different kinds of features and models planned in this project. 
 
 The core of this project is a "monitor" process that launches other python scripts that trains and evaluates different models. 
-Our major concern is GPU ultilization, which directly correlates to total running time. 
-And to achieve higher ultilization, data loading and job arrangement are two closely-related factors. 
+Our major concern is GPU utilization, which directly correlates to total running time. 
+And to achieve higher utilization, data loading and job arrangement are two closely-related factors. 
 
 \paragraph{Data Loading} 
 
 Considering the estimated scale of features, we cannot fit all features of all molecules in memory, which makes dataloading a potential bottleneck during our training if not handled carefully. 
-For example, if there are 4 learning instances running on 4 GPUs separately at the same time, and they are all trying to access different chunks of data stored in SSD, the overhead of dataloading can result in suboptimal GPU ultilization. 
+For example, if there are 4 learning instances running on 4 GPUs separately at the same time, and they are all trying to access different chunks of data stored in SSD, the overhead of dataloading can result in suboptimal GPU utilization. 
 
 To counter this problem, we have to take advantages of the fact that, there are multiple learning instances using the exact same features (but they are either using different models or running on different hyper-parameters). 
 If these instances are trained together in a synchronized fashion, then we only need to load the same small chunk of features at a time. 
-This not only reduce the number of SSD accesses, which is a potential bottleneck, but also alleviates redundant feature pre-processing like padding. 
+This not only reduces the number of SSD accesses, which is a potential bottleneck, but also alleviates redundant feature pre-processing like padding. 
 A comparison between the two data loading approaches is shown in Figure \ref{fig:dl}.
 
 \begin{figure}[!htb] 
@@ -171,21 +172,21 @@ There are two ways to implement such data sharing between different learning ins
 
 The customized dataloader is indeed more flexible and introduces less overhead. 
 But it also tricky to implement with some inter-process-communication and synchronization problems to take care of. 
-In this project, we will start with database and see if there is still need for a more efficent dataloader. 
+In this project, we will start with database and see if there is still need for a more efficient dataloader. 
 These are the two most straightforward ways that I can come up with at the planning stage. 
 There might be better implementation as we move along the project and gain more insights about the system. 
 
 \paragraph{Job Arrangement}
 On the other hand, the data sharing approach shown in Figure \ref{fig:dl}\hyperref[dl_b]{(b)} requires training jobs to be executed in a synchronized way, that is, all the instances will fetch the next batch of data at relatively the same time. 
 If a GPU has faster training progress than the others, it will have to wait sooner or later (depending on synchronization granularity) to ensure the data sharing is still feasible. 
-The synchronization will indeed introduce overhead and lower GPU ultilization, especially if the learning jobs running together have very different training time per batch. 
+The synchronization will indeed introduce overhead and lower GPU utilization, especially if the learning jobs running together have very different training time per batch. 
 We are hoping that by putting the jobs with similar number of neurons together, the synchronization overhead will be negligible. 
 
 The reason for why we stick to "one GPU per instance" is solely based on performance. 
 In most cases, a learning job can be executed on a single GPU. 
 By using more than one GPUs for a single job, the speedup is usually significantly lower than the number of GPUs we used. 
 This means that "one GPU per instance" and trying to parallelize these instances is the way to go. 
-Fortunately, because of the huge combinatorial number of jobs to run, the mointoring system can almost always find and arrange similar jobs for such parallelization. 
+Fortunately, because of the huge combinatorial number of jobs to run, the monitoring system can almost always find and arrange similar jobs for such parallelization. 
 
 But in some scenarios, we might have a "isolated" job that is not suitable or feasible to be arranged with other jobs:
 \begin{itemize}
@@ -193,7 +194,7 @@ But in some scenarios, we might have a "isolated" job that is not suitable or fe
 	\item[$\bullet$]  A job that has significantly more neurons than the rest;
 	\item[$\bullet$]  A job that requires multi-GPU to run properly; 
 \end{itemize}
-In these cases, the system will instead parallelize the "isolated" jobs to all the GPUs avaible, in order to finish them as soon as possible. 
+In these cases, the system will instead parallelize the "isolated" jobs to all the GPUs available, in order to finish them as soon as possible. 
 For example, if we only have 2 jobs left, then the system will run each job on dual GPU in a non-synchronized way. 
 
 \subsection{Estimated Timeline} \label{sebsec_esttl}
@@ -221,14 +222,14 @@ The estimated timeline and milestones are shown in Table \ref{tl_tb}, which are 
 
 \section{Evaluations} \label{sec_eval}
 
-The evaulation of this project can be divided into the following three parts in order:
+The evaluation of this project can be divided into the following three parts in order:
 \begin{itemize}
 	\item[$\bullet$]  Fundamentally, MoReL should be running flawlessly on both testing machines with shared hardware resources;
-	\item[$\bullet$]  Comparison of the running time between naive/indivudal and shared data loading approaches on idle environment. 
-		This will help us indentify whether SSD access becomes a bottleneck during the training. 
+	\item[$\bullet$]  Comparison of the running time between naive/individual and shared data loading approaches on idle environment. 
+		This will help us identify whether SSD access becomes a bottleneck during the training. 
 		If not, the project still reduces the number of SSD accesses by 75\%, which is meaningful on a resource-sharing machine. 
-	\item[$\bullet$]  We expect to see an average GPU ultilization level of at least 80\%. 
-		Higher ultilization indicates efficient data loading and job arrangement;
+	\item[$\bullet$]  We expect to see an average GPU utilization level of at least 80\%. 
+		Higher utilization indicates efficient data loading and job arrangement;
 \end{itemize}
 
 \begin{thebibliography}{}
