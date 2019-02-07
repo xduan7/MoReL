@@ -8,7 +8,7 @@ TODO:
 2. Models 
     * ~~Transformers~~;
     * ~~GGNN~~;
-    * GCN;
+    * ~~GCN~~;
 3. Large scale training system
     * Shared data loader for multiple training threads (mmap?);
     * Process communication (HTTP?) for training control 
