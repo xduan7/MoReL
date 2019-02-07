@@ -3,7 +3,7 @@ Molecule Representation Learning
 TODO: 
 
 1. Data download and featurization; 
-    * Download PubChem data;
+    * ~~Download PubChem data~~;
     * Transform into FP (ECFP4, ECFP6), SMILES, and graphs;
 2. Models 
     * ~~Transformers~~;
