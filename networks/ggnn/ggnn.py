@@ -24,7 +24,8 @@ class GGNN(nn.Module):
                  num_nodes: int,
                  num_edge_types: int,
                  annotation_dim: int,
-                 propagation_steps: int):
+                 propagation_steps: int,
+                 directional_edges: bool = False):
 
         super().__init__()
 
@@ -33,6 +34,7 @@ class GGNN(nn.Module):
         self.__num_edge_types = num_edge_types
         self.__annotation_dim = annotation_dim
         self.__propagation_steps = propagation_steps
+        self.__directional_edges = directional_edges
 
         # Fully connect layers for in-going and out-going graph edges
         self.__linear_in = nn.Linear(self.__state_dim,
@@ -41,7 +43,8 @@ class GGNN(nn.Module):
                                       self.__state_dim * self.__num_edge_types)
 
         self.__propagator = Propagator(
-            self.__state_dim, self.__num_nodes, self.__num_edge_types)
+            self.__state_dim, self.__num_nodes,
+            self.__num_edge_types)
 
         self.__output = nn.Sequential(
                 nn.Linear(self.__state_dim + self.__annotation_dim,
@@ -71,7 +74,10 @@ class GGNN(nn.Module):
         :param annotation:
             [batch_size, num_nodes, annotation_dim]
         :param adj_matrix:
-            [batch_size, num_nodes, num_nodes * num_edge_types * 2]
+            if edges are directional:
+                [batch_size, num_nodes, num_nodes, num_edge_types * 2]
+            else:
+                [batch_size, num_nodes, num_nodes, num_edge_types]
         :return:
         """
 

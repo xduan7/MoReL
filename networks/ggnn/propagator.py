@@ -10,20 +10,22 @@
 import torch
 import torch.nn as nn
 
+from utils.misc.sparse_tensor_helper import to_dense
+
 
 class Propagator(nn.Module):
 
-    # TODO: option for unidirectional
-    # TODO: change adjacency matrix shape from 3D to 4D
     def __init__(self,
                  state_dim: int,
                  num_nodes: int,
-                 num_edge_types: int):
+                 num_edge_types: int,
+                 directional_edges: bool = False):
 
         super().__init__()
 
         self.__num_nodes = num_nodes
         self.__num_edge_types = num_edge_types
+        self.__directional_edges = directional_edges
 
         # Uses the same names as PyTorch GRUs
         # pytorch.org/docs/stable/_modules/torch/nn/modules/rnn.html#GRU
@@ -52,7 +54,10 @@ class Propagator(nn.Module):
         :param curr_state:
             [batch_size, num_node, state_dim]
         :param adj_matrix:
-            [batch_size, num_nodes, num_nodes * num_edge_types * 2]
+            if edges are directional:
+                [batch_size, num_nodes, num_nodes, num_edge_types * 2]
+            else:
+                [batch_size, num_nodes, num_nodes, num_edge_types]
         :return:
         """
 
@@ -60,8 +65,17 @@ class Propagator(nn.Module):
         # Matrices adj_matrix_in and adj_matrix_out size:
         # [batch_size, num_nodes, num_nodes * num_edge_types]
         matrix_size = self.__num_nodes * self.__num_edge_types
-        adj_matrix_in = adj_matrix[:, :, :matrix_size]
-        adj_matrix_out = adj_matrix[:, :, matrix_size:]
+        t_adj_matrix = to_dense(adj_matrix)
+
+        if self.__directional_edges:
+            t_adj_matrix = t_adj_matrix.view(
+                -1, self.__num_nodes, 2 * matrix_size)
+
+            adj_matrix_in = t_adj_matrix[:, :, :matrix_size]
+            adj_matrix_out = t_adj_matrix[:, :, matrix_size:]
+        else:
+            adj_matrix_in = adj_matrix_out = \
+                t_adj_matrix.view(-1, self.__num_nodes, matrix_size)
 
         # Equation (2) in section 3.2
         # Note that we do not need the constant term (b) because it will be
