@@ -65,7 +65,6 @@ class GraphConvLayer(nn.Module):
         # [batch_size, num_edge_types * num_nodes, in_state_dim]
         tmp_state = self.__state_reshape(self.__linear_in(in_state),
                                          self.__in_state_dim)
-
         # [batch_size, num_nodes, in_state_dim]
         tmp_state = torch.bmm(
             adj_matrix.view(-1, self.__num_nodes,
@@ -73,3 +72,30 @@ class GraphConvLayer(nn.Module):
             tmp_state)
 
         return self.__linear_out(tmp_state)
+
+
+# Test out the correctness of graph convolution layer
+if __name__ == '__main__':
+
+    state_dim = 5
+    in_dim = out_dim = state_dim
+    batch_size = 1
+
+    n_nodes = 4
+    n_edge_types = 1
+
+    in_state = torch.rand(batch_size, n_nodes, state_dim)
+    adj_matrix = torch.eye(n_nodes).view(
+        batch_size, n_nodes, n_nodes, n_edge_types)
+    adj_matrix[0, 0, 1, 0] = 1
+    adj_matrix[0, 1, 0, 0] = 1
+
+    # Print out the intermediate results (tmp_state)
+    # To make sure that features will only be used/shared between neighbors
+    print(in_state)
+    tmp_state = torch.bmm(
+        adj_matrix.view(1, n_nodes, n_nodes * n_edge_types), in_state)
+    print(tmp_state)
+
+    assert torch.all(torch.eq(in_state[:batch_size, 2:, :state_dim],
+                              tmp_state[:batch_size, 2:, :state_dim]))
