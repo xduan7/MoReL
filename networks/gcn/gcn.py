@@ -16,17 +16,35 @@ from networks.gcn.graph_conv_layer import GraphConvLayer
 
 
 class GCN(nn.Module):
+    """
+    TODO: dropout in this model (between conv layers)
 
-    def __init__(self, nfeat, nhid, nclass, dropout):
+    """
+    def __init__(self,
+                 state_dim: int,
+                 num_nodes: int,
+                 num_edge_types: int,
+                 annotation_dim: int):
 
         super().__init__()
 
-        self.gc1 = GraphConvLayer(nfeat, nhid)
-        self.gc2 = GraphConvLayer(nhid, nclass)
-        self.dropout = dropout
+        self.__model = nn.Sequential(
+            GraphConvLayer(in_state_dim=annotation_dim,
+                           out_state_dim=state_dim,
+                           num_nodes=num_nodes,
+                           num_edge_types=num_edge_types),
 
-    def forward(self, x, adj):
-        x = F.relu(self.gc1(x, adj))
-        x = F.dropout(x, self.dropout, training=self.training)
-        x = self.gc2(x, adj)
+            nn.ReLU(inplace=True),
+            # Dropout here?
+
+            GraphConvLayer(in_state_dim=state_dim,
+                           out_state_dim=state_dim,
+                           num_nodes=num_nodes,
+                           num_edge_types=num_edge_types))
+
+    def forward(self,
+                annotation,
+                adj_matrix):
+
+        return self.__model(annotation, adj_matrix)
 

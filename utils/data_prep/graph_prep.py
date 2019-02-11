@@ -1,5 +1,5 @@
 """ 
-    File Name:          MoReL/mol_graph.py
+    File Name:          MoReL/graph_prep.py
     Author:             Xiaotian Duan (xduan7)
     Email:              xduan7@uchicago.edu
     Date:               2/5/19
@@ -7,7 +7,7 @@
     File Description:   
         This implementation is based on:
             https://github.com/HIPS/neural-fingerprint/blob/master/\
-                neuralfingerprint/mol_graph.py
+                neuralfingerprint/graph_prep.py
         which is the git repo for https://arxiv.org/pdf/1509.09292.pdf
 
         And
@@ -15,8 +15,15 @@
                 deepchem/feat/graph_features.py
         which is the git repo for DeepChem
 """
-
 import numpy as np
-from rdkit.Chem import MolFromSmiles
+from rdkit import Chem
 
-# TODO: implement this after GCN
+
+def mol_to_graph(mol: Chem.rdchem.Mol):
+    return
+
+
+def annotate_graph(atoms: iter, adj_mat: np.matrix):
+    return
+
+

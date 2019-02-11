@@ -11,7 +11,7 @@ import torch.nn as nn
 
 from networks.common.embedding import Embedding
 from networks.transformer.encoder_layer import EncoderLayer
-from networks.transformer.position_encoder import PositionEncoder
+from networks.common.position_encoder import PositionEncoder
 
 
 class Encoder(nn.Module):

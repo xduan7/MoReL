@@ -19,6 +19,10 @@ from networks.ggnn.propagator import Propagator
 
 
 class GGNN(nn.Module):
+    """
+    TODO: dropout in this model (in the linear layers)
+
+    """
     def __init__(self,
                  state_dim: int,
                  num_nodes: int,
@@ -47,10 +51,10 @@ class GGNN(nn.Module):
             self.__num_edge_types)
 
         self.__output = nn.Sequential(
-                nn.Linear(self.__state_dim + self.__annotation_dim,
-                          self.__state_dim),
-                nn.Tanh(),
-                nn.Linear(self.__state_dim, 1))
+            nn.Linear(self.__state_dim + self.__annotation_dim,
+                      self.__state_dim))
+            # nn.Tanh(),
+            # nn.Linear(self.__state_dim, 1))
 
     def __state_reshape(self,
                         states):
@@ -93,5 +97,6 @@ class GGNN(nn.Module):
                 in_states, out_states, curr_state, adj_matrix)
 
         # Equation (7) in section 3.3
-        # Return a vector representation of size [batch_size, num_node]
-        return self.out(torch.cat((curr_state, annotation), -1)).sum(-1)
+        # Return a vector of size [batch_size, num_node, state_dim]
+        # TODO: need to check the shape here and see if .sum(-1) is needed
+        return self.__output(torch.cat((curr_state, annotation), -1)).sum(-1)

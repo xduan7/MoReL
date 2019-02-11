@@ -89,27 +89,27 @@ if __name__ == '__main__':
     n_nodes = 4
     n_edge_types = 1
 
-    in_state = torch.rand(batch_size, n_nodes, emb_dim)
-    adj_matrix = torch.eye(n_nodes).view(
+    _in_state = torch.rand(batch_size, n_nodes, emb_dim)
+    _adj_matrix = torch.eye(n_nodes).view(
         batch_size, n_nodes, n_nodes, n_edge_types)
 
     # Connect nodes 0 and 1
-    adj_matrix[0, 0, 1, 0] = 1
-    adj_matrix[0, 1, 0, 0] = 1
+    _adj_matrix[0, 0, 1, 0] = 1
+    _adj_matrix[0, 1, 0, 0] = 1
 
     # Check if everything works when adjacency matrix is sparse
 
     # Print out the intermediate results (tmp_state)
     # To make sure that features will only be used/shared between neighbors
-    print(in_state)
+    print(_in_state)
 
-    t_adj_matrix = to_dense(adj_matrix).view(
+    t_adj_matrix = to_dense(_adj_matrix).view(
         1, n_nodes, n_nodes * n_edge_types)
-    t_state = torch.bmm(t_adj_matrix, in_state)
+    t_state = torch.bmm(t_adj_matrix, _in_state)
 
     print(t_state)
 
     # Assert the nodes attributes are unchanged except for connected ones
-    assert torch.all(torch.eq(in_state[:batch_size, 2:, :emb_dim],
+    assert torch.all(torch.eq(_in_state[:batch_size, 2:, :emb_dim],
                               t_state[:batch_size, 2:, :emb_dim]))
 
