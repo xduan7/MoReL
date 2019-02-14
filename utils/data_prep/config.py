@@ -79,7 +79,8 @@ ATOM_TOKEN_DICT = {
 TOKEN_DICT = {**SPECIAL_TOKEN_DICT, **ATOM_TOKEN_DICT}
 
 # Molecule fingerprint (ECFP) featurization ###################################
-
+FGPT_RADIUS = [2, 3, ]
+FGPT_N_BITS = 1024
 
 # Molecule graph featurization ################################################
 

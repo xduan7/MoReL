@@ -11,9 +11,8 @@
         This file is pretty much the summation of mol_prep, smiles_prep,
         ecfp_prep, and graph_prep.
 """
-import codecs
 import json
-import pickle
+import codecs
 
 import numpy as np
 import pandas as pd
