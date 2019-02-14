@@ -169,4 +169,6 @@ if __name__ == '__main__':
     token_atoms = [a for a in ordered_atoms
                    if atom_dict[a] > c.MIN_ATOM_FREQUENCY]
 
-    token_dict = {a: Chem.Atom(a).GetAtomicNum() for a in token_atoms}
+    atom_token_dict = {a: Chem.Atom(a).GetAtomicNum() for a in token_atoms}
+
+    assert {**c.SPECIAL_TOKEN_DICT, **atom_token_dict} == c.TOKEN_DICT

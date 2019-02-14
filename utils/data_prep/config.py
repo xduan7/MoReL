@@ -81,7 +81,6 @@ TOKEN_DICT = {**SPECIAL_TOKEN_DICT, **ATOM_TOKEN_DICT}
 # Molecule fingerprint (ECFP) featurization ###################################
 
 
-
 # Molecule graph featurization ################################################
 
 MAX_NUM_ATOMS = 64
