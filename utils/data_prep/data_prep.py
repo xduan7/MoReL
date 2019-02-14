@@ -76,9 +76,9 @@ def data_prep(pcba_only=True):
     # Save all the molecules as intermediate results
 
     unused_cid = []
-
-    cid_mol_hdf5 = pd.HDFStore(c.CID_MOL_FILE_PATH)
-    min_itemsize = 0
+    cid_mol_hdf5 = pd.HDFStore(c.CID_MOL_FILE_PATH, mode='w')
+    atom_dict = {}
+    num_cid_mol = 0
 
     for chunk_idx, chunk_cid_inchi_df in enumerate(
             pd.read_csv(c.CID_INCHI_FILE_PATH,
@@ -87,6 +87,7 @@ def data_prep(pcba_only=True):
                         index_col=[0],
                         usecols=[0, 1],
                         chunksize=2 ** 12)):
+
         chunk_cid_mol_list = []
 
         for cid, row in chunk_cid_inchi_df.iterrows():
@@ -95,32 +96,29 @@ def data_prep(pcba_only=True):
             if cid not in pcba_cid_set:
                 continue
 
-            inchi = row[1]
-            try:
-                mol: Chem.rdchem.Mol = Chem.MolFromInchi(inchi)
-                assert mol
+            mol: Chem.rdchem.Mol = Chem.MolFromInchi(row[1])
 
-                num_atoms: int = mol.GetNumAtoms()
-                len_smiles: int = len(Chem.MolToSmiles(mol))
-
-                # Skip the molecules with too many atoms or lengthy SMILES
-                if num_atoms > c.MAX_NUM_ATOM or len_smiles > c.MAX_LEN_SMILES:
-                    continue
-
-            except AssertionError:
-                # print('Failed converting compound (CID=%i) to Mol.' % cid)
+            if mol is None:
                 unused_cid.append(cid)
                 continue
+
+            num_atoms: int = mol.GetNumAtoms()
+            len_smiles: int = len(Chem.MolToSmiles(mol))
 
             # Serialize and encode the molecule object
-            mol_str = mol_to_str(mol)
-            min_itemsize = max(min_itemsize, len(mol_str))
+            mol_str: str = mol_to_str(mol)
 
-            if len(mol_str) > c.MAX_LEN_MOL_STR:
-                # print('Compund %s has %i number of characters after encoding.'
-                #       % (Chem.MolToSmiles(mol), len(enc_mol)))
+            # Skip the molecules with too many atoms or lengthy SMILES
+            if num_atoms > c.MAX_NUM_ATOMS or \
+                    len_smiles > c.MAX_LEN_SMILES or \
+                    len(mol_str) > c.MAX_LEN_MOL_STR:
                 unused_cid.append(cid)
                 continue
+
+            # Count the atoms in this molecule :
+            for a in mol.GetAtoms():
+                s = a.GetSymbol()
+                atom_dict[s] = (atom_dict[s] + 1) if s in atom_dict else 1
 
             chunk_cid_mol_list.append([cid, mol_str])
 
@@ -130,11 +128,20 @@ def data_prep(pcba_only=True):
         cid_mol_hdf5.append(key='RDkit Molecule',
                             value=chunk_cid_mol_df,
                             min_itemsize=c.MAX_LEN_MOL_STR)
+        num_cid_mol += len(chunk_cid_mol_list)
 
+    cid_mol_hdf5.close()
+
+    # Saving metadata into files ##############################################
+    # Convert atom count into frequency for further usage
+    for a in atom_dict:
+        atom_dict[a] = atom_dict[a] / num_cid_mol
+    with open(c.ATOM_DICT_FILE_PATH, 'w') as f:
+        json.dump(atom_dict, f, indent=4)
+
+    # Dump unused CIDs for further usage
     with open(c.UNUSED_CID_FILE_PATH, 'w') as f:
         json.dump(unused_cid, f, indent=4)
-
-    print('The maximum length of encoded molecule is %i.' % min_itemsize)
 
     return
 
