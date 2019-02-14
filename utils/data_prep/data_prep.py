@@ -22,6 +22,7 @@ from sklearn.model_selection import train_test_split
 
 import utils.data_prep.config as c
 from utils.data_prep.download import download
+from utils.data_prep.smiles_prep import mol_to_smiles
 
 
 def mol_to_str(mol: Chem.Mol):
@@ -73,12 +74,14 @@ def data_prep(pcba_only=True):
     val_cid_set = set(val_cid_array)
 
     # Looping over all the CIDs set the molecule ##############################
-    # Save all the molecules as intermediate results
 
+    # Book keeping for unused CIDs, atom occurrences, and number of rows
     unused_cid = []
-    cid_mol_hdf5 = pd.HDFStore(c.CID_MOL_FILE_PATH, mode='w')
     atom_dict = {}
     num_cid_mol = 0
+
+    # HDF5 file closed after looping
+    cid_mol_hdf5 = pd.HDFStore(c.CID_MOL_FILE_PATH, mode='w')
 
     for chunk_idx, chunk_cid_inchi_df in enumerate(
             pd.read_csv(c.CID_INCHI_FILE_PATH,
@@ -92,42 +95,49 @@ def data_prep(pcba_only=True):
 
         for cid, row in chunk_cid_inchi_df.iterrows():
 
-            # Skip this compound if it is not in PCBA
-            if cid not in pcba_cid_set:
+            # Skip this compound if it is not in PCBA and the dataset is PCBA
+            # Note that
+            if cid not in pcba_cid_set and c.PCBA_ONLY:
                 continue
 
             mol: Chem.rdchem.Mol = Chem.MolFromInchi(row[1])
-
             if mol is None:
                 unused_cid.append(cid)
                 continue
 
-            num_atoms: int = mol.GetNumAtoms()
-            len_smiles: int = len(Chem.MolToSmiles(mol))
-
-            # Serialize and encode the molecule object
+            # Get the SMILES strings and molecule representation strings
+            smiles: str = mol_to_smiles(mol)
             mol_str: str = mol_to_str(mol)
 
             # Skip the molecules with too many atoms or lengthy SMILES
-            if num_atoms > c.MAX_NUM_ATOMS or \
-                    len_smiles > c.MAX_LEN_SMILES or \
+            if mol.GetNumAtoms() > c.MAX_NUM_ATOMS or \
+                    len(smiles) > c.MAX_LEN_SMILES or \
                     len(mol_str) > c.MAX_LEN_MOL_STR:
                 unused_cid.append(cid)
                 continue
 
-            # Count the atoms in this molecule :
-            for a in mol.GetAtoms():
-                s = a.GetSymbol()
-                atom_dict[s] = (atom_dict[s] + 1) if s in atom_dict else 1
+            ###################################################################
+            # TODO: Featurization goes here
+            # TODO: tokenized_smiles = ...
+            # TODO: annotated_atoms, annotated_adjacency_matrix = ...
+            ###################################################################
+
+            # Count the atoms in this molecule
+            # Same atoms in a molecule only count once
+            atom_set = set([a.GetSymbol() for a in mol.GetAtoms()])
+            for a in atom_set:
+                atom_dict[a] = (atom_dict[a] + 1) if a in atom_dict else 1
 
             chunk_cid_mol_list.append([cid, mol_str])
 
+        # Append the chunk cid-mol to HDF5
         chunk_cid_mol_df = pd.DataFrame(chunk_cid_mol_list,
                                         columns=['CID', 'Mol'])
         chunk_cid_mol_df.set_index('CID', inplace=True)
-        cid_mol_hdf5.append(key='RDkit Molecule',
+        cid_mol_hdf5.append(key='CID-Mol',
                             value=chunk_cid_mol_df,
                             min_itemsize=c.MAX_LEN_MOL_STR)
+
         num_cid_mol += len(chunk_cid_mol_list)
 
     cid_mol_hdf5.close()
@@ -148,22 +158,15 @@ def data_prep(pcba_only=True):
 
 if __name__ == '__main__':
 
+    # data_prep()
 
+    # Processing atom dict and print out the atoms for tokenization
+    with open(c.ATOM_DICT_FILE_PATH, 'r') as f:
+        atom_dict = json.load(f)
 
-    data_prep()
+    ordered_atoms = sorted(atom_dict, key=atom_dict.__getitem__, reverse=True)
 
-    # df = pd.DataFrame(pd.read_hdf(c.CID_MOL_FILE_PATH))
-    # print(type(df))
-    # print(df.head())
-    # a = df.values
-    #
-    # print(a[-1, -1])
-    #
-    # s = str(a[-1, -1])
-    #
-    # Chem.Mol(s)
+    token_atoms = [a for a in ordered_atoms
+                   if atom_dict[a] > c.MIN_ATOM_FREQUENCY]
 
-    # for cid, binary_str in df.iterrows():
-    #
-    #     print(cid)
-    #     print(binary_str)
+    token_dict = {a: Chem.Atom(a).GetAtomicNum() for a in token_atoms}

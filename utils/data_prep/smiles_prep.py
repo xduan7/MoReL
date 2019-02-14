@@ -7,28 +7,34 @@
     File Description:   
 
 """
+import numpy as np
 from rdkit import Chem
+import utils.data_prep.config as c
 
 
-def mol_to_smiles(mol: Chem.rdchem.Mol):
+def mol_to_smiles(mol: Chem.rdchem.Mol) -> str:
 
-    # Get the canonical SMILES string from a molecule
-    smiles_ = Chem.MolToSmiles(mol, allBondsExplicit=True)
-    smiles = Chem.MolToSmiles(mol, allBondsExplicit=True)
-
-    print("SMILES canonical: %s", smiles)
-    print("SMILES with explicit bounds: %s", smiles_)
+    return Chem.MolToSmiles(
+        Mol=mol,
+        allBoundsExplicit=c.ALL_BOUNDS_EXPLICIT,
+        allHsExplicit=c.ALL_HS_EXPLICIT)
 
 
+def tokenize_smiles(smiles: str,
+                    token_dict: dict = c.TOKEN_DICT,
+                    num_tokens: int = c.MAX_LEN_SMILES + 2) -> np.array:
+    """
+    This function takes a SMILES string and a list of common atoms and
+    performs tokenization. Each Atom and bound will be tokenized into an
+    integer number (np.uint8).
 
+    No sanity check required.S
+
+    :param smiles:
+    :param token_dict:
+    :param num_tokens: length of token array (including SOS, EOS, UNK, and PAD)
+
+    :return:
+    """
 
     return
-
-
-def tokenize_simles(smiles: str,
-                    ):
-    return
-
-
-
-

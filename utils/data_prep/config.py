@@ -29,13 +29,63 @@ VALIDATION_SIZE = 5000
 # Note that 'base64' is more spatially efficient than 'hex'
 MOL_BINARY_ENCODING = 'base64'
 
-# Three requirements for the molecules
-MAX_NUM_ATOMS = 64
-MAX_LEN_SMILES = 128
+# Molecule processing specifications
+# The explicit display of all bounds in a SMILES string, for example
+# * set to False: 'CC(=O)OC(CC(=O)O)C[N+](C)(C)C'
+# * set to True: 'C-C(=O)-O-C(-C-C(=O)-O)-C-[N+](-C)(-C)-C'
+ALL_BOUNDS_EXPLICIT = False
+
+# The explicit display of H atoms in a SMILES string, for example
+# * set to False: 'C1CCCCC1'
+# * set to True: '[CH2]1[CH2][CH2][CH2][CH2][CH2]1'
+ALL_HS_EXPLICIT = False
 
 # This is the size of stored string length in HDF5
 # Note that 1024 is sufficient for molecules with less than 65 atoms mostly
 MAX_LEN_MOL_STR = 1024
+
+# Molecule SMILES string featurization ########################################
+
+MAX_LEN_SMILES = 128
+
+# The minimum frequency of an atom occurring in molecule
+MIN_ATOM_FREQUENCY = 0.001
+
+SPECIAL_TOKEN_DICT = {
+    'SOS':  0,               # Start of the sentence
+    'UNK':  128,             # Unknown token
+    'EOS':  254,             # End of the sentence
+    'PAD':  255,             # Padding
+}
+
+# High frequency/occurrence atoms first
+# This token dict is based on MIN_ATOM_FREQUENCY = 0.001
+# Check data_prep.py for more details
+ATOM_TOKEN_DICT = {
+    'C':    6,
+    'N':    7,
+    'O':    8,
+    'S':    16,
+    'F':    9,
+    'Cl':   17,
+    'Br':   35,
+    'P':    15,
+    'I':    53,
+    'Na':   11,
+    'Si':   14,
+    'B':    5,
+}
+
+TOKEN_DICT = {**SPECIAL_TOKEN_DICT, **ATOM_TOKEN_DICT}
+
+# Molecule fingerprint (ECFP) featurization ###################################
+
+
+
+# Molecule graph featurization ################################################
+
+MAX_NUM_ATOMS = 64
+
 
 # Directories #################################################################
 
