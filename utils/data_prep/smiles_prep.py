@@ -36,7 +36,7 @@ def tokenize_smiles(smiles: str,
 
     :return:
     """
-    if len(smiles) <= num_tokens:
+    if len(smiles) <= num_tokens - 2:
         result = [token_dict['SOS']]
         i = 0
         #tmp = []
