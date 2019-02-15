@@ -36,5 +36,24 @@ def tokenize_smiles(smiles: str,
 
     :return:
     """
-
+    if len(smiles) <= num_tokens:
+        result = [token_dict['SOS']]
+        i = 0
+        tmp = []
+        while i < len(smiles):
+            if(smiles[i:i+2] in token_dict):
+                tmp.append(smiles[i:i+2])
+                result.append(token_dict[smiles[i:i+2]])
+                i += 1
+            elif (smiles[i:i+1] in token_dict):
+                tmp.append(smiles[i:i+1])
+                result.append(token_dict[smiles[i:i+1]])
+            else:
+                tmp.append(smiles[i])
+                result.append(token_dict['UNK'])
+            i += 1
+        result.append(token_dict['EOS'])
+        zeros = (num_tokens - len(result)) * [token_dict['PAD']]
+        result += zeros
+        return np.array(result)
     return
