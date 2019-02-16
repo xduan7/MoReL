@@ -8,8 +8,6 @@
 
         TODO: extend this module into different fingerprint types
 """
-import pickle
-
 import numpy as np
 from rdkit import Chem
 from rdkit.Chem import AllChem
@@ -18,58 +16,40 @@ from rdkit.DataStructs.cDataStructs import ExplicitBitVect
 import utils.data_prep.config as c
 
 
-# def fgpt_to_base64(fgpt: ExplicitBitVect) -> str:
-#     return fgpt.ToBase64()
+# There are different ways to encode fingerprint
+# * np.array of np.uint8
+# * base64 encoded ExplicitBitVect
+# * sparse matrix
 
 
-def base64_to_fgpt(base64_str: str) -> np.array:
+def base64_fgpt_unpack(base64_fgpt: list) -> np.array:
 
-    bit_vect = ExplicitBitVect(0)
-    ExplicitBitVect.FromBase64(bit_vect, base64_str)
+    fgpt = []
+    for b64fp in base64_fgpt:
 
-    fgpt = [np.uint8(c) for c in bit_vect.ToBitString()]
-    return np.array(fgpt, dtype=np.uint8)
+        bit_vect = ExplicitBitVect(0)
+        ExplicitBitVect.FromBase64(bit_vect, b64fp)
+
+        fgpt += [np.uint8(c) for c in bit_vect.ToBitString()]
+
+    return np.array(fgpt, dtype=np.uint8).reshape(-1)
 
 
-def mol_to_fgpt(mol: Chem.rdchem.Mol):
+def mol_to_base64_fgpt(mol: Chem.rdchem.Mol) -> list:
 
-    for radius in c.FGPT_RADIUS:
-        fp_bit_str: str = AllChem.GetMorganFingerprintAsBitVect(
-            mol, radius=radius, nBits=c.FGPT_N_BITS).ToBitString()
-
-    return
+    return [AllChem.GetMorganFingerprintAsBitVect(
+        mol, radius=radius, nBits=c.FGPT_N_BITS).ToBase64()
+            for radius in c.FGPT_RADIUS]
 
 
 if __name__ == '__main__':
 
-    import sys
-
     smiles1 = 'CCCCNC(=O)[C@@H]1CCCN(C(=O)CCC(C)C)C1'
     mol1 = Chem.MolFromSmiles(smiles1)
 
-    # bv: ExplicitBitVect = AllChem.GetMorganFingerprintAsBitVect(
-    #     mol1, radius=2, nBits=4096)
-    #
-    # fp_bin = AllChem.GetMorganFingerprintAsBitVect(
-    #     mol1, radius=2, nBits=4096).ToBinary()
-    #
-    # fp_bin_str = AllChem.GetMorganFingerprintAsBitVect(
-    #     mol1, radius=2, nBits=4096).ToBitString()
-    #
-    # print(fp_bin_str)
+    base64_fgpt1 = mol_to_base64_fgpt(mol1)
+    print(base64_fgpt1)
 
-    fp_b64_str = AllChem.GetMorganFingerprintAsBitVect(
-        mol1, radius=2, nBits=4096).ToBase64()
-
-    print(base64_to_fgpt(fp_b64_str))
-
-    # codecs.encode(mol.ToBinary(), c.MOL_BINARY_ENCODING).decode()
-
-    # p = pickle.dumps(fp_bin)
-    # print(sys.getsizeof(p))
-    #
-    # p = pickle.dumps(fp_bin_str)
-    # print(sys.getsizeof(p))
-
-    p = pickle.dumps(fp_b64_str)
-    print(sys.getsizeof(p))
+    fgpt1 = base64_fgpt_unpack(base64_fgpt1)
+    print(len(fgpt1))
+    print(fgpt1)

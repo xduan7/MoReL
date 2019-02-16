@@ -30,10 +30,10 @@ VALIDATION_SIZE = 5000
 MOL_BINARY_ENCODING = 'base64'
 
 # Molecule processing specifications
-# The explicit display of all bounds in a SMILES string, for example
+# The explicit display of all bonds in a SMILES string, for example
 # * set to False: 'CC(=O)OC(CC(=O)O)C[N+](C)(C)C'
 # * set to True: 'C-C(=O)-O-C(-C-C(=O)-O)-C-[N+](-C)(-C)-C'
-ALL_BOUNDS_EXPLICIT = False
+ALL_BONDS_EXPLICIT = False
 
 # The explicit display of H atoms in a SMILES string, for example
 # * set to False: 'C1CCCCC1'
@@ -76,7 +76,33 @@ ATOM_TOKEN_DICT = {
     'B':    5,
 }
 
-TOKEN_DICT = {**SPECIAL_TOKEN_DICT, **ATOM_TOKEN_DICT}
+# Tokenize bonds and other structural characters
+NON_ATOM_TOKEN_DICT = {
+
+    # Bonds
+    '.':    193,
+    '-':    194,
+    '=':    195,
+    '#':    196,
+    '$':    197,
+    ':':    198,
+    '/':    199,
+    '\\':   200,
+
+    # Annotations and charges
+    '[':    224,
+    ']':    225,
+    '+':    226,
+    '%':    227,
+    '@':    228,
+}
+
+# Tokenize numbers from ['0', ..., '63'] -> [129, 192]
+NUM_TOKEN_DICT = {str(i): i + 129 for i in range(64)}
+
+# TODO: maybe check for collision
+TOKEN_DICT = {**SPECIAL_TOKEN_DICT, **ATOM_TOKEN_DICT,
+              **NON_ATOM_TOKEN_DICT, **NUM_TOKEN_DICT}
 
 # Molecule fingerprint (ECFP) featurization ###################################
 FGPT_RADIUS = [2, 3, ]

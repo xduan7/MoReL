@@ -157,7 +157,7 @@ def data_prep(pcba_only=True):
 
 if __name__ == '__main__':
 
-    # data_prep()
+    data_prep()
 
     # Processing atom dict and print out the atoms for tokenization
     with open(c.ATOM_DICT_FILE_PATH, 'r') as f:
