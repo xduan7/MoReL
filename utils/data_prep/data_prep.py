@@ -21,7 +21,8 @@ from sklearn.model_selection import train_test_split
 
 import utils.data_prep.config as c
 from utils.data_prep.download import download
-from utils.data_prep.smiles_prep import mol_to_smiles
+from utils.data_prep.fgpt_prep import mol_to_base64_fgpt, mol_to_fgpt
+from utils.data_prep.smiles_prep import mol_to_smiles, tokenize_smiles
 
 
 def mol_to_str(mol: Chem.Mol):
@@ -120,6 +121,15 @@ def data_prep(pcba_only=True):
             # TODO: tokenized_smiles = ...
             # TODO: annotated_atoms, annotated_adjacency_matrix = ...
             ###################################################################
+            tokens: np.array = tokenize_smiles(smiles)
+
+            # Use compact fingerprint or full ones
+            base64_fgpt: list = mol_to_base64_fgpt(mol)
+            fgpt: np.array = mol_to_fgpt(mol)
+
+            # Graph features
+
+
 
             # Count the atoms in this molecule
             # Same atoms in a molecule only count once

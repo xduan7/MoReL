@@ -68,6 +68,8 @@ def tokenize_smiles(smiles: str,
         elif not ci.isalnum():
             # Bonds, rings, etc.
             symbol = ci
+            # Make sure
+            assert symbol in token_dict
 
         else:
             print("Unknown behavior at index %i in %s", i, smiles)
@@ -87,4 +89,6 @@ if __name__ == '__main__':
 
     # This should be tokenized into Cl, Br, UNK, C, C, [, UNK, ]
     smiles1 = 'ClBrBaCC[D]'
-    print(tokenize_smiles(smiles1))
+    tokens1 = tokenize_smiles(smiles1)
+    print(tokens1)
+    print(len(tokens1))

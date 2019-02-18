@@ -9,6 +9,7 @@
         This file saves all the constants that are related to data
         downloading, pre-processing and storing.
 """
+from rdkit import Chem
 from os.path import abspath, join
 
 
@@ -109,9 +110,34 @@ FGPT_RADIUS = [2, 3, ]
 FGPT_N_BITS = 1024
 
 # Molecule graph featurization ################################################
-
 MAX_NUM_ATOMS = 64
 
+ATOM_FEAT_FUNC_LIST = [
+    Chem.Atom.GetAtomicNum,
+    Chem.Atom.GetDegree,
+    Chem.Atom.GetExplicitValence,
+    Chem.Atom.GetFormalCharge,
+    Chem.Atom.GetHybridization,
+    Chem.Atom.GetIsAromatic,
+    # Chem.Atom.GetMass,
+    Chem.Atom.GetTotalDegree,
+    Chem.Atom.IsInRing,
+]
+
+BOND_FEAT_FUNC_LIST = [
+    # Chem.Bond.GetBeginAtomIdx()
+    # Chem.Bond.GetEndAtomIdx()
+    Chem.Bond.GetBondType,
+    Chem.Bond.GetBondDir,
+    Chem.Bond.GetIsAromatic,
+    Chem.Bond.GetIsConjugated,
+    Chem.Bond.IsInRing
+]
+
+# Bond feature types that are directional
+DIR_BOND_FEAT_TYPE_LIST = [
+    Chem.rdchem.BondDir,
+]
 
 # Directories #################################################################
 
@@ -155,8 +181,15 @@ UNUSED_CID_FILE_PATH = join(PROCESSED_DATA_DIR,
 CID_MOL_FILE_PATH = join(PROCESSED_DATA_DIR,
                          'CID-Mol%s.hdf5' % DATASET_INDICATOR)
 
+# SMILES
+CID_SMILES_FILE_PATH = join(
+    PROCESSED_DATA_DIR, 'CID-SMILES%s.hdf5' % DATASET_INDICATOR)
+
 # Need to specify the FP (probably using ECFP4(1024) + ECFP6(1024))
-# CID_ECFP_FILE_PATH
+CID_ECFP_BASE64_FILE_PATH = join(
+    PROCESSED_DATA_DIR, 'CID-ECFP_base64%s.hdf5' % DATASET_INDICATOR)
+CID_ECFP_FILE_PATH = join(
+    PROCESSED_DATA_DIR, 'CID-ECFP%s.hdf5' % DATASET_INDICATOR)
 
 # Need to decide either using sparse matrix of dense one
 # CID_GRAPH_FILE_PATH

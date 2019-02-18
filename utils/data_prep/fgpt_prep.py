@@ -42,6 +42,10 @@ def mol_to_base64_fgpt(mol: Chem.rdchem.Mol) -> list:
             for radius in c.FGPT_RADIUS]
 
 
+def mol_to_fgpt(mol: Chem.rdchem.Mol) -> np.array:
+    return base64_fgpt_unpack(mol_to_base64_fgpt(mol))
+
+
 if __name__ == '__main__':
 
     smiles1 = 'CCCCNC(=O)[C@@H]1CCCN(C(=O)CCC(C)C)C1'
