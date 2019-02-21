@@ -27,63 +27,65 @@ import utils.data_prep.config as c
 
 
 def mol_to_graph(mol: Chem.rdchem.Mol,
-                 padding: bool = True,
-                 master_atom: bool = True) -> tuple:
+                 padding: bool = c.GRAPH_PADDING,
+                 master_atom: bool = c.GRAPH_MASTER_ATOM) -> tuple:
 
-    num_atoms = mol.GetNumAtoms()
+    # num_atoms = mol.GetNumAtoms()
     ofs = 1 if master_atom else 0
-    num_annotation = c.MAX_NUM_ATOMS + ofs if padding \
-        else num_atoms + ofs
+    num_atoms = c.MAX_NUM_ATOMS + ofs if padding \
+        else mol.GetNumAtoms() + ofs
 
-    # Annotation is the feature for atoms/nodes
-    annotation = np.zeros(
-        shape=(num_annotation, len(c.ATOM_FEAT_FUNC_LIST)), dtype=np.int8)
+    # Feature for atoms/nodes
+    nodes = np.zeros(
+        shape=(num_atoms, len(c.ATOM_FEAT_FUNC_LIST)), dtype=np.int8)
 
-    # Adjacency matrix is the feature for bonds/edges
-    adj_matrix = np.zeros(
-        shape=(num_annotation, num_annotation,
-               len(c.BOND_FEAT_FUNC_LIST) + ofs),
+    # Adjacency matrix, feature for bonds/edges
+    edges = np.zeros(
+        shape=(num_atoms, num_atoms, len(c.BOND_FEAT_FUNC_LIST) + 1),
         dtype=np.int8)
 
     # Iterate through all the atoms in the molecule
     for i, atom in enumerate(mol.GetAtoms()):
         for j, feat_func in enumerate(c.ATOM_FEAT_FUNC_LIST):
-            annotation[i + ofs, j] = np.int8(feat_func(atom))
+            nodes[i + ofs, j] = np.int8(feat_func(atom))
 
     # Iterate through all the bonds
-    for i, j in list(itertools.product(range(num_atoms), range(num_atoms))):
+    for i, j in list(itertools.product(
+            range(mol.GetNumAtoms()), range(mol.GetNumAtoms()))):
 
         bond: Chem.Bond = mol.GetBondBetweenAtoms(i, j)
         if bond is None:
             continue
 
+        # Indicator for connectivity, not actually a feature
+        edges[i + ofs, j + ofs, 0] = np.int8(1)
+
+        # Get all the bond features
+        # Note that directional bond features will be inverted if necessarry
+        # TODO: test directional bonds
         for k, feat_func in enumerate(c.BOND_FEAT_FUNC_LIST):
-
             feat = feat_func(bond)
-
             if type(feat) in c.DIR_BOND_FEAT_TYPE_LIST and \
                     bond.GetBeginAtomIdx() != i:
-                adj_matrix[i + ofs, j + ofs, k + ofs] = -np.int8(feat)
+                edges[i + ofs, j + ofs, k + 1] = -np.int8(feat)
             else:
-                adj_matrix[i + ofs, j + ofs, k + ofs] = np.int8(feat)
+                edges[i + ofs, j + ofs, k + 1] = np.int8(feat)
 
     # Note that the (virtual) master atom will connect to all the real atoms
     if master_atom:
-        for i in range(num_atoms):
-            adj_matrix[0, i + ofs, 0] = np.int8(1)
-            adj_matrix[i + ofs, 0, 0] = np.int8(1)
+        for i in range(mol.GetNumAtoms()):
+            edges[0, i + ofs, 0] = np.int8(1)
+            edges[i + ofs, 0, 0] = np.int8(1)
 
-    return annotation, adj_matrix
-
-
-def annotate_graph(atoms: iter, adj_mat: np.matrix):
-    return
+    return nodes, edges
 
 
 if __name__ == '__main__':
-    smiles1 = 'ClC(Cl)(F)F'
+
+    smiles1 = 'C(=O)=O'
+    # smiles1 = 'ClC(Cl)(F)F'
     # smiles1 = 'C(C1C(C(C(C(O1)O)O)O)O)O'
     # smiles1 = 'CCCCNC(=O)[C@@H]1CCCN(C(=O)CCC(C)C)C1'
     mol1 = Chem.MolFromSmiles(smiles1)
 
-    nodes, edges = mol_to_graph(mol1, padding=True)
+    n, e = mol_to_graph(mol1, master_atom=True, padding=False)

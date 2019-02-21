@@ -21,21 +21,26 @@ def mol_to_smiles(mol: Chem.rdchem.Mol) -> str:
 
 
 def tokenize_smiles(smiles: str,
-                    token_dict: dict = c.TOKEN_DICT,
-                    num_tokens: int = c.MAX_LEN_SMILES + 2) -> np.array:
+                    padding: bool = c.SMILES_PADDING,
+                    token_dict: dict = c.SMILES_TOKEN_DICT,
+                    num_tokens: int = c.MAX_LEN_TOKENIZED_SMILES) -> np.array:
     """
     This function takes a SMILES string and a list of common atoms and
     performs tokenization. Each Atom and bound will be tokenized into an
     integer number (np.uint8).
 
-    No sanity check required.S
+    No sanity check required.
 
     :param smiles:
+    :param padding:
     :param token_dict:
     :param num_tokens: length of token array (including SOS, EOS, UNK, and PAD)
 
     :return:
     """
+
+    mol: Chem.Mol = Chem.MolFromSmiles(smiles)
+    atom_list: list = mol.GetAtoms()
 
     assert len(smiles) < num_tokens - 1
 
@@ -50,13 +55,34 @@ def tokenize_smiles(smiles: str,
 
         symbol = ''
 
-        if ci.isupper():
-            # Leading character of a molecule
-            if ((i + 1) < len(smiles)) and smiles[i + 1].islower():
-                symbol = smiles[i: i + 2]
-                skip_next = True
-            else:
-                symbol = ci
+        if ci.isalpha():
+            pass
+        # TODO: should do it with the help of GetAtoms()
+            # cj = smiles[i + 1]
+            # if ((i + 1) < len(smiles)) and cj.islower():
+            #
+            #     if (ci.upper() + cj) in token_dict:
+            #         symbol = ci.upper() + cj
+            #     elif ci.upper() in token_dict:
+            #         symbol = ci.upper()
+            #
+            # else:
+            #     symbol = ci.upper()
+
+        # if ci.isupper():
+        #     # Leading character of a molecule
+        #     if ((i + 1) < len(smiles)) and smiles[i + 1].islower():
+        #         symbol = smiles[i: i + 2]
+        #         skip_next = True
+        #     else:
+        #         symbol = ci
+        #
+        # elif ci.islower():
+        #     if ci.upper() in token_dict:
+        #         symbol = ci.upper()
+        #     else:
+        #         print('Unconverted lower case char at index %i in %s'
+        #               % (i,  smiles))
 
         elif ci.isdigit():
             if ((i + 1) < len(smiles)) and smiles[i + 1].isdigit():
@@ -69,10 +95,14 @@ def tokenize_smiles(smiles: str,
             # Bonds, rings, etc.
             symbol = ci
             # Make sure
+            if symbol not in token_dict:
+                print(symbol)
             assert symbol in token_dict
 
         else:
-            print("Unknown behavior at index %i in %s", i, smiles)
+            print('Unknown SMILES conversion at index %i in %s' % (i, smiles))
+
+        print(symbol)
 
         # Get the corresponding tokens
         if symbol in token_dict:
@@ -80,7 +110,8 @@ def tokenize_smiles(smiles: str,
         else:
             tokens.append(token_dict['UNK'])
 
-    tokens += [token_dict['PAD'], ] * (num_tokens - len(tokens))
+    if padding:
+        tokens += [token_dict['PAD'], ] * (num_tokens - len(tokens))
 
     return np.array(tokens, dtype=np.uint8)
 
@@ -88,7 +119,17 @@ def tokenize_smiles(smiles: str,
 if __name__ == '__main__':
 
     # This should be tokenized into Cl, Br, UNK, C, C, [, UNK, ]
-    smiles1 = 'ClBrBaCC[D]'
-    tokens1 = tokenize_smiles(smiles1)
+    # smiles1 = 'ClBrBaCC[D]'
+    smiles1 = 'O=[N+]([O-])c1ccc(Cl)c([N+](=O)[O-])c1'
+
+    mol1 = Chem.MolFromSmiles(smiles1)
+    print(mol1.GetAtoms())
+
+
+    for a in mol1.GetAtoms():
+        print(a.GetSymbol())
+    # print(Chem.MolToSmiles())
+
+    tokens1 = tokenize_smiles(smiles1, padding=False)
     print(tokens1)
     print(len(tokens1))

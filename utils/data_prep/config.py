@@ -46,11 +46,12 @@ ALL_HS_EXPLICIT = False
 MAX_LEN_MOL_STR = 1024
 
 # Molecule SMILES string featurization ########################################
-
 MAX_LEN_SMILES = 128
+MAX_LEN_TOKENIZED_SMILES = MAX_LEN_SMILES + 2
+SMILES_PADDING = True
 
 # The minimum frequency of an atom occurring in molecule
-MIN_ATOM_FREQUENCY = 0.001
+MIN_ATOM_FREQUENCY = 1 / 1024
 
 SPECIAL_TOKEN_DICT = {
     'SOS':  0,               # Start of the sentence
@@ -75,6 +76,9 @@ ATOM_TOKEN_DICT = {
     'Na':   11,
     'Si':   14,
     'B':    5,
+    # 'Se':   34,
+    # 'K':    19,
+    # 'Sn':   50
 }
 
 # Tokenize bonds and other structural characters
@@ -93,24 +97,32 @@ NON_ATOM_TOKEN_DICT = {
     # Annotations and charges
     '[':    224,
     ']':    225,
-    '+':    226,
-    '%':    227,
-    '@':    228,
+    '(':    226,
+    ')':    227,
+    '+':    228,
+    '%':    229,
+    '@':    230,
 }
 
 # Tokenize numbers from ['0', ..., '63'] -> [129, 192]
-NUM_TOKEN_DICT = {str(i): i + 129 for i in range(64)}
+NUMBER_TOKEN_DICT = {str(i): i + 129 for i in range(64)}
 
 # TODO: maybe check for collision
-TOKEN_DICT = {**SPECIAL_TOKEN_DICT, **ATOM_TOKEN_DICT,
-              **NON_ATOM_TOKEN_DICT, **NUM_TOKEN_DICT}
+SMILES_TOKEN_DICT = {
+    **SPECIAL_TOKEN_DICT,
+    **ATOM_TOKEN_DICT,
+    **NON_ATOM_TOKEN_DICT,
+    **NUMBER_TOKEN_DICT,
+}
 
 # Molecule fingerprint (ECFP) featurization ###################################
-FGPT_RADIUS = [2, 3, ]
-FGPT_N_BITS = 1024
+ECFP_RADIUS = [2, 3, ]
+ECFP_N_BITS = 1024
 
 # Molecule graph featurization ################################################
 MAX_NUM_ATOMS = 64
+GRAPH_PADDING = True
+GRAPH_MASTER_ATOM = True
 
 ATOM_FEAT_FUNC_LIST = [
     Chem.Atom.GetAtomicNum,
@@ -145,10 +157,10 @@ PROJECT_DIR = abspath(join(abspath(__file__), '../../../'))
 DATA_DIR = join(PROJECT_DIR, 'data/')
 RAW_DATA_DIR = join(DATA_DIR, 'raw/')
 PROCESSED_DATA_DIR = join(DATA_DIR, 'processed/')
-CID_MOL_DATA_DIR = join(PROCESSED_DATA_DIR, 'CID-Mol/')
-CID_SMILES_DATA_DIR = join(PROCESSED_DATA_DIR, 'CID-SMILES/')
-CID_ECFP_DATA_DIR = join(PROCESSED_DATA_DIR, 'CID-ECFP/')
-CID_GRAPH_DATA_DIR = join(PROCESSED_DATA_DIR, 'CID-Graph/')
+# CID_MOL_DATA_DIR = join(PROCESSED_DATA_DIR, 'CID-Mol/')
+# CID_SMILES_DATA_DIR = join(PROCESSED_DATA_DIR, 'CID-SMILES/')
+# CID_ECFP_DATA_DIR = join(PROCESSED_DATA_DIR, 'CID-ECFP/')
+# CID_GRAPH_DATA_DIR = join(PROCESSED_DATA_DIR, 'CID-Graph/')
 
 # Raw files and FTP locations #################################################
 
@@ -167,8 +179,8 @@ CID_INCHI_FILE_PATH = join(RAW_DATA_DIR, CID_INCHI_FILE_NAME)
 # Processed files locations ###################################################
 
 # Atom dictionary (atom symbol - occurrence / num_compounds)
-ATOM_DICT_FILE_PATH = join(PROCESSED_DATA_DIR,
-                           'atom_dict%s.txt' % DATASET_INDICATOR)
+ATOM_DICT_TXT_PATH = join(PROCESSED_DATA_DIR,
+                          'atom_dict%s.txt' % DATASET_INDICATOR)
 # Unused CID
 # A compound could be eliminated from the dataset for the following reasons:
 # * failed to construct Chem.Mol object from InChI
@@ -176,21 +188,26 @@ ATOM_DICT_FILE_PATH = join(PROCESSED_DATA_DIR,
 # * too many characters in its SMILES string ( > MAX_LEN_SMILES);
 # * too many characters in the string representation of binary of its Chem.Mol
 #       object ( > MAX_LEN_MOL_STR)
-UNUSED_CID_FILE_PATH = join(PROCESSED_DATA_DIR,
-                            'unused_CID%s.txt' % DATASET_INDICATOR)
-CID_MOL_FILE_PATH = join(PROCESSED_DATA_DIR,
+UNUSED_CID_TXT_PATH = join(PROCESSED_DATA_DIR,
+                           'unused_CID%s.txt' % DATASET_INDICATOR)
+CID_MOL_HDF5_PATH = join(PROCESSED_DATA_DIR,
                          'CID-Mol%s.hdf5' % DATASET_INDICATOR)
 
-# SMILES
-CID_SMILES_FILE_PATH = join(
+# SMILES and tokenized feature
+CID_SMILES_CSV_PATH = join(
+    PROCESSED_DATA_DIR, 'CID-SMILES%s.csv' % DATASET_INDICATOR)
+CID_SMILES_HDF5_PATH = join(
     PROCESSED_DATA_DIR, 'CID-SMILES%s.hdf5' % DATASET_INDICATOR)
+CID_TOKENIZED_SMILES_HDF5_PATH = join(
+    PROCESSED_DATA_DIR, 'CID-tokenized_SMILES%s.hdf5' % DATASET_INDICATOR)
 
-# Need to specify the FP (probably using ECFP4(1024) + ECFP6(1024))
-CID_ECFP_BASE64_FILE_PATH = join(
-    PROCESSED_DATA_DIR, 'CID-ECFP_base64%s.hdf5' % DATASET_INDICATOR)
-CID_ECFP_FILE_PATH = join(
+# ECFP in either array format or Base64 encoding
+CID_ECFP_HDF5_PATH = join(
     PROCESSED_DATA_DIR, 'CID-ECFP%s.hdf5' % DATASET_INDICATOR)
+CID_BASE64_ECFP_HDF5_PATH = join(
+    PROCESSED_DATA_DIR, 'CID-ECFP_base64%s.hdf5' % DATASET_INDICATOR)
 
-# Need to decide either using sparse matrix of dense one
-# CID_GRAPH_FILE_PATH
+# Graph features: dense matrices of nodes and edge features
+CID_GRAPH_HDF5_PATH = join(
+    PROCESSED_DATA_DIR, 'CID-Graph%s.hdf5' % DATASET_INDICATOR)
 

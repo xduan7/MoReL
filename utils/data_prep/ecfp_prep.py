@@ -1,5 +1,5 @@
 """ 
-    File Name:          MoReL/fgpt_prep.py
+    File Name:          MoReL/ecfp_prep.py
     Author:             Xiaotian Duan (xduan7)
     Email:              xduan7@uchicago.edu
     Date:               2/11/19
@@ -22,28 +22,28 @@ import utils.data_prep.config as c
 # * sparse matrix
 
 
-def base64_fgpt_unpack(base64_fgpt: list) -> np.array:
+def base64_ecfp_unpack(base64_ecfp: list) -> iter:
 
-    fgpt = []
-    for b64fp in base64_fgpt:
+    ecfp = []
+    for b64fp in base64_ecfp:
 
         bit_vect = ExplicitBitVect(0)
         ExplicitBitVect.FromBase64(bit_vect, b64fp)
 
-        fgpt += [np.uint8(c) for c in bit_vect.ToBitString()]
+        ecfp += [np.uint8(c) for c in bit_vect.ToBitString()]
 
-    return np.array(fgpt, dtype=np.uint8).reshape(-1)
+    return np.array(ecfp, dtype=np.uint8).tolist()
 
 
-def mol_to_base64_fgpt(mol: Chem.rdchem.Mol) -> list:
+def mol_to_base64_ecfp(mol: Chem.rdchem.Mol) -> list:
 
     return [AllChem.GetMorganFingerprintAsBitVect(
-        mol, radius=radius, nBits=c.FGPT_N_BITS).ToBase64()
-            for radius in c.FGPT_RADIUS]
+        mol, radius=radius, nBits=c.ECFP_N_BITS).ToBase64()
+            for radius in c.ECFP_RADIUS]
 
 
-def mol_to_fgpt(mol: Chem.rdchem.Mol) -> np.array:
-    return base64_fgpt_unpack(mol_to_base64_fgpt(mol))
+def mol_to_ecfp(mol: Chem.rdchem.Mol) -> np.array:
+    return base64_ecfp_unpack(mol_to_base64_ecfp(mol))
 
 
 if __name__ == '__main__':
@@ -51,9 +51,9 @@ if __name__ == '__main__':
     smiles1 = 'CCCCNC(=O)[C@@H]1CCCN(C(=O)CCC(C)C)C1'
     mol1 = Chem.MolFromSmiles(smiles1)
 
-    base64_fgpt1 = mol_to_base64_fgpt(mol1)
-    print(base64_fgpt1)
+    base64_ecfp1 = mol_to_base64_ecfp(mol1)
+    print(base64_ecfp1)
 
-    fgpt1 = base64_fgpt_unpack(base64_fgpt1)
-    print(len(fgpt1))
-    print(fgpt1)
+    ecfp1 = base64_ecfp_unpack(base64_ecfp1)
+    print(len(ecfp1))
+    print(ecfp1)
