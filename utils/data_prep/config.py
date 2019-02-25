@@ -137,6 +137,8 @@ ATOM_FEAT_FUNC_LIST = [
 ]
 
 BOND_FEAT_FUNC_LIST = [
+    # The first feature will always be bond existence
+
     # Chem.Bond.GetBeginAtomIdx()
     # Chem.Bond.GetEndAtomIdx()
     Chem.Bond.GetBondType,
@@ -178,6 +180,10 @@ CID_INCHI_FILE_PATH = join(RAW_DATA_DIR, CID_INCHI_FILE_NAME)
 
 # Processed files locations ###################################################
 
+# Combined HDF5 for all features (different groups)
+CID_FEATURES_HDF5_PATH = join(
+    PROCESSED_DATA_DIR, 'CID-features%s.hdf5' % DATASET_INDICATOR)
+
 # Atom dictionary (atom symbol - occurrence / num_compounds)
 ATOM_DICT_TXT_PATH = join(PROCESSED_DATA_DIR,
                           'atom_dict%s.txt' % DATASET_INDICATOR)
@@ -186,28 +192,25 @@ ATOM_DICT_TXT_PATH = join(PROCESSED_DATA_DIR,
 # * failed to construct Chem.Mol object from InChI
 # * too many atoms ( > MAX_NUM_ATOMS);
 # * too many characters in its SMILES string ( > MAX_LEN_SMILES);
-# * too many characters in the string representation of binary of its Chem.Mol
-#       object ( > MAX_LEN_MOL_STR)
 UNUSED_CID_TXT_PATH = join(PROCESSED_DATA_DIR,
                            'unused_CID%s.txt' % DATASET_INDICATOR)
-CID_MOL_HDF5_PATH = join(PROCESSED_DATA_DIR,
-                         'CID-Mol%s.hdf5' % DATASET_INDICATOR)
 
-# SMILES and tokenized feature
-CID_SMILES_CSV_PATH = join(
-    PROCESSED_DATA_DIR, 'CID-SMILES%s.csv' % DATASET_INDICATOR)
-CID_SMILES_HDF5_PATH = join(
-    PROCESSED_DATA_DIR, 'CID-SMILES%s.hdf5' % DATASET_INDICATOR)
-CID_TOKENIZED_SMILES_HDF5_PATH = join(
-    PROCESSED_DATA_DIR, 'CID-tokenized_SMILES%s.hdf5' % DATASET_INDICATOR)
+# CID_MOL_HDF5_PATH = join(PROCESSED_DATA_DIR,
+#                          'CID-Mol%s.hdf5' % DATASET_INDICATOR)
 
-# ECFP in either array format or Base64 encoding
-CID_ECFP_HDF5_PATH = join(
-    PROCESSED_DATA_DIR, 'CID-ECFP%s.hdf5' % DATASET_INDICATOR)
-CID_BASE64_ECFP_HDF5_PATH = join(
-    PROCESSED_DATA_DIR, 'CID-ECFP_base64%s.hdf5' % DATASET_INDICATOR)
-
-# Graph features: dense matrices of nodes and edge features
-CID_GRAPH_HDF5_PATH = join(
-    PROCESSED_DATA_DIR, 'CID-Graph%s.hdf5' % DATASET_INDICATOR)
+# # SMILES and tokenized feature
+# CID_SMILES_HDF5_PATH = join(
+#     PROCESSED_DATA_DIR, 'CID-SMILES%s.hdf5' % DATASET_INDICATOR)
+# CID_TOKEN_HDF5_PATH = join(
+#     PROCESSED_DATA_DIR, 'CID-token%s.hdf5' % DATASET_INDICATOR)
+#
+# # ECFP in either array format or Base64 encoding
+# CID_ECFP_HDF5_PATH = join(
+#     PROCESSED_DATA_DIR, 'CID-ECFP%s.hdf5' % DATASET_INDICATOR)
+# CID_BASE64_ECFP_HDF5_PATH = join(
+#     PROCESSED_DATA_DIR, 'CID-ECFP_base64%s.hdf5' % DATASET_INDICATOR)
+#
+# # Graph features: dense matrices of nodes and edge features
+# CID_GRAPH_HDF5_PATH = join(
+#     PROCESSED_DATA_DIR, 'CID-Graph%s.hdf5' % DATASET_INDICATOR)
 

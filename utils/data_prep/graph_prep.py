@@ -61,7 +61,7 @@ def mol_to_graph(mol: Chem.rdchem.Mol,
         edges[i + ofs, j + ofs, 0] = np.int8(1)
 
         # Get all the bond features
-        # Note that directional bond features will be inverted if necessarry
+        # Note that directional bond features will be inverted if necessary
         # TODO: test directional bonds
         for k, feat_func in enumerate(c.BOND_FEAT_FUNC_LIST):
             feat = feat_func(bond)
@@ -87,5 +87,4 @@ if __name__ == '__main__':
     # smiles1 = 'C(C1C(C(C(C(O1)O)O)O)O)O'
     # smiles1 = 'CCCCNC(=O)[C@@H]1CCCN(C(=O)CCC(C)C)C1'
     mol1 = Chem.MolFromSmiles(smiles1)
-
-    n, e = mol_to_graph(mol1, master_atom=True, padding=False)
+    n, e = mol_to_graph(mol1)

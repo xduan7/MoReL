@@ -11,89 +11,49 @@
         This file is pretty much the summation of mol_prep, smiles_prep,
         ecfp_prep, and graph_prep.
 """
+import time
 import json
-import codecs
-
+import h5py
 import numpy as np
 import pandas as pd
 from rdkit import Chem
-from sklearn.model_selection import train_test_split
 
 import utils.data_prep.config as c
 from utils.data_prep.download import download
-from utils.data_prep.ecfp_prep import mol_to_base64_ecfp, mol_to_ecfp, \
-    base64_ecfp_unpack
-from utils.data_prep.graph_prep import mol_to_graph
 from utils.data_prep.smiles_prep import mol_to_smiles, tokenize_smiles
-
-
-def mol_to_str(mol: Chem.Mol):
-    return codecs.encode(mol.ToBinary(), c.MOL_BINARY_ENCODING).decode()
-
-
-def str_to_mol(mol_str: str):
-    try:
-        return Chem.Mol(codecs.decode(codecs.encode(mol_str),
-                                      c.MOL_BINARY_ENCODING))
-    except:
-        return None
+from utils.data_prep.mol_prep import mol_to_str, str_to_mol
+from utils.data_prep.ecfp_prep import mol_to_ecfp
+from utils.data_prep.graph_prep import mol_to_graph
 
 
 def data_prep(pcba_only=True):
 
-    # Download and unpack data into raw data fodler ###########################
+    # Download and prepare the PCBA CID set if necessary ######################
     download()
-
-    # Split training and validation data ######################################
-    pcba_cid_array = pd.read_csv(
+    pcba_cid_set = set(pd.read_csv(
         c.PCBA_CID_FILE_PATH,
         sep='\t',
         header=0,
         index_col=None,
-        usecols=[0]).values.reshape(-1).astype(np.int32)
-
-    trn_cid_array, val_cid_array = train_test_split(
-        pcba_cid_array,
-        test_size=c.VALIDATION_SIZE,
-        random_state=c.RANDOM_STATE)
-
-    # Transforming all the array into set for faster lookup
-    # l = list(range(4000000))
-    # a = np.array(l)
-    # s = set(l)
-    # %timeit random.randint(0, 3999999) in l
-    # 19.4 ms ± 3.32 ms per loop (mean ± std. dev. of 7 runs, 100 loops each)
-    # %timeit random.randint(0, 3999999) in a
-    # 3.04 ms ± 55.7 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
-    # %timeit random.randint(0, 3999999) in s
-    # 1.33 µs ± 7.42 ns per loop \
-    # (mean ± std. dev. of 7 runs, 1000000 loops each)
-
-    pcba_cid_set = set(pcba_cid_array)
-
-    # Note that: trn_cid_set + val_cid_set == pcba_cid_set
-    trn_cid_set = set(trn_cid_array)
-    val_cid_set = set(val_cid_array)
+        usecols=[0]).values.reshape(-1)) if pcba_only else set([])
 
     # Looping over all the CIDs set the molecule ##############################
-
-    # Book keeping for unused CIDs, atom occurrences, and number of rows
-    unused_cid = []
+    # Book keeping for unused CIDs, atom occurrences, and number of CIDs
+    unused_cid_set = set([])
     atom_dict = {}
-    num_cid_mol = 0
+    num_used_cid = 0
 
-    # HDF5 file closed after looping
-    # cid_mol_hdf5 = pd.HDFStore(c.CID_MOL_HDF5_PATH, mode='w')
-    # cid_smiles_hdf5 = pd.HDFStore(c.CID_SMILES_HDF5_PATH, mode='w')
-    # cid_tokenized_smiles_hdf5 = pd.HDFStore(c.CID_TOKENIZED_SMILES_HDF5_PATH,
-    #                                         mode='w')
-    # cid_base64_ecfp_hdf5 = pd.HDFStore(c.CID_BASE64_ECFP_HDF5_PATH, mode='w')
-    # cid_ecfp_hdf5 = pd.HDFStore(c.CID_ECFP_HDF5_PATH, mode='w')
-    # cid_graph_hdf5 = pd.HDFStore(c.CID_GRAPH_HDF5_PATH, mode='w')
+    # HDF5 and groups
+    cid_features_hdf5 = h5py.File(c.CID_FEATURES_HDF5_PATH, 'w')
+    cid_mol_str_hdf5_grp = cid_features_hdf5.create_group(name='CID-Mol_str')
+    cid_token_hdf5_grp = cid_features_hdf5.create_group(name='CID-token')
+    cid_ecfp_hdf5_grp = cid_features_hdf5.create_group(name='CID-ECFP')
+    cid_graph_hdf5_grp = cid_features_hdf5.create_group(name='CID-graph')
+    cid_node_hdf5_grp = cid_graph_hdf5_grp.create_group(name='CID-node')
+    cid_edge_hdf5_grp = cid_graph_hdf5_grp.create_group(name='CID-edge')
 
-    # Temp strcuture for all the CIDs and SMILES
-    cid_smiles_list = []
-
+    # TODO: a progress indicator here would be very nice.
+    # TODO: also suppress the WARNINGs and ERRORs from RDkit
     for chunk_idx, chunk_cid_inchi_df in enumerate(
             pd.read_csv(c.CID_INCHI_FILE_PATH,
                         sep='\t',
@@ -102,41 +62,31 @@ def data_prep(pcba_only=True):
                         usecols=[0, 1],
                         chunksize=2 ** 12)):
 
-        chunk_cid_mol_list = []
-        chunk_cid_smiles_list = []
-        chunk_cid_tokenized_smiles_list = []
-        chunk_cid_base64_ecfp_list = []
-        chunk_cid_ecfp_list = []
-        chunk_cid_graph_list = []
-
+        chunk_cid_feature_list = []
         for cid, row in chunk_cid_inchi_df.iterrows():
 
             # Skip this compound if it is not in PCBA and the dataset is PCBA
-            # Note that
-            if cid not in pcba_cid_set and c.PCBA_ONLY:
+            if (cid not in pcba_cid_set) and c.PCBA_ONLY:
                 continue
 
             mol: Chem.rdchem.Mol = Chem.MolFromInchi(row[1])
             if mol is None:
-                unused_cid.append(cid)
+                unused_cid_set.add(cid)
                 continue
 
             # Get the SMILES strings and molecule representation strings
             smiles: str = mol_to_smiles(mol)
             mol_str: str = mol_to_str(mol)
 
-            # Skip the molecules with too many atoms or lengthy SMILES
             if mol.GetNumAtoms() > c.MAX_NUM_ATOMS or \
-                    len(smiles) > c.MAX_LEN_SMILES or \
-                    len(mol_str) > c.MAX_LEN_MOL_STR:
-                unused_cid.append(cid)
+                    len(smiles) > c.MAX_LEN_SMILES:
+                unused_cid_set.add(cid)
                 continue
 
             # Note that all the featurization parameters are in config.py
-            # tokenized_smiles= tokenize_smiles(smiles)
-            # base64_ecfp = mol_to_base64_ecfp(mol)
-            # ecfp = base64_ecfp_unpack(base64_ecfp)
-            # graph = mol_to_graph(mol)
+            # token= tokenize_smiles(smiles)
+            ecfp = mol_to_ecfp(mol)
+            graph = mol_to_graph(mol)
 
             # Count the atoms in this molecule
             # Same atoms in a molecule only count once
@@ -145,89 +95,34 @@ def data_prep(pcba_only=True):
                 atom_dict[a] = (atom_dict[a] + 1) if a in atom_dict else 1
 
             # Append extracted data to list and prepare for storage
-            cid_smiles_list.append([cid, smiles])
-            # chunk_cid_mol_list.append([cid, mol_str])
-            # chunk_cid_smiles_list.append([cid, smiles])
-            # chunk_cid_tokenized_smiles_list.append([cid, tokenized_smiles])
-            # chunk_cid_base64_ecfp_list.append([cid, base64_ecfp])
-            # chunk_cid_ecfp_list.append([cid, ecfp])
-            # chunk_cid_graph_list.append([cid, graph])
+            chunk_cid_feature_list.append(
+                (str(cid), (mol_str, smiles, ecfp, graph)))
 
         # Append the chunk lists to HDF5
-        # Molecules
-        # chunk_cid_mol_df = pd.DataFrame(chunk_cid_mol_list,
-        #                                 columns=['CID', 'Mol'])
-        # chunk_cid_mol_df.set_index('CID', inplace=True)
-        # cid_mol_hdf5.append(key='CID-Mol',
-        #                     value=chunk_cid_mol_df,
-        #                     min_itemsize=c.MAX_LEN_MOL_STR)
+        for cid, (mol_str, smiles, ecfp, (node, edge)) in \
+                chunk_cid_feature_list:
+            cid_mol_str_hdf5_grp.create_dataset(name=cid, data=mol_str)
+            # cid_token_hdf5_grp(name=cid, data=token)
+            cid_ecfp_hdf5_grp.create_dataset(name=cid, data=ecfp)
+            cid_node_hdf5_grp.create_dataset(name=cid, data=node)
+            cid_edge_hdf5_grp.create_dataset(name=cid, data=edge)
 
-        # SMILES strings
-        # chunk_cid_smiles_df = pd.DataFrame(chunk_cid_smiles_list,
-        #                                    columns=['CID', 'SMILES'])
-        # chunk_cid_smiles_df.set_index('CID', inplace=True)
-        # cid_smiles_hdf5.append(key='CID-SMILES',
-        #                        value=chunk_cid_smiles_df,
-        #                        min_itemsize=c.MAX_LEN_SMILES)
+        num_used_cid += len(chunk_cid_feature_list)
 
-        # Tokenized SMILES
-        # chunk_cid_tokenized_smiles_df = \
-        #     pd.DataFrame(chunk_cid_tokenized_smiles_list,
-        #                  columns=['CID', 'tokenized_SMILES'])
-        # chunk_cid_tokenized_smiles_df.set_index('CID', inplace=True)
-        # cid_tokenized_smiles_hdf5.append(
-        #     key='CID-tokenized_SMILES',
-        #     value=chunk_cid_tokenized_smiles_df,
-        #     min_itemsize=c.MAX_LEN_TOKENIZED_SMILES)
-
-        # Base64 ECFP
-        # chunk_cid_base64_ecfp_df = \
-        #     pd.DataFrame(chunk_cid_base64_ecfp_list,
-        #                  columns=['CID', 'base64_ECFP'])
-        # chunk_cid_base64_ecfp_df.set_index('CID', inplace=True)
-        # cid_base64_ecfp_hdf5.append(key='CID-base64_ECFP',
-        #                             value=chunk_cid_base64_ecfp_df)
-
-        # ECFP
-        # chunk_cid_ecfp_df = pd.DataFrame(chunk_cid_ecfp_list,
-        #                                  columns=['CID', 'ECFP'])
-        # chunk_cid_ecfp_df.set_index('CID', inplace=True)
-        # cid_ecfp_hdf5.append(key='CID-ECFP',
-        #                      value=chunk_cid_ecfp_df)
-
-        # Graph
-        # chunk_cid_grahp_df = pd.DataFrame(chunk_cid_graph_list,
-        #                                   columns=['CID', 'graph'])
-        # chunk_cid_grahp_df.set_index('CID', inplace=True)
-        # cid_graph_hdf5.append(key='CID-graph',
-        #                       value=chunk_cid_grahp_df)
-
-        # num_cid_mol += len(chunk_cid_mol_list)
-
-    # cid_mol_hdf5.close()
-    # cid_smiles_hdf5.close()
-    # cid_tokenized_smiles_hdf5.close()
-    # cid_base64_ecfp_hdf5.close()
-    # cid_ecfp_hdf5.close()
-    # cid_graph_hdf5.close()
+    cid_features_hdf5.close()
 
     # Saving metadata into files ##############################################
-    cid_smiles_df = pd.DataFrame(cid_smiles_list,
-                                 columns=['CID', 'SMILES'])
-    cid_smiles_df.set_index('CID', inplace=True)
-    cid_smiles_df.to_csv(c.CID_SMILES_CSV_PATH)
-
     # Convert atom count into frequency for further usage
-    # for a in atom_dict:
-    #     atom_dict[a] = atom_dict[a] / num_cid_mol
-    # with open(c.ATOM_DICT_TXT_PATH, 'w') as f:
-    #     json.dump(atom_dict, f, indent=4)
-    #
-    # # Dump unused CIDs for further usage
-    # with open(c.UNUSED_CID_TXT_PATH, 'w') as f:
-    #     json.dump(unused_cid, f, indent=4)
+    for a in atom_dict:
+        atom_dict[a] = atom_dict[a] / num_used_cid
+    with open(c.ATOM_DICT_TXT_PATH, 'w') as f:
+        json.dump(atom_dict, f, indent=4)
 
-    return
+    # Dump unused CIDs for further usage
+    with open(c.UNUSED_CID_TXT_PATH, 'w') as f:
+        json.dump(unused_cid_set, f, indent=4)
+
+    return pcba_cid_set
 
 
 if __name__ == '__main__':
@@ -244,5 +139,56 @@ if __name__ == '__main__':
                    if atom_dict[a] > c.MIN_ATOM_FREQUENCY]
 
     atom_token_dict = {a: Chem.Atom(a).GetAtomicNum() for a in token_atoms}
-
     assert atom_token_dict == c.ATOM_TOKEN_DICT
+
+    # Test out the speed of mol_str -> features versus loading from hard drive
+    TEST_SIZE = 1
+    with h5py.File(c.CID_FEATURES_HDF5_PATH, 'r') as f:
+
+        cid_mol_str_grp = f.get(name='CID-Mol_str')
+        cid_token_grp = f.get(name='CID-token')
+        cid_ecfp_grp = f.get(name='CID-ECFP')
+        cid_graph_grp = f.get(name='CID-graph')
+        cid_node_grp = cid_graph_grp.get(name='CID-node')
+        cid_edge_grp = cid_graph_grp.get(name='CID-edge')
+
+        cid_list = list(cid_mol_str_grp.keys())
+        test_cid_list = np.random.choice(
+            cid_list, TEST_SIZE, replace=False).astype(str)
+
+        # TODO: Testing SMILES
+
+        # Testing ECFP
+        start_time = time.time()
+        for cid in test_cid_list:
+            ecfp = cid_ecfp_grp.get(name=cid)
+            print(ecfp)
+        print("Get ECFP from HDF5: \t%s seconds"
+              % (time.time() - start_time))
+
+        start_time = time.time()
+        for cid in test_cid_list:
+            mol = str_to_mol(cid_mol_str_grp.get(name=cid))
+            ecfp = mol_to_ecfp(mol)
+            print(ecfp)
+        print("Get ECFP from Mol: \t%s seconds"
+              % (time.time() - start_time))
+
+        # Testing graphs
+        start_time = time.time()
+        for cid in test_cid_list:
+            node = cid_node_grp.get(name=cid)
+            edge = cid_edge_grp.get(name=cid)
+            print(node)
+            print(edge)
+        print("Get graph from HDF5: \t%s seconds"
+              % (time.time() - start_time))
+
+        start_time = time.time()
+        for cid in test_cid_list:
+            mol = str_to_mol(cid_mol_str_grp.get(name=cid))
+            node, edge = mol_to_graph(mol)
+            print(node)
+            print(edge)
+        print("Get ECFP from Mol: \t%s seconds"
+              % (time.time() - start_time))

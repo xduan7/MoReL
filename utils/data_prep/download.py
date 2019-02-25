@@ -16,7 +16,7 @@ def create_dir():
         # os.mkdir(c.PROJECT_DIR)
         # os.mkdir(c.DATA_DIR)
         os.makedirs(c.RAW_DATA_DIR, exist_ok=True)
-        os.mkdir(c.PROCESSED_DATA_DIR)
+        os.makedirs(c.PROCESSED_DATA_DIR, exist_ok=True)
         # os.makedirs(c.CID_MOL_DATA_DIR, exist_ok=True)
         # os.makedirs(c.CID_SMILES_DATA_DIR, exist_ok=True)
         # os.makedirs(c.CID_ECFP_DATA_DIR, exist_ok=True)
