@@ -12,11 +12,11 @@ from rdkit import Chem
 import utils.data_prep.config as c
 
 
-def mol_to_str(mol: Chem.Mol):
+def mol_to_str(mol: Chem.Mol) -> str:
     return codecs.encode(mol.ToBinary(), c.MOL_BINARY_ENCODING).decode()
 
 
-def str_to_mol(mol_str: str):
+def str_to_mol(mol_str: str) -> Chem.Mol:
     try:
         return Chem.Mol(codecs.decode(codecs.encode(mol_str),
                                       c.MOL_BINARY_ENCODING))

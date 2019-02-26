@@ -83,6 +83,7 @@ class GGNN(nn.Module):
             else:
                 [batch_size, num_nodes, num_nodes, num_edge_types]
         :return:
+            [batch_size, num_node, state_dim]
         """
 
         curr_state = init_state

@@ -18,6 +18,19 @@ import torch.nn as nn
 from utils.misc.sparse_tensor_helper import to_dense
 
 
+def gcn_state_reshape(state: torch.Tensor,
+                      num_nodes: int,
+                      in_state_dim: int,
+                      num_edge_types: int):
+    # Matrix state (either in-going or out-going) has size
+    # [batch_size, num_node, state_dim * num_edge_types]
+    state_ = state.view(-1, num_nodes, in_state_dim, num_edge_types)
+    # [batch_size, num_nodes, state_dim, num_edge_types]
+    state_ = state_.transpose(2, 3).transpose(1, 2).contiguous()
+    # [batch_size * num_edge_types * num_nodes * state_dim]
+    return state_.view(-1, num_nodes * num_edge_types, in_state_dim)
+
+
 class GraphConvLayer(nn.Module):
 
     def __init__(self,
@@ -40,20 +53,6 @@ class GraphConvLayer(nn.Module):
         self.__linear_out = nn.Linear(self.__in_state_dim,
                                       self.__out_state_dim, bias=use_bias)
 
-    def __state_reshape(self,
-                        state,
-                        state_dim):
-
-        # Matrix state (either in-going or out-going) has size
-        # [batch_size, num_node, state_dim * num_edge_types]
-        state_ = state.view(
-            -1, self.__num_nodes, state_dim, self.__num_edge_types)
-        # [batch_size, num_nodes, state_dim, num_edge_types]
-        state_ = state_.transpose(2, 3).transpose(1, 2).contiguous()
-        # [batch_size * num_edge_types * num_nodes * state_dim]
-        return state_.view(
-            -1, self.__num_nodes * self.__num_edge_types, state_dim)
-
     def forward(self,
                 in_state,
                 adj_matrix):
@@ -66,8 +65,10 @@ class GraphConvLayer(nn.Module):
         """
 
         # [batch_size, num_edge_types * num_nodes, in_state_dim]
-        tmp_state = self.__state_reshape(self.__linear_in(in_state),
-                                         self.__in_state_dim)
+        tmp_state = gcn_state_reshape(self.__linear_in(in_state),
+                                      self.__num_nodes,
+                                      self.__in_state_dim,
+                                      self.__num_edge_types)
 
         # [batch_size, num_nodes, in_state_dim]
         tmp_adj_matrix = to_dense(adj_matrix).view(

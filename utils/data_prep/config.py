@@ -214,3 +214,11 @@ UNUSED_CID_TXT_PATH = join(PROCESSED_DATA_DIR,
 # CID_GRAPH_HDF5_PATH = join(
 #     PROCESSED_DATA_DIR, 'CID-Graph%s.hdf5' % DATASET_INDICATOR)
 
+
+# Models and training constants ###############################################
+FEATURES = []
+MODELS = {
+    'dense':    ['tokens'],
+    'xfmr':     ['tokens', ],
+    'ggnn':     ['graph', ],
+}
