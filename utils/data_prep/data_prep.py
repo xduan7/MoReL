@@ -18,6 +18,7 @@ import numpy as np
 import pandas as pd
 from rdkit import Chem
 from rdkit import RDLogger
+from tqdm.auto import tqdm
 
 import utils.data_prep.config as c
 from utils.data_prep.download import download
@@ -56,8 +57,17 @@ def data_prep(pcba_only=True):
     cid_node_hdf5_grp = cid_graph_hdf5_grp.create_group(name='CID-node')
     cid_edge_hdf5_grp = cid_graph_hdf5_grp.create_group(name='CID-edge')
 
-    # TODO: a progress indicator here would be very nice.
     # TODO: probably some ways to parallelize the inner loop?
+    print('Featurizing molecules ... ')
+    progress_bar = tqdm(
+        total=len(pcba_cid_set),
+        desc='featurization',
+        ncols=120,
+        bar_format='{desc}: {percentage:2.2f}%|'
+                   '{bar}|'
+                   '{n_fmt:>8}/{total_fmt:<8} '
+                   '[Elapsed: {elapsed:<7}, Remaining: {remaining:<7} '
+                   '({rate_fmt:<10})]')
     for chunk_idx, chunk_cid_inchi_df in enumerate(
             pd.read_csv(c.CID_INCHI_FILE_PATH,
                         sep='\t',
@@ -67,11 +77,13 @@ def data_prep(pcba_only=True):
                         chunksize=2 ** 12)):
 
         chunk_cid_feature_list = []
+        chunk_num_cid = 0
         for cid, row in chunk_cid_inchi_df.iterrows():
 
             # Skip this compound if it is not in PCBA and the dataset is PCBA
             if (cid not in pcba_cid_set) and c.PCBA_ONLY:
                 continue
+            chunk_num_cid += 1
 
             mol: Chem.rdchem.Mol = Chem.MolFromInchi(row[1])
 
@@ -82,6 +94,15 @@ def data_prep(pcba_only=True):
             token = mol_to_token(mol)
             # ecfp = mol_to_ecfp(mol)
             # graph = mol_to_graph(mol)
+
+            # Gather all the features and validate all of them
+            # Note that dimension restrictions are enforced in each
+            # featurization functions independently
+            # features = (mol_str, token, ecfp, node, edge)
+            features = (mol_str, token)
+            if any(map(lambda x: x is None, features)):
+                unused_cid_list.append(cid)
+                continue
 
             # Count the atoms in this molecule
             # Same atoms in a molecule only count once
@@ -102,8 +123,10 @@ def data_prep(pcba_only=True):
         #     cid_ecfp_hdf5_grp.create_dataset(name=cid, data=ecfp)
         #     cid_node_hdf5_grp.create_dataset(name=cid, data=node)
         #     cid_edge_hdf5_grp.create_dataset(name=cid, data=edge)
-
         num_used_cid += len(chunk_cid_feature_list)
+
+        # Update progress bar
+        progress_bar.update(chunk_num_cid)
 
     cid_features_hdf5.close()
 
