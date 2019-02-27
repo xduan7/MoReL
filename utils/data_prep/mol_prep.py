@@ -13,7 +13,10 @@ import utils.data_prep.config as c
 
 
 def mol_to_str(mol: Chem.Mol) -> str:
-    return codecs.encode(mol.ToBinary(), c.MOL_BINARY_ENCODING).decode()
+    try:
+        return codecs.encode(mol.ToBinary(), c.MOL_BINARY_ENCODING).decode()
+    except:
+        return None
 
 
 def str_to_mol(mol_str: str) -> Chem.Mol:

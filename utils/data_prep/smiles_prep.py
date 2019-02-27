@@ -14,11 +14,13 @@ import utils.data_prep.config as c
 
 
 def mol_to_smiles(mol: Chem.rdchem.Mol) -> str:
-
-    return Chem.MolToSmiles(
-        mol=mol,
-        allBondsExplicit=c.ALL_BONDS_EXPLICIT,
-        allHsExplicit=c.ALL_HS_EXPLICIT)
+    try:
+        return Chem.MolToSmiles(
+            mol=mol,
+            allBondsExplicit=c.ALL_BONDS_EXPLICIT,
+            allHsExplicit=c.ALL_HS_EXPLICIT)
+    except:
+        return None
 
 
 # def smiles_to_token(smiles: str,
@@ -123,13 +125,21 @@ def mol_to_token(mol: Chem.Mol,
 
     :return:
     """
-
     # Every token array starts with SOS
     tokens = [token_dict['SOS'], ]
-    smiles = mol_to_smiles(mol)
-    atom_list = [atom.GetSymbol() for atom in mol.GetAtoms()]
-    atom_index = 0
 
+    smiles = mol_to_smiles(mol)
+    if (mol is None) or (smiles is None):
+        return None
+
+    # Note that mol from smiles from mol will keep mol and smiles
+    # consistent, which is important in tokenization
+    atom_list = [atom.GetSymbol()
+                 for atom in Chem.MolFromSmiles(smiles).GetAtoms()]
+
+
+
+    atom_index = 0
     skip_next = False
     for i, ci in enumerate(smiles):
 
@@ -159,30 +169,6 @@ def mol_to_token(mol: Chem.Mol,
                           % (smiles, ''.join(atom_list)))
                     return None
 
-            # if ci.upper() != next_atom[0]:
-            #     # In this case, the only logical explanation is that ci is
-            #     # hydrogen atom appears in SMILES strings but ignored in atoms
-            #     if ci.upper() != 'H':
-            #         print('SMILES %s is inconsistent with atom list %s'
-            #               % (smiles, ''.join(atom_list)))
-            #         return None
-            #     else:
-            #         symbol = 'H'
-            # else:
-            #
-            #     if len(next_atom) == 2:
-            #         if smiles[i: i + 2].lower() != next_atom.lower():
-            #
-            #
-            #
-            #             print('SMILES %s is inconsistent with atom list %s'
-            #                   % (smiles, ''.join(atom_list)))
-            #             return None
-            #         skip_next = True
-            #
-            #     symbol = next_atom
-            #     atom_index += 1
-
         elif ci.isdigit():
             if ((i + 1) < len(smiles)) and smiles[i + 1].isdigit():
                 symbol = smiles[i: i + 2]
@@ -209,10 +195,11 @@ def mol_to_token(mol: Chem.Mol,
         else:
             tokens.append(token_dict['UNK'])
 
-    if padding:
+    if padding and (num_tokens - len(tokens) > 0):
         tokens += [token_dict['PAD'], ] * (num_tokens - len(tokens))
 
-    return np.array(tokens, dtype=np.uint8)
+    return np.array(tokens, dtype=np.uint8) \
+        if len(tokens) <= num_tokens else None
 
 
 if __name__ == '__main__':
@@ -224,9 +211,16 @@ if __name__ == '__main__':
     # smiles1 = 'O=[N+]([O-])O.[In]'
     # smiles1 = 'C1CCC(C2CCCC[N-]2)[N-]C1.CC(C)C([NH-])C(=O)[O-].Cl.[Pt+]'
 
-    smiles1 = 'Cl.O=C([O-])C1=CC=C=C[CH]1.[Hg+]'
+    # The following three cases are shown to be inconsistent in the way that
+    # Mol from InChI has different atom ordering from Mol from SMILES
+    # smiles1 = 'C1=NC=c2c(ccc[n+]2CCCCC[n+]2ccccc2-c2ccccn2)=C/C=C/1.[Br-]'
+    # smiles1 = 'C=Cc1c2[n-]c(c1C)C=c1[n-]c(c(CCC(=O)[O-])c1C)=C1c3[nH]c(c(' \
+    #           'C)c3C(=O)C1C(=O)[O-])C=c1[n-]c(c(C)c1CC)=C2.[Cu].[Na+].[Na+]'
+    smiles1 = 'Cc1c2[n-]c(c1CCC(=O)[O-])C=c1[nH]c(c(C)c1CCC(=O)[O-])=Cc1[' \
+              'nH]c(c(C(C)O)c1C)C=c1[n-]c(c(C(C)O)c1C)=C2.Cl.Cl.[Pt+4]'
     mol1 = Chem.MolFromSmiles(smiles1)
-
+    assert smiles1 == Chem.MolToSmiles(mol1)
+    print([a.GetSymbol() for a in mol1.GetAtoms()])
     # print(smiles_to_token(smiles1, padding=False))
     print(mol_to_token(mol1, padding=False))
 

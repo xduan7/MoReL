@@ -30,28 +30,35 @@ def mol_to_graph(mol: Chem.rdchem.Mol,
                  padding: bool = c.GRAPH_PADDING,
                  master_atom: bool = c.GRAPH_MASTER_ATOM) -> tuple:
 
+    # Sanity check
+    try:
+        atom_list = mol.GetAtoms()
+        num_atoms = len(atom_list)
+    except:
+        return None
+
     # num_atoms = mol.GetNumAtoms()
     ofs = 1 if master_atom else 0
-    num_atoms = c.MAX_NUM_ATOMS + ofs if padding \
-        else mol.GetNumAtoms() + ofs
+    graph_dim = c.MAX_NUM_ATOMS + ofs if padding \
+        else num_atoms + ofs
 
     # Feature for atoms/nodes
     nodes = np.zeros(
-        shape=(num_atoms, len(c.ATOM_FEAT_FUNC_LIST)), dtype=np.int8)
+        shape=(graph_dim, len(c.ATOM_FEAT_FUNC_LIST)), dtype=np.int8)
 
     # Adjacency matrix, feature for bonds/edges
     edges = np.zeros(
-        shape=(num_atoms, num_atoms, len(c.BOND_FEAT_FUNC_LIST) + 1),
+        shape=(graph_dim, graph_dim, len(c.BOND_FEAT_FUNC_LIST) + 1),
         dtype=np.int8)
 
     # Iterate through all the atoms in the molecule
-    for i, atom in enumerate(mol.GetAtoms()):
+    for i, atom in enumerate(atom_list):
         for j, feat_func in enumerate(c.ATOM_FEAT_FUNC_LIST):
             nodes[i + ofs, j] = np.int8(feat_func(atom))
 
     # Iterate through all the bonds
     for i, j in list(itertools.product(
-            range(mol.GetNumAtoms()), range(mol.GetNumAtoms()))):
+            range(num_atoms), range(num_atoms))):
 
         bond: Chem.Bond = mol.GetBondBetweenAtoms(i, j)
         if bond is None:
@@ -73,7 +80,7 @@ def mol_to_graph(mol: Chem.rdchem.Mol,
 
     # Note that the (virtual) master atom will connect to all the real atoms
     if master_atom:
-        for i in range(mol.GetNumAtoms()):
+        for i in range(num_atoms):
             edges[0, i + ofs, 0] = np.int8(1)
             edges[i + ofs, 0, 0] = np.int8(1)
 

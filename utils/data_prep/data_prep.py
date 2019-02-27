@@ -43,7 +43,7 @@ def data_prep(pcba_only=True):
 
     # Looping over all the CIDs set the molecule ##############################
     # Book keeping for unused CIDs, atom occurrences, and number of CIDs
-    unused_cid_set = set([])
+    unused_cid_list = []
     atom_dict = {}
     num_used_cid = 0
 
@@ -57,7 +57,7 @@ def data_prep(pcba_only=True):
     cid_edge_hdf5_grp = cid_graph_hdf5_grp.create_group(name='CID-edge')
 
     # TODO: a progress indicator here would be very nice.
-    # TODO: also suppress the WARNINGs and ERRORs from RDkit
+    # TODO: probably some ways to parallelize the inner loop?
     for chunk_idx, chunk_cid_inchi_df in enumerate(
             pd.read_csv(c.CID_INCHI_FILE_PATH,
                         sep='\t',
@@ -74,25 +74,9 @@ def data_prep(pcba_only=True):
                 continue
 
             mol: Chem.rdchem.Mol = Chem.MolFromInchi(row[1])
-            if mol is None:
-                unused_cid_set.add(cid)
-                continue
 
             # Get the SMILES strings and molecule representation strings
-            # Note that mol from smiles from mol will keep mol and smiles
-            # consistent, which is important in tokenization
-            smiles: str = mol_to_smiles(mol)
-            mol: Chem.Mol = Chem.MolFromSmiles(smiles)
-            if mol is None:
-                unused_cid_set.add(cid)
-                continue
-
             mol_str: str = mol_to_str(mol)
-
-            if mol.GetNumAtoms() > c.MAX_NUM_ATOMS or \
-                    len(smiles) > c.MAX_LEN_SMILES:
-                unused_cid_set.add(cid)
-                continue
 
             # Note that all the featurization parameters are in config.py
             token = mol_to_token(mol)
@@ -132,7 +116,7 @@ def data_prep(pcba_only=True):
 
     # Dump unused CIDs for further usage
     with open(c.UNUSED_CID_TXT_PATH, 'w') as f:
-        json.dump(unused_cid_set, f, indent=4)
+        json.dump(unused_cid_list, f, indent=4)
 
     return pcba_cid_set
 

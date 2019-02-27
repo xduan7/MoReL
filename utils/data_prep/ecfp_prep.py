@@ -24,22 +24,27 @@ import utils.data_prep.config as c
 
 def base64_ecfp_unpack(base64_ecfp: list) -> iter:
 
-    ecfp = []
-    for b64fp in base64_ecfp:
+    try:
+        ecfp = []
+        for b64fp in base64_ecfp:
 
-        bit_vect = ExplicitBitVect(0)
-        ExplicitBitVect.FromBase64(bit_vect, b64fp)
+            bit_vect = ExplicitBitVect(0)
+            ExplicitBitVect.FromBase64(bit_vect, b64fp)
 
-        ecfp += [np.uint8(c) for c in bit_vect.ToBitString()]
+            ecfp += [np.uint8(c) for c in bit_vect.ToBitString()]
 
-    return np.array(ecfp, dtype=np.uint8).tolist()
+        return np.array(ecfp, dtype=np.uint8).tolist()
+    except TypeError:
+        return None
 
 
 def mol_to_base64_ecfp(mol: Chem.rdchem.Mol) -> list:
-
-    return [AllChem.GetMorganFingerprintAsBitVect(
-        mol, radius=radius, nBits=c.ECFP_N_BITS).ToBase64()
-            for radius in c.ECFP_RADIUS]
+    try:
+        return [AllChem.GetMorganFingerprintAsBitVect(
+            mol, radius=radius, nBits=c.ECFP_N_BITS).ToBase64()
+                for radius in c.ECFP_RADIUS]
+    except:
+        return None
 
 
 def mol_to_ecfp(mol: Chem.rdchem.Mol) -> np.array:
