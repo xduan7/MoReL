@@ -137,8 +137,6 @@ def mol_to_token(mol: Chem.Mol,
     atom_list = [atom.GetSymbol()
                  for atom in Chem.MolFromSmiles(smiles).GetAtoms()]
 
-
-
     atom_index = 0
     skip_next = False
     for i, ci in enumerate(smiles):

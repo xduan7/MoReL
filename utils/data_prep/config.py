@@ -9,13 +9,27 @@
         This file saves all the constants that are related to data
         downloading, pre-processing and storing.
 """
-from rdkit import Chem
+import multiprocessing
+from rdkit import Chem, RDLogger
 from os.path import abspath, join
 
+# Suppress unnecessary RDkit warnings and errors
+RDLogger.logger().setLevel(RDLogger.CRITICAL)
 
 # File processing and data preparation configurations #########################
 
 RANDOM_STATE = 0
+
+# This boolean controls whether to count the atoms during data preparation
+# Counting atoms means that we are going to check the occurrence of all the
+# atoms in each molecule, and compute the overall occurrence of a specific
+# atom in all the molecules. Note that each type of atom will only count
+# once even if it appears in a molecule multiple times.
+COUNTING_ATOMS = False
+
+# Parallelization of data prep
+# (#cpu-2) to prevent system crush/no response
+NUM_CORES = multiprocessing.cpu_count() - 2
 
 # Indicator for using a subset (PCBA)
 # The full set contains about 135 million molecules
@@ -43,7 +57,7 @@ ALL_HS_EXPLICIT = False
 
 # This is the size of stored string length in HDF5
 # Note that 1024 is sufficient for molecules with less than 65 atoms mostly
-MAX_LEN_MOL_STR = 1024
+# MAX_LEN_MOL_STR = 1024
 
 # Molecule SMILES string featurization ########################################
 MAX_LEN_SMILES = 128

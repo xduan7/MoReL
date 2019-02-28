@@ -34,8 +34,9 @@ def mol_to_graph(mol: Chem.rdchem.Mol,
     try:
         atom_list = mol.GetAtoms()
         num_atoms = len(atom_list)
+        assert num_atoms <= c.MAX_NUM_ATOMS
     except:
-        return None
+        return None, None
 
     # num_atoms = mol.GetNumAtoms()
     ofs = 1 if master_atom else 0
