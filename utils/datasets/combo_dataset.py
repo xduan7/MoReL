@@ -8,12 +8,12 @@
 
 """
 import time
-
 import h5py
-import argparse
-
+import numpy as np
 import torch.utils.data as data
 from rdkit import Chem
+from argparse import Namespace
+from multiprocessing.managers import DictProxy
 
 import utils.data_prep.config as c
 from utils.data_prep.ecfp_prep import mol_to_ecfp
@@ -24,7 +24,9 @@ from utils.data_prep.smiles_prep import mol_to_token
 
 class ComboDataset(data.Dataset):
 
-    def __init__(self, args: argparse.Namespace):
+    def __init__(self,
+                 args: Namespace,
+                 shared_dict: DictProxy = None):
 
         super().__init__()
 
@@ -62,6 +64,11 @@ class ComboDataset(data.Dataset):
         self.__cid_edge_hdf5_grp = \
             self.__cid_graph_hdf5_grp.get(name='CID-edge')
 
+        if self.__featurization == 'mixed':
+            assert shared_dict
+            self.__shared_dict: DictProxy = shared_dict
+            self.__dict_timeout: int = args.dict_timeout
+
         # Get the list of valid CIDs, and construct a mapping (dict)
         # From index: int -> CID: str
         cid_list = list(self.__cid_mol_str_hdf5_grp.keys())
@@ -75,11 +82,19 @@ class ComboDataset(data.Dataset):
     def __len__(self):
         return self.__len
 
-    def __getitem__(self, index):
+    def __cid_to_feature(self, cid: str) -> np.array:
+        mol: Chem.Mol = str_to_mol(self.__cid_mol_str_hdf5_grp.get(cid))
+        if self.__feature_type == 'token':
+            return mol_to_token(mol)
+        elif self.__feature_type == 'ecfp':
+            return mol_to_ecfp(mol)
+        else:
+            return  mol_to_graph(mol)
+
+    def __getitem__(self, index: int) -> np.array:
 
         start_ms = int(round(time.time() * 1000))
         cid: str = self.__index_cid_dict[index]
-        feature = None
 
         if self.__featurization == 'loading':
             if self.__feature_type == 'token':
@@ -90,30 +105,37 @@ class ComboDataset(data.Dataset):
                 feature = (self.__cid_node_hdf5_grp.get(cid),
                            self.__cid_edge_hdf5_grp.get(cid))
 
-        if self.__featurization == 'mixed':
+        elif self.__featurization == 'mixed':
 
             # Here we first check if the feature of cid is already computed
             # by other training instances. If so we simply use that feature.
             # Otherwise, we have to compute the feature, same as 'computing'
 
-            feature = None
-            # Check shared data, return if found.
+            feature_key = '[%s][%s]' % (cid, self.__feature_type)
+
+            if feature_key in self.__shared_dict:
+                _, feature = self.__shared_dict[feature_key]
+
+            else:
+                # Compute feature and add to the dict, along with timestamp
+                feature = self.__cid_to_feature(cid)
+                curr_time_sec = int(round(time.time()))
+                self.__shared_dict[feature_key] = (curr_time_sec, feature)
+
+                # Note that this is the first process that reaches here
+                # It will take the responsibility to clean up the dict,
+                # which means that older features will be deleted.
+                for k in self.__shared_dict.keys():
+                    t, _ = self.__shared_dict[k]
+                    if (curr_time_sec - t) > self.__dict_timeout:
+                        del self.__shared_dict[k]
 
         # Compute the feature here
         # Note that all the computation is already tested and passed during
         # the gathering of Mol object, which means that none of the
         # following computation operations should raise errors.
-        if feature is None:
-
-            mol: Chem.Mol = \
-                str_to_mol(self.__cid_mol_str_hdf5_grp.get(cid))
-
-            if self.__feature_type == 'token':
-                feature = mol_to_token(mol)
-            elif self.__feature_type == 'ecfp':
-                feature = mol_to_ecfp(mol)
-            else:
-                feature = mol_to_graph(mol)
+        else:
+            feature = self.__cid_to_feature(cid)
 
         # Keeps track of the time consumed in getitem for different strategies
         self.getitem_time_ms += (int(round(time.time() * 1000)) - start_ms)
@@ -123,4 +145,5 @@ class ComboDataset(data.Dataset):
 
 if __name__ == '__main__':
 
-    # A simple test to compare
+    # A simple test of dataloading
+    pass

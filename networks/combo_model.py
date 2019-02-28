@@ -7,10 +7,10 @@
     File Description:   
         This file contains that model for molecular representation learning.
 """
-import argparse
 import torch.nn as nn
 
 import utils.data_prep.config as c
+from argparse import Namespace
 from networks.common.reshape import Reshape
 from networks.gcn.gcn import GCN
 from networks.ggnn.ggnn import GGNN
@@ -19,7 +19,7 @@ from networks.transformer.encoder import Encoder
 
 class Morel(nn.Module):
 
-    def __init__(self, args: argparse.Namespace):
+    def __init__(self, args: Namespace):
 
         super().__init__()
 
