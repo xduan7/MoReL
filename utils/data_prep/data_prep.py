@@ -11,14 +11,12 @@
         This file is pretty much the summation of mol_prep, smiles_prep,
         ecfp_prep, and graph_prep.
 """
-import time
+import os
 import json
 import h5py
-import numpy as np
 import pandas as pd
 from joblib import Parallel, delayed
 from rdkit import Chem
-from rdkit import RDLogger
 from tqdm.auto import tqdm
 
 import utils.data_prep.config as c
@@ -71,6 +69,13 @@ def data_prep(pcba_only=True,
         usecols=[0]).values.reshape(-1)) if pcba_only else set([])
 
     # Looping over all the CIDs set the molecule ##############################
+    # TODO: skip the preparation if file already exits
+    if os.path.exists(c.CID_FEATURES_HDF5_PATH):
+        msg = 'Feature HDF5 already exits. ' \
+              'Press [Y] for overwrite, any other key to continue ... '
+        if str(input(msg)).lower().strip() != 'y':
+            return
+
     print('Featurizing molecules ... ')
 
     # Book keeping for unused CIDs, atom occurrences, and number of CIDs
@@ -79,7 +84,8 @@ def data_prep(pcba_only=True,
     num_used_cid = 0
 
     # HDF5 and groups
-    cid_features_hdf5 = h5py.File(c.CID_FEATURES_HDF5_PATH, 'w')
+    cid_features_hdf5 = h5py.File(c.CID_FEATURES_HDF5_PATH, 'w',
+                                  libver='latest')
     cid_mol_str_hdf5_grp = cid_features_hdf5.create_group(name='CID-Mol_str')
     cid_token_hdf5_grp = cid_features_hdf5.create_group(name='CID-token')
     cid_ecfp_hdf5_grp = cid_features_hdf5.create_group(name='CID-ECFP')
@@ -87,16 +93,16 @@ def data_prep(pcba_only=True,
     cid_node_hdf5_grp = cid_graph_hdf5_grp.create_group(name='CID-node')
     cid_edge_hdf5_grp = cid_graph_hdf5_grp.create_group(name='CID-edge')
 
-    # TODO: probably some ways to parallelize the inner loop?
     progress_bar = tqdm(
         total=len(pcba_cid_set),
-        desc='featurization',
-        ncols=120,
+        desc='extracting',
+        ncols=160,
         miniters=1,
-        bar_format='{desc}: {percentage:02.2f}%|'
+        bar_format='{desc}: {percentage:5.2f}%|'
                    '{bar}|'
-                   '{n_fmt:>10}/{total_fmt:<10} '
-                   '[Elapsed: {elapsed:<10}, Remaining: {remaining:<10} '
+                   '{n_fmt:>9}/{total_fmt:<9} '
+                   '[Elapsed: {elapsed:<9}, '
+                   'Estimated Remaining: {remaining:<9} '
                    '({rate_fmt:<10})]')
 
     for chunk_idx, chunk_cid_inchi_df in enumerate(
@@ -106,40 +112,6 @@ def data_prep(pcba_only=True,
                         index_col=[0],
                         usecols=[0, 1],
                         chunksize=2 ** 15)):
-
-        # chunk_cid_feature_list = []
-        # for cid, row in chunk_cid_inchi_df.iterrows():
-        #
-        #     # Skip this compound if it is not in PCBA and the dataset is PCBA
-        #     if (cid not in pcba_cid_set) and c.PCBA_ONLY:
-        #         continue
-        #     chunk_num_cid += 1
-        #
-        #     mol: Chem.rdchem.Mol = Chem.MolFromInchi(row[1])
-        #
-        #     # Get the SMILES strings and molecule representation strings
-        #     mol_str: str = mol_to_str(mol)
-        #
-        #     # Note that all the featurization parameters are in config.py
-        #     tokens = mol_to_token(mol)
-        #     ecfp = mol_to_ecfp(mol)
-        #     nodes, edges = mol_to_graph(mol)
-        #
-        #     # Gather all the features and validate all of them
-        #     # Note that dimension restrictions are enforced in each
-        #     # featurization functions independently
-        #     features = (mol_str, tokens, ecfp, nodes, edges)
-        #
-        #     # Count the atoms in this molecule
-        #     # Same atoms in a molecule only count once
-        #     # atom_set = set([a.GetSymbol() for a in mol.GetAtoms()])
-        #     # for a in atom_set:
-        #     #     atom_dict[a] = (atom_dict[a] + 1) if a in atom_dict else 1
-        #
-        #     # Append extracted data to list and prepare for storage
-        #     chunk_cid_feature_list.append(
-        #         (str(cid), (mol_str, tokens, ecfp, nodes, edges)))
-        #     chunk_cid_feature_list.append(cid)
 
         # Structure: (str(CID), Mol, str(Mol), tokens, ECFP, nodes, edges)
         chunk_cid_feature_list = Parallel(n_jobs=c.NUM_CORES)(
@@ -170,6 +142,13 @@ def data_prep(pcba_only=True,
                     atom_dict[a] = (atom_dict[a] + 1) if a in atom_dict else 1
 
             # Write to HDF5
+            # This is the actual bottleneck during data preparation. Feature
+            # extraction is parallelized enough, but the writing part is
+            # not. Moreover, if HDF5 libver is not set to 'latest',
+            # the writing would be less than 1 MB per second later on in the
+            # data preparation loop. This is because the internal structure
+            # of HDF5, which is not efficient when we have too many datasets
+            # inserted in a incremental fashion.
             cid_mol_str_hdf5_grp.create_dataset(name=str(cid), data=mol_str)
             cid_token_hdf5_grp.create_dataset(name=str(cid), data=token)
             cid_ecfp_hdf5_grp.create_dataset(name=str(cid), data=ecfp)
@@ -192,8 +171,6 @@ def data_prep(pcba_only=True,
     # Dump unused CIDs for further usage
     with open(c.UNUSED_CID_TXT_PATH, 'w') as f:
         json.dump(unused_cid_list, f, indent=4)
-
-    return pcba_cid_set
 
 
 if __name__ == '__main__':
@@ -229,7 +206,7 @@ if __name__ == '__main__':
     #
     #     cid_list = list(cid_mol_str_grp.keys())
     #     test_cid_list = np.random.choice(
-    #         cid_list, TEST_SIZE, replace=False).astype(str)
+    #         cid_list, TEST_SIZE, replace=False)
     #
     #     # Testing token (from SMILES)
     #     start_time = time.time()

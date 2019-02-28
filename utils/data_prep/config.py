@@ -29,7 +29,7 @@ COUNTING_ATOMS = False
 
 # Parallelization of data prep
 # (#cpu-2) to prevent system crush/no response
-NUM_CORES = multiprocessing.cpu_count() - 2
+NUM_CORES = min(multiprocessing.cpu_count() - 1, 8)
 
 # Indicator for using a subset (PCBA)
 # The full set contains about 135 million molecules

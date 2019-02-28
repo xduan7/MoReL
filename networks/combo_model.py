@@ -1,5 +1,5 @@
 """ 
-    File Name:          MoReL/morel.py
+    File Name:          MoReL/combo_model.py
     Author:             Xiaotian Duan (xduan7)
     Email:              xduan7@uchicago.edu
     Date:               2/25/19
