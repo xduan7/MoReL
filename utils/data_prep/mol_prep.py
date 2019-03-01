@@ -7,10 +7,7 @@
     File Description:   
 
 """
-import h5py
 import codecs
-import numpy as np
-
 from rdkit import Chem
 
 import utils.data_prep.config as c
@@ -29,8 +26,3 @@ def str_to_mol(mol_str: str) -> Chem.Mol:
                                       c.MOL_BINARY_ENCODING))
     except:
         return None
-
-
-def get_from_hdf5(cid: str, cid_grp: h5py.Group) -> np.array:
-    return np.array(cid_grp.get(name=cid))
-

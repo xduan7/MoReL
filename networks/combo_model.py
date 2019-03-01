@@ -72,7 +72,20 @@ class Morel(nn.Module):
             # TODO: RNN encoder here
             pass
 
-        else:
-            # TODO: simple dense encoder here
-            pass
+        else:  # args.model_type.lower() == 'dense':
+            layers = []
+            for i in range(args.dense_num_layers):
+                layers.append(nn.Linear(in_features=args.dense_feature_dim
+                                        if i == 0 else args.dense_emb_dim,
+                                        out_features=args.dense_emb_dim)),
+                layers.append(nn.ReLU(inplace=True))
+                layers.append(nn.Dropout(p=args.dense_dropout,
+                                         inplace=True))
 
+            layers.append(nn.Linear(in_features=args.dense_emb_dim,
+                                    out_features=1))
+            self.__encoder = nn.Sequential(*layers)
+
+
+if __name__ == '__main__':
+    pass

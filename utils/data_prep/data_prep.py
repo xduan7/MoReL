@@ -24,7 +24,7 @@ from tqdm.auto import tqdm
 import utils.data_prep.config as c
 from utils.data_prep.download import download
 from utils.data_prep.smiles_prep import mol_to_token
-from utils.data_prep.mol_prep import mol_to_str, str_to_mol, get_from_hdf5
+from utils.data_prep.mol_prep import mol_to_str, str_to_mol
 from utils.data_prep.ecfp_prep import mol_to_ecfp
 from utils.data_prep.graph_prep import mol_to_graph
 
@@ -53,6 +53,10 @@ def inchi_to_features(cid: int, inchi: str) -> tuple:
         return mol_to_features(cid, mol)
     except AssertionError:
         return cid, None, None, None, None, None, None
+
+
+def get_from_hdf5(cid: str, cid_grp: h5py.Group) -> np.array:
+    return np.array(cid_grp.get(name=cid))
 
 
 def data_prep(pcba_only=True,
