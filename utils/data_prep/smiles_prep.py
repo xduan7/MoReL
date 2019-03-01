@@ -134,6 +134,7 @@ def mol_to_token(mol: Chem.Mol,
 
     # Note that mol from smiles from mol will keep mol and smiles
     # consistent, which is important in tokenization
+    # Note that this operation will take about several hundred us
     atom_list = [atom.GetSymbol()
                  for atom in Chem.MolFromSmiles(smiles).GetAtoms()]
 
