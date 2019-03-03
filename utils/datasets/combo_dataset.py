@@ -7,12 +7,14 @@
     File Description:   
 
 """
+import pickle
 import time
 import h5py
 import numpy as np
 import torch.utils.data as data
 from rdkit import Chem
 from argparse import Namespace
+from mmap import mmap
 from multiprocessing.managers import DictProxy
 
 import utils.data_prep.config as c
@@ -26,7 +28,7 @@ class ComboDataset(data.Dataset):
 
     def __init__(self,
                  args: Namespace,
-                 shared_dict: DictProxy = None):
+                 shared_dict: DictProxy or mmap.mmap = None):
 
         super().__init__()
 
@@ -64,9 +66,9 @@ class ComboDataset(data.Dataset):
         self.__cid_edge_hdf5_grp = \
             self.__cid_graph_hdf5_grp.get(name='CID-edge')
 
-        if self.__featurization == 'mixed':
+        if self.__featurization == 'dict_proxy' or 'mmap':
             assert shared_dict
-            self.__shared_dict: DictProxy = shared_dict
+            self.__shared_dict = shared_dict
             self.__dict_timeout: int = args.dict_timeout
 
         # Get the list of valid CIDs, and construct a mapping (dict)
@@ -105,12 +107,13 @@ class ComboDataset(data.Dataset):
                 feature = (self.__cid_node_hdf5_grp.get(cid),
                            self.__cid_edge_hdf5_grp.get(cid))
 
-        elif self.__featurization == 'mixed':
+        elif self.__featurization == 'dict_proxy':
+
+            self.__shared_dict: DictProxy
 
             # Here we first check if the feature of cid is already computed
             # by other training instances. If so we simply use that feature.
             # Otherwise, we have to compute the feature, same as 'computing'
-
             feature_key = '[%s][%s]' % (cid, self.__feature_type)
 
             if feature_key in self.__shared_dict:
@@ -130,6 +133,43 @@ class ComboDataset(data.Dataset):
                     if (curr_time_sec - t) > self.__dict_timeout:
                         del self.__shared_dict[k]
 
+        elif self.__featurization == 'mmap':
+
+            self.__shared_dict: mmap
+
+            # Similar to dict_proxy.
+            # However, here we need to take care of the read and write of
+            # mmap file, which contains bytes of up to size (c.MMAP_BYTE_SIZE)
+            feature_key = '[%s][%s]' % (cid, self.__feature_type)
+
+            self.__shared_dict.seek(0)
+            curr_bytes: bytes = self.__shared_dict.read()
+            shared_dict: dict = pickle.loads(curr_bytes)
+
+            if feature_key in shared_dict:
+                _, feature = shared_dict[feature_key]
+
+            else:
+                # Compute feature and add to the dict, along with timestamp
+                feature = self.__cid_to_feature(cid)
+                curr_time_sec = int(round(time.time()))
+                shared_dict[feature_key] = (curr_time_sec, feature)
+
+                # Note that this is the first process that reaches here
+                # It will take the responsibility to clean up the dict,
+                # which means that older features will be deleted.
+                for k in shared_dict.keys():
+                    t, _ = shared_dict[k]
+                    if (curr_time_sec - t) > self.__dict_timeout:
+                        del shared_dict[k]
+
+                # Write new dict back to mmap
+                new_bytes = pickle.dumps(shared_dict)
+                self.__shared_dict.seek(0)
+                self.__shared_dict.write(
+                    new_bytes + b'\0' * (len(new_bytes) - len(curr_bytes)))
+
+        # When __featurization is set to anything else ('computing')
         # Compute the feature here
         # Note that all the computation is already tested and passed during
         # the gathering of Mol object, which means that none of the

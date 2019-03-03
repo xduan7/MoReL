@@ -55,12 +55,23 @@ def inchi_to_features(cid: int, inchi: str) -> tuple:
         return cid, None, None, None, None, None, None
 
 
+def inchi_to_mol_str(cid: int, inchi: str) -> tuple:
+    try:
+        mol: Chem.rdchem.Mol = Chem.MolFromInchi(inchi)
+        assert mol is not None
+        mol_str = mol_to_str(mol)
+        return cid, mol, mol_str
+    except AssertionError:
+        return cid, None, None
+
+
 def get_from_hdf5(cid: str, cid_grp: h5py.Group) -> np.array:
     return np.array(cid_grp.get(name=cid))
 
 
 def data_prep(pcba_only=True,
-              counting_atoms=False):
+              count_atoms=False,
+              compute_features=False):
 
     # # Suppress unnecessary RDkit warnings and errors
     # RDLogger.logger().setLevel(RDLogger.CRITICAL)
@@ -75,29 +86,38 @@ def data_prep(pcba_only=True,
         usecols=[0]).values.reshape(-1)) if pcba_only else set([])
 
     # Looping over all the CIDs set the molecule ##############################
-    # TODO: skip the preparation if file already exits
-    if os.path.exists(c.CID_FEATURES_HDF5_PATH):
+    if compute_features and os.path.exists(c.CID_FEATURES_HDF5_PATH):
         msg = 'Feature HDF5 already exits. ' \
               'Press [Y] for overwrite, any other key to continue ... '
         if str(input(msg)).lower().strip() != 'y':
             return
+    if (not compute_features) and os.path.exists(c.CID_MOL_STR_HDF5_PATH):
+        msg = 'Molecule HDF5 already exits. ' \
+              'Press [Y] for overwrite, any other key to continue ... '
+        if str(input(msg)).lower().strip() != 'y':
+            return
 
-    print('Featurizing molecules ... ')
+    print('Extracting molecules ... ')
 
     # Book keeping for unused CIDs, atom occurrences, and number of CIDs
     unused_cid_list = []
     atom_dict = {}
     num_used_cid = 0
 
-    # HDF5 and groups
-    cid_features_hdf5 = h5py.File(c.CID_FEATURES_HDF5_PATH, 'w',
-                                  libver='latest')
-    cid_mol_str_hdf5_grp = cid_features_hdf5.create_group(name='CID-Mol_str')
-    cid_token_hdf5_grp = cid_features_hdf5.create_group(name='CID-token')
-    cid_ecfp_hdf5_grp = cid_features_hdf5.create_group(name='CID-ECFP')
-    cid_graph_hdf5_grp = cid_features_hdf5.create_group(name='CID-graph')
-    cid_node_hdf5_grp = cid_graph_hdf5_grp.create_group(name='CID-node')
-    cid_edge_hdf5_grp = cid_graph_hdf5_grp.create_group(name='CID-edge')
+    if compute_features:
+        # Features HDF5 and groups
+        cid_features_hdf5 = h5py.File(c.CID_FEATURES_HDF5_PATH, 'w',
+                                      libver='latest')
+        cid_mol_str_hdf5_grp = \
+            cid_features_hdf5.create_group(name='CID-Mol_str')
+        cid_token_hdf5_grp = cid_features_hdf5.create_group(name='CID-token')
+        cid_ecfp_hdf5_grp = cid_features_hdf5.create_group(name='CID-ECFP')
+        cid_graph_hdf5_grp = cid_features_hdf5.create_group(name='CID-graph')
+        cid_node_hdf5_grp = cid_graph_hdf5_grp.create_group(name='CID-node')
+        cid_edge_hdf5_grp = cid_graph_hdf5_grp.create_group(name='CID-edge')
+    else:
+        cid_mol_str_hdf5 = h5py.File(c.CID_MOL_STR_HDF5_PATH, 'w',
+                                     libver='latest')
 
     progress_bar = tqdm(
         total=len(pcba_cid_set),
@@ -119,18 +139,29 @@ def data_prep(pcba_only=True,
                         usecols=[0, 1],
                         chunksize=2 ** 15)):
 
-        # Structure: (str(CID), Mol, str(Mol), tokens, ECFP, nodes, edges)
-        chunk_cid_feature_list = Parallel(n_jobs=c.NUM_CORES)(
-            delayed(inchi_to_features)(cid, row[1])
-            for cid, row in chunk_cid_inchi_df.iterrows()
-            if ((not c.PCBA_ONLY) or (cid in pcba_cid_set)))
+        if compute_features:
+            # Structure: (str(CID), Mol, str(Mol), tokens, ECFP, nodes, edges)
+            chunk_cid_feature_list = Parallel(n_jobs=c.NUM_CORES)(
+                delayed(inchi_to_features)(cid, row[1])
+                for cid, row in chunk_cid_inchi_df.iterrows()
+                if ((not c.PCBA_ONLY) or (cid in pcba_cid_set)))
+        else:
+            # Structure: (str(CID), str(Mol))
+            chunk_cid_feature_list = Parallel(n_jobs=c.NUM_CORES)(
+                delayed(inchi_to_mol_str)(cid, row[1])
+                for cid, row in chunk_cid_inchi_df.iterrows()
+                if ((not c.PCBA_ONLY) or (cid in pcba_cid_set)))
 
         # Loop over all the features extracted from this chunk, and:
         # * Check if the feature extraction is successful, if so, then
         # * Count the atoms if necessary
         # * Append the chunk lists to HDF5
         for cid_feature in chunk_cid_feature_list:
-            cid, mol, mol_str, token, ecfp, node, edge = cid_feature
+
+            if compute_features:
+                cid, mol, mol_str, token, ecfp, node, edge = cid_feature
+            else:
+                cid, mol, mol_str = cid_feature
 
             # Sanity check
             if any(i is None for i in cid_feature):
@@ -142,7 +173,7 @@ def data_prep(pcba_only=True,
             # Count the atoms in this molecule. Same atoms in a molecule only
             # count once. This information is used to give estimate of which
             # atoms should we tokenize
-            if counting_atoms:
+            if count_atoms:
                 atom_set = set([atom.GetSymbol() for atom in mol.GetAtoms()])
                 for a in atom_set:
                     atom_dict[a] = (atom_dict[a] + 1) if a in atom_dict else 1
@@ -155,20 +186,29 @@ def data_prep(pcba_only=True,
             # data preparation loop. This is because the internal structure
             # of HDF5, which is not efficient when we have too many datasets
             # inserted in a incremental fashion.
-            cid_mol_str_hdf5_grp.create_dataset(name=str(cid), data=mol_str)
-            cid_token_hdf5_grp.create_dataset(name=str(cid), data=token)
-            cid_ecfp_hdf5_grp.create_dataset(name=str(cid), data=ecfp)
-            cid_node_hdf5_grp.create_dataset(name=str(cid), data=node)
-            cid_edge_hdf5_grp.create_dataset(name=str(cid), data=edge)
+            # TODO: a possible solution to this is by writing in memory
+            #  first and then construct such datasets
+            if compute_features:
+                cid_mol_str_hdf5_grp.create_dataset(
+                    name=str(cid), data=mol_str)
+                cid_token_hdf5_grp.create_dataset(name=str(cid), data=token)
+                cid_ecfp_hdf5_grp.create_dataset(name=str(cid), data=ecfp)
+                cid_node_hdf5_grp.create_dataset(name=str(cid), data=node)
+                cid_edge_hdf5_grp.create_dataset(name=str(cid), data=edge)
+            else:
+                cid_mol_str_hdf5.create_dataset(name=str(cid), data=mol_str)
 
         # Update progress bar
         progress_bar.update(len(chunk_cid_feature_list))
 
-    cid_features_hdf5.close()
+    if compute_features:
+        cid_features_hdf5.close()
+    else:
+        cid_mol_str_hdf5.close()
 
     # Saving metadata into files ##############################################
     # Convert atom count into frequency for further usage
-    if counting_atoms:
+    if count_atoms:
         for a in atom_dict:
             atom_dict[a] = atom_dict[a] / num_used_cid
         with open(c.ATOM_DICT_TXT_PATH, 'w') as f:
@@ -181,7 +221,7 @@ def data_prep(pcba_only=True,
 
 if __name__ == '__main__':
 
-    data_prep(counting_atoms=True)
+    data_prep(count_atoms=True)
 
     # Processing atom dict and print out the atoms for tokenization
     with open(c.ATOM_DICT_TXT_PATH, 'r') as f:

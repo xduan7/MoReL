@@ -194,6 +194,9 @@ CID_INCHI_FILE_PATH = join(RAW_DATA_DIR, CID_INCHI_FILE_NAME)
 
 # Processed files locations ###################################################
 
+CID_MOL_STR_HDF5_PATH = join(PROCESSED_DATA_DIR,
+                             'CID-Mol_str%s.hdf5' % DATASET_INDICATOR)
+
 # Combined HDF5 for all features (different groups)
 CID_FEATURES_HDF5_PATH = join(
     PROCESSED_DATA_DIR, 'CID-features%s.hdf5' % DATASET_INDICATOR)
@@ -209,8 +212,6 @@ ATOM_DICT_TXT_PATH = join(PROCESSED_DATA_DIR,
 UNUSED_CID_TXT_PATH = join(PROCESSED_DATA_DIR,
                            'unused_CID%s.txt' % DATASET_INDICATOR)
 
-# CID_MOL_HDF5_PATH = join(PROCESSED_DATA_DIR,
-#                          'CID-Mol%s.hdf5' % DATASET_INDICATOR)
 
 # # SMILES and tokenized feature
 # CID_SMILES_HDF5_PATH = join(
@@ -236,3 +237,7 @@ MODELS = {
     'xfmr':     ['tokens', ],
     'ggnn':     ['graph', ],
 }
+
+# Maximum byte size for mmap file. Set to 64 MB, which should be sufficient
+# for 65536 features of size 1024 with dtype of np.uint8
+MMAP_BYTE_SIZE = 2 ** 26
