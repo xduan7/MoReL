@@ -238,6 +238,12 @@ MODELS = {
     'ggnn':     ['graph', ],
 }
 
+# Test size: the number of molecules used for testing
+TEST_SIZE = 4096
+
 # Maximum byte size for mmap file. Set to 64 MB, which should be sufficient
 # for 65536 features of size 1024 with dtype of np.uint8
 MMAP_BYTE_SIZE = 2 ** 26
+
+# Number of PyTorch dataloader workers
+NUM_DATALOADER_WORKERS = 4

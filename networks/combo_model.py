@@ -1,5 +1,5 @@
 """ 
-    File Name:          MoReL/combo_model.py
+    File Name:          MoReL/morel_instance.py
     Author:             Xiaotian Duan (xduan7)
     Email:              xduan7@uchicago.edu
     Date:               2/25/19
@@ -17,7 +17,7 @@ from networks.ggnn.ggnn import GGNN
 from networks.transformer.encoder import Encoder
 
 
-class Morel(nn.Module):
+class ComboModel(nn.Module):
 
     def __init__(self, args: Namespace):
 
@@ -85,6 +85,8 @@ class Morel(nn.Module):
             layers.append(nn.Linear(in_features=args.dense_emb_dim,
                                     out_features=1))
             self.__encoder = nn.Sequential(*layers)
+
+        # TODO: initialize models here? or individually in their own module
 
 
 if __name__ == '__main__':

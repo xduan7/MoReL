@@ -17,6 +17,8 @@ from argparse import Namespace
 from mmap import mmap
 from multiprocessing.managers import DictProxy
 
+from sklearn.model_selection import train_test_split
+
 import utils.data_prep.config as c
 from utils.data_prep.ecfp_prep import mol_to_ecfp
 from utils.data_prep.graph_prep import mol_to_graph
@@ -28,7 +30,8 @@ class ComboDataset(data.Dataset):
 
     def __init__(self,
                  args: Namespace,
-                 shared_dict: DictProxy or mmap.mmap = None):
+                 training: bool = True,
+                 shared_dict: DictProxy or mmap = None):
 
         super().__init__()
 
@@ -66,6 +69,18 @@ class ComboDataset(data.Dataset):
         self.__cid_edge_hdf5_grp = \
             self.__cid_graph_hdf5_grp.get(name='CID-edge')
 
+        # TODO: target HDF5 group
+        # 0.8273 CIC5
+        # 0.9804 SpDiam_B(m)
+        # 0.8681 GATS3e
+        # 0.9156 VE1_A
+        # 0.9924 SM6_H2
+        # 0.9663 SM14_AEA(dm)
+        # 0.9543 SpMin1_Bh(e)
+        # 0.9916 SpMax1_Bh(s)
+        # 0.9670 SpPosA_X
+        # 0.9791 P_VSA_LogP_3
+
         if self.__featurization == 'dict_proxy' or 'mmap':
             assert shared_dict
             self.__shared_dict = shared_dict
@@ -74,9 +89,13 @@ class ComboDataset(data.Dataset):
         # Get the list of valid CIDs, and construct a mapping (dict)
         # From index: int -> CID: str
         cid_list = list(self.__cid_mol_str_hdf5_grp.keys())
-        self.__index_cid_dict = {i: cid for i, cid in enumerate(cid_list)}
+        trn_cid_list, test_cid_list = train_test_split(
+            cid_list, test_size=c.TEST_SIZE, random_state=args.rand_state)
+        self.__cid_list = trn_cid_list if training else test_cid_list
 
-        self.__len = len(cid_list)
+        self.__index_cid_dict = \
+            {i: cid for i, cid in enumerate(self.__cid_list)}
+        self.__len = len(self.__cid_list)
 
         # Public variable that keeps track of the time spent on __getitem__
         self.getitem_time_ms = 0
@@ -176,6 +195,8 @@ class ComboDataset(data.Dataset):
         # following computation operations should raise errors.
         else:
             feature = self.__cid_to_feature(cid)
+
+        # TODO: get features here
 
         # Keeps track of the time consumed in getitem for different strategies
         self.getitem_time_ms += (int(round(time.time() * 1000)) - start_ms)

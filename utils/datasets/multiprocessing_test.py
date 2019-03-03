@@ -28,7 +28,6 @@ def modify(d: DictProxy):
 
 def mmap_func(mm: mmap.mmap, k: str):
 
-
     # mm = mmap.mmap(fileno=-1, access=mmap.ACCESS_READ, length=65536)
     mm.seek(0)
     line = mm.read()
