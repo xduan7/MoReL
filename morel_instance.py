@@ -71,5 +71,5 @@ def start(args: Namespace,
 
         loss, result = test()
 
-    # TODO: summary here? Might have to think about where to put the file
+    # TODO: summary here? Might have to think about where to put the output
 

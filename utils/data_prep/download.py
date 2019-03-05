@@ -49,3 +49,13 @@ def download():
                   % (c.CID_INCHI_FTP_ADDRESS, c.RAW_DATA_DIR))
         os.system('find %s -type f -iname \"*.gz\" -exec gunzip {} +'
                   % c.RAW_DATA_DIR)
+
+    # CID-Dragon7 descriptor dataframe
+    if not os.path.exists(c.PCBA_CID_DSCPTR_FILE_PATH):
+        os.system('wget -r -nd -nc %s -P %s'
+                  % (c.PCBA_CID_DSCPTR_ADDRESS, c.RAW_DATA_DIR))
+
+
+if __name__ == '__main__':
+    download()
+

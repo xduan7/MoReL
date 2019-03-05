@@ -11,6 +11,7 @@ import pickle
 import time
 import h5py
 import numpy as np
+import pandas as pd
 import torch.utils.data as data
 from rdkit import Chem
 from argparse import Namespace
@@ -54,8 +55,8 @@ class ComboDataset(data.Dataset):
         # Get the HDF5 file (either CID-Mol or CID-features)
         self.__cid_features_hdf5 = \
             h5py.File(c.CID_FEATURES_HDF5_PATH, 'r', libver='latest')
-        self.__cid_mol_str_hdf5_grp = \
-            self.__cid_features_hdf5.get(name='CID-Mol_str')
+        self.__cid_mol_str_hdf5 = \
+            h5py.File(c.CID_MOL_STR_HDF5_PATH, 'r', libver='latest')
 
         # Load the feature groups
         self.__cid_token_hdf5_grp = \
@@ -69,10 +70,15 @@ class ComboDataset(data.Dataset):
         self.__cid_edge_hdf5_grp = \
             self.__cid_graph_hdf5_grp.get(name='CID-edge')
 
+        # Load the target (dragon7 descriptor)
+        cid_dscrptr_df = pd.read_csv(
+            c.PCBA_CID_DSCPTR_FILE_PATH
+        )
+
         # TODO: target HDF5 group
-        # 0.8273 CIC5
+        # ! 0.8273 CIC5
         # 0.9804 SpDiam_B(m)
-        # 0.8681 GATS3e
+        # ! 0.8681 GATS3e
         # 0.9156 VE1_A
         # 0.9924 SM6_H2
         # 0.9663 SM14_AEA(dm)
@@ -88,7 +94,7 @@ class ComboDataset(data.Dataset):
 
         # Get the list of valid CIDs, and construct a mapping (dict)
         # From index: int -> CID: str
-        cid_list = list(self.__cid_mol_str_hdf5_grp.keys())
+        cid_list = list(self.__cid_mol_str_hdf5.keys())
         trn_cid_list, test_cid_list = train_test_split(
             cid_list, test_size=c.TEST_SIZE, random_state=args.rand_state)
         self.__cid_list = trn_cid_list if training else test_cid_list
@@ -104,7 +110,7 @@ class ComboDataset(data.Dataset):
         return self.__len
 
     def __cid_to_feature(self, cid: str) -> np.array:
-        mol: Chem.Mol = str_to_mol(self.__cid_mol_str_hdf5_grp.get(cid))
+        mol: Chem.Mol = str_to_mol(self.__cid_mol_str_hdf5.get(cid))
         if self.__feature_type == 'token':
             return mol_to_token(mol)
         elif self.__feature_type == 'ecfp':
@@ -205,6 +211,5 @@ class ComboDataset(data.Dataset):
 
 
 if __name__ == '__main__':
-
     # A simple test of dataloading
     pass

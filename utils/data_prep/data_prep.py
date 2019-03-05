@@ -69,15 +69,12 @@ def get_from_hdf5(cid: str, cid_grp: h5py.Group) -> np.array:
     return np.array(cid_grp.get(name=cid))
 
 
-def data_prep(pcba_only=True,
-              count_atoms=False,
-              compute_features=False):
-
-    # # Suppress unnecessary RDkit warnings and errors
-    # RDLogger.logger().setLevel(RDLogger.CRITICAL)
-
-    # Download and prepare the PCBA CID set if necessary ######################
+def feature_prep(pcba_only: bool,
+                 count_atoms: bool,
+                 compute_features: bool) -> None:
     download()
+
+    # Prepare the PCBA CID set if necessary ###################################
     pcba_cid_set = set(pd.read_csv(
         c.PCBA_CID_FILE_PATH,
         sep='\t',
@@ -219,9 +216,34 @@ def data_prep(pcba_only=True,
         json.dump(unused_cid_list, f, indent=4)
 
 
+def target_prep():
+
+    # Return if target file already exists
+    if os.path.exists(c.PCBA_CID_TARGET_DSCPTR_FILE_PATH):
+        return
+
+    # Load dragon7 descriptor targets #########################################
+    pcba_cid_dscrptr_df = pd.read_csv(
+        c.PCBA_CID_DSCPTR_FILE_PATH,
+        sep='\t',
+        header=0,
+        index_col=0,
+        na_values='na',
+        usecols=['NAME', ] + c.TARGET_DSCRPTR_NAMES)
+
+    # Please
+    pcba_cid_dscrptr_df.index.names = ['CID']
+
+    # Note that there are still 'na' values in this dataframe
+    pcba_cid_dscrptr_df.to_csv(c.PCBA_CID_TARGET_DSCPTR_FILE_PATH)
+
+
 if __name__ == '__main__':
 
-    data_prep(count_atoms=True)
+    download()
+    feature_prep(pcba_only=c.PCBA_ONLY,
+                 count_atoms=True,
+                 compute_features=False)
 
     # Processing atom dict and print out the atoms for tokenization
     with open(c.ATOM_DICT_TXT_PATH, 'r') as f:
@@ -242,7 +264,7 @@ if __name__ == '__main__':
     # Test the speed of mol_str -> features versus loading from hard drive
     print('Test the speed of computing mol_str -> features '
           'versus loading features from disk ... ')
-    TEST_SIZE = 65536
+    TEST_SIZE = 1024
     with h5py.File(c.CID_FEATURES_HDF5_PATH, 'r') as f:
 
         print('Opening HDF5 files and selecting the test indices ...')

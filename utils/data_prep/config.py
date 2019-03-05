@@ -167,6 +167,20 @@ DIR_BOND_FEAT_TYPE_LIST = [
     Chem.rdchem.BondDir,
 ]
 
+# Dragon7 descriptor (target) names ###########################################
+TARGET_DSCRPTR_NAMES = [
+    'CIC5',
+    'SpDiam_B(m)',
+    'GATS3e',
+    'VE1_A',
+    'SM6_H2',
+    'SM14_AEA(dm)',
+    'SpMin1_Bh(e)',
+    'SpMax1_Bh(s)',
+    'SpPosA_X',
+    'P_VSA_LogP_3'
+]
+
 # Directories #################################################################
 
 PROJECT_DIR = abspath(join(abspath(__file__), '../../../'))
@@ -183,15 +197,19 @@ PROCESSED_DATA_DIR = join(DATA_DIR, 'processed/')
 # CID in PCBA dataset, ranging from 2 to 135,693,611, total size ~3,400,000
 PCBA_CID_FILE_NAME = 'Cid2BioactivityLink'
 CID_INCHI_FILE_NAME = 'CID-InChI-Key'
+PCBA_CID_DSCPTR_FILE_NAME = 'PCBA-CID_dragon7_descriptors.tsv'
 PCBA_CID_FTP_ADDRESS = \
     'ftp://ftp.ncbi.nlm.nih.gov/pubchem/Bioassay/Extras/%s.gz' \
     % PCBA_CID_FILE_NAME
 CID_INCHI_FTP_ADDRESS = \
     'ftp://ftp.ncbi.nlm.nih.gov/pubchem/Compound/Extras/%s.gz' \
     % CID_INCHI_FILE_NAME
+PCBA_CID_DSCPTR_ADDRESS = \
+    'http://bioseed.mcs.anl.gov/~fangfang/PCBA-CID/%s' \
+    % PCBA_CID_DSCPTR_FILE_NAME
 PCBA_CID_FILE_PATH = join(RAW_DATA_DIR, PCBA_CID_FILE_NAME)
 CID_INCHI_FILE_PATH = join(RAW_DATA_DIR, CID_INCHI_FILE_NAME)
-
+PCBA_CID_DSCPTR_FILE_PATH = join(RAW_DATA_DIR, PCBA_CID_DSCPTR_FILE_NAME)
 # Processed files locations ###################################################
 
 CID_MOL_STR_HDF5_PATH = join(PROCESSED_DATA_DIR,
@@ -229,6 +247,8 @@ UNUSED_CID_TXT_PATH = join(PROCESSED_DATA_DIR,
 # CID_GRAPH_HDF5_PATH = join(
 #     PROCESSED_DATA_DIR, 'CID-Graph%s.hdf5' % DATASET_INDICATOR)
 
+PCBA_CID_TARGET_DSCPTR_FILE_PATH = join(PROCESSED_DATA_DIR,
+                                        'CID-target_descriptor.csv')
 
 # Models and training constants ###############################################
 FEATURES = []
