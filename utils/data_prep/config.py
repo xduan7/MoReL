@@ -259,7 +259,9 @@ MODELS = {
 }
 
 # Test size: the number of molecules used for testing
-TEST_SIZE = 4096
+# For PCBA dataset, there are about 3 million molecules
+# For the whole PubChem dataset, the size is about 94 million
+TEST_SIZE = 65536
 
 # Maximum byte size for mmap file. Set to 64 MB, which should be sufficient
 # for 65536 features of size 1024 with dtype of np.uint8

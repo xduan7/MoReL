@@ -94,7 +94,7 @@ def feature_prep(pcba_only: bool,
         if str(input(msg)).lower().strip() != 'y':
             return
 
-    print('Extracting molecules ... ')
+    print('Extracting molecule features ... ')
 
     # Book keeping for unused CIDs, atom occurrences, and number of CIDs
     unused_cid_list = []
@@ -221,6 +221,7 @@ def target_prep():
     # Return if target file already exists
     if os.path.exists(c.PCBA_CID_TARGET_DSCPTR_FILE_PATH):
         return
+    print('Preparing dragon7 descriptor as target ...')
 
     # Load dragon7 descriptor targets #########################################
     pcba_cid_dscrptr_df = pd.read_csv(
@@ -229,6 +230,7 @@ def target_prep():
         header=0,
         index_col=0,
         na_values='na',
+        dtype=str,
         usecols=['NAME', ] + c.TARGET_DSCRPTR_NAMES)
 
     # Please
@@ -238,12 +240,22 @@ def target_prep():
     pcba_cid_dscrptr_df.to_csv(c.PCBA_CID_TARGET_DSCPTR_FILE_PATH)
 
 
-if __name__ == '__main__':
-
+def data_prep(pcba_only: bool,
+              count_atoms: bool,
+              compute_features: bool) -> None:
     download()
-    feature_prep(pcba_only=c.PCBA_ONLY,
-                 count_atoms=True,
-                 compute_features=False)
+    feature_prep(pcba_only=pcba_only,
+                 count_atoms=count_atoms,
+                 compute_features=compute_features)
+    target_prep()
+
+
+if __name__ == '__main__':
+    target_prep()
+
+    data_prep(pcba_only=c.PCBA_ONLY,
+              count_atoms=True,
+              compute_features=False)
 
     # Processing atom dict and print out the atoms for tokenization
     with open(c.ATOM_DICT_TXT_PATH, 'r') as f:
