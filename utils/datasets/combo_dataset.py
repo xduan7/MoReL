@@ -12,13 +12,13 @@ import time
 import h5py
 import numpy as np
 import pandas as pd
-import torch.utils.data as data
 from rdkit import Chem
 from argparse import Namespace
 from mmap import mmap
 from multiprocessing.managers import DictProxy
 
 from sklearn.model_selection import train_test_split
+from torch.utils.data import Dataset, DataLoader
 
 import utils.data_prep.config as c
 from utils.data_prep.data_prep import get_from_hdf5
@@ -28,7 +28,7 @@ from utils.data_prep.mol_prep import str_to_mol
 from utils.data_prep.smiles_prep import mol_to_token
 
 
-class ComboDataset(data.Dataset):
+class ComboDataset(Dataset):
     """
     TODO: performance issue with dataloader
     One big issue is that, during the dataloader constructing, training and
@@ -62,30 +62,31 @@ class ComboDataset(data.Dataset):
         #       other training instances.
         self.__featurization = args.featurization.lower()
 
+        if self.__featurization == 'loading':
+            # Load the feature groups
+            self.__cid_features_hdf5 = \
+                h5py.File(c.CID_FEATURES_HDF5_PATH, 'r', libver='latest')
+            self.__cid_token_hdf5_grp = \
+                self.__cid_features_hdf5.get(name='CID-token')
+            self.__cid_ecfp_hdf5_grp = \
+                self.__cid_features_hdf5.get(name='CID-ECFP')
+            self.__cid_graph_hdf5_grp = \
+                self.__cid_features_hdf5.get(name='CID-graph')
+            self.__cid_node_hdf5_grp = \
+                self.__cid_graph_hdf5_grp.get(name='CID-node')
+            self.__cid_edge_hdf5_grp = \
+                self.__cid_graph_hdf5_grp.get(name='CID-edge')
+
         # Get the HDF5 file (either CID-Mol or CID-features)
-        self.__cid_features_hdf5 = \
-            h5py.File(c.CID_FEATURES_HDF5_PATH, 'r', libver='latest')
         self.__cid_mol_str_hdf5 = \
             h5py.File(c.CID_MOL_STR_HDF5_PATH, 'r', libver='latest')
-
-        # Load the feature groups
-        self.__cid_token_hdf5_grp = \
-            self.__cid_features_hdf5.get(name='CID-token')
-        self.__cid_ecfp_hdf5_grp = \
-            self.__cid_features_hdf5.get(name='CID-ECFP')
-        self.__cid_graph_hdf5_grp = \
-            self.__cid_features_hdf5.get(name='CID-graph')
-        self.__cid_node_hdf5_grp = \
-            self.__cid_graph_hdf5_grp.get(name='CID-node')
-        self.__cid_edge_hdf5_grp = \
-            self.__cid_graph_hdf5_grp.get(name='CID-edge')
 
         # Shared data structure for features
         if self.__featurization == 'dict_proxy' \
                 or self.__featurization == 'mmap':
             assert shared_dict
             self.__shared_dict = shared_dict
-            self.__dict_timeout: int = args.dict_timeout
+            self.__dict_timeout_ms: int = args.dict_timeout_ms
 
         # Load the target (dragon7 descriptor) ################################
         cid_target_array = pd.read_csv(
@@ -131,11 +132,12 @@ class ComboDataset(data.Dataset):
         mol: Chem.Mol = str_to_mol(
             str(get_from_hdf5(cid=cid, cid_grp=self.__cid_mol_str_hdf5)))
         if self.__feature_type == 'token':
-            return mol_to_token(mol)
+            return np.array(mol_to_token(mol))
         elif self.__feature_type == 'ecfp':
-            return mol_to_ecfp(mol)
+            return np.array(mol_to_ecfp(mol))
         else:
-            return mol_to_graph(mol)
+            nodes, edges = mol_to_graph(mol)
+            return np.array(nodes), np.array(edges)
 
     def __getitem__(self, index: int) -> np.array:
 
@@ -181,7 +183,7 @@ class ComboDataset(data.Dataset):
                 # which means that older features will be deleted.
                 for k in self.__shared_dict.keys():
                     t, _ = self.__shared_dict[k]
-                    if (curr_time_sec - t) > self.__dict_timeout:
+                    if (curr_time_sec - t) > self.__dict_timeout_ms:
                         del self.__shared_dict[k]
 
         elif self.__featurization == 'mmap':
@@ -211,7 +213,7 @@ class ComboDataset(data.Dataset):
                 # which means that older features will be deleted.
                 for k in shared_dict.keys():
                     t, _ = shared_dict[k]
-                    if (curr_time_sec - t) > self.__dict_timeout:
+                    if (curr_time_sec - t) > self.__dict_timeout_ms:
                         del shared_dict[k]
 
                 # Write new dict back to mmap
@@ -231,17 +233,30 @@ class ComboDataset(data.Dataset):
         # Keeps track of the time consumed in getitem for different strategies
         self.getitem_time_ms += (int(round(time.time() * 1000)) - start_ms)
 
-        return feature
+        target = np.array([self.__cid_target_dict[cid], ], dtype=np.float32)
+        return feature, target
 
 
 if __name__ == '__main__':
 
     # A simple test of dataloading
     ns = Namespace(feature_type='graph',
-                   featurization='loading',
+                   featurization='computing',
                    target_dscrptr_name=c.TARGET_DSCRPTR_NAMES[0],
                    rand_state=0)
-
     dset = ComboDataset(ns)
-    n, e = dset[0]
+    dloader_kwargs = {
+        'timeout': 1,
+        'shuffle': 'True',
+        'pin_memory': True,
+        'num_workers': 0}
+    dloader = DataLoader(dset, batch_size=32, **dloader_kwargs)
+    #
+    # f, t = next(iter(dloader))
+    # print('Dataset spent %i ms fetching feature.' %
+    #       dloader.dataset.getitem_time_ms)
+
+    num_features = 1024
+    for i in range(num_features):
+        f, t = dset[i]
     print('Dataset spent %i ms fetching feature.' % dset.getitem_time_ms)

@@ -78,15 +78,18 @@ class ComboModel(nn.Module):
                 layers.append(nn.Linear(in_features=args.dense_feature_dim
                                         if i == 0 else args.dense_emb_dim,
                                         out_features=args.dense_emb_dim)),
-                layers.append(nn.ReLU(inplace=True))
-                layers.append(nn.Dropout(p=args.dense_dropout,
-                                         inplace=True))
+                layers.append(nn.ReLU())
+                layers.append(nn.Dropout(p=args.dense_dropout))
 
             layers.append(nn.Linear(in_features=args.dense_emb_dim,
                                     out_features=1))
             self.__encoder = nn.Sequential(*layers)
 
         # TODO: initialize models here? or individually in their own module
+
+    def forward(self, *input):
+        # TODO: implement forward so that it can handle graphs
+        return self.__encoder(input[0])
 
 
 if __name__ == '__main__':

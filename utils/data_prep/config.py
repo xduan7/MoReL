@@ -268,4 +268,5 @@ TEST_SIZE = 65536
 MMAP_BYTE_SIZE = 2 ** 26
 
 # Number of PyTorch dataloader workers
-NUM_DATALOADER_WORKERS = 4
+# Set to 0 to simulate CPU cluster environment
+NUM_DATALOADER_WORKERS = 0
