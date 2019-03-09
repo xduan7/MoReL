@@ -187,9 +187,8 @@ class ComboDataset(Dataset):
             # self.__shared_lock.release()
 
             if feature_key in self.__shared_dict:
-
-                _, feature = self.__shared_dict[feature_key]
                 self.__shared_lock.release()
+                _, feature = self.__shared_dict[feature_key]
 
                 self.num_hit += 1
                 if self.__debug:
