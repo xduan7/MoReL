@@ -9,7 +9,9 @@
         for a MoReL instance.
 """
 import json
+import pickle
 import time
+from multiprocessing import Manager, Lock
 
 import torch
 import torch.nn as nn
@@ -47,11 +49,33 @@ def train(args: Namespace,
         loss.backward()
         optim.step(closure=None)
 
-        # TODO: some training log here
-        gpu_util = 100 * (1 - (dataloader.dataset.getitem_time_ms
-                               / (int(round(time.time() * 1000)) - start_ms)))
-        print('Batch %i \t Loss = %f. GPU utilization %.2f%%'
-              % (batch_index, loss.item(), gpu_util))
+        # gpu_util = 100 * (1 - (dataloader.dataset.getitem_time_ms
+        #                        / (int(round(time.time() * 1000))
+        #                        - start_ms)))
+        # print('Batch %i \t Loss = %f. GPU utilization %.2f%%'
+        #       % (batch_index, loss.item(), gpu_util))
+
+        if (batch_index + 1) >= args.max_batches_per_epoch:
+            break
+
+    overall_time_ms = (int(round(time.time() * 1000)) - start_ms)
+    dataloading_time_ms = dataloader.dataset.getitem_time_ms
+    training_time_ms = overall_time_ms - dataloading_time_ms
+
+    print('[Process %i] Training Utilization = %.2f%% (%i msec / %i msec)'
+          % (args.process_id,
+             100. * training_time_ms / overall_time_ms,
+             training_time_ms, overall_time_ms))
+    if args.featurization == 'dict_proxy' or args.featurization == 'mmap':
+        print('[Process %i] Hit %i times; Miss %i times'
+              % (args.process_id,
+                 dataloader.dataset.num_hit,
+                 dataloader.dataset.num_miss))
+
+        total_num_feature = args.max_batches_per_epoch * args.train_batch_size
+        print('[Process %i] Feature hit ratio = %.2f%%'
+              % (args.process_id,
+                 100. * dataloader.dataset.num_hit / total_num_feature))
 
 
 def test(args: Namespace,
@@ -72,10 +96,13 @@ def test(args: Namespace,
             # TODO: other metrics here, like R2 scores, MAE, etc.
 
 
-def start(args: Namespace,
-          shared_dict: DictProxy or mmap = None):
+def start_instance(args: Namespace,
+                   shared_dict: DictProxy or mmap = None,
+                   shared_lock: Lock = None):
 
-    print('MoReL Instance Arguments:\n' + json.dumps(vars(args), indent=4))
+    if args.debug:
+        print('[Process %i] MoReL Instance Arguments:\n%s'
+              % (args.process_id, json.dumps(vars(args), indent=4)))
 
     # Setting up random seed for reproducible and deterministic results
     seed_random_state(args.rand_state)
@@ -87,19 +114,25 @@ def start(args: Namespace,
     # Data loaders for training/testing #######################################
     dataloader_kwargs = {
         'timeout': 1,
-        'shuffle': True,
+        # 'shuffle': True,
         'pin_memory': True if use_cuda else False,
         'num_workers': c.NUM_DATALOADER_WORKERS if use_cuda else 0}
 
     train_dataloader = DataLoader(
-        ComboDataset(args=args, training=True, shared_dict=shared_dict),
+        ComboDataset(args=args,
+                     training=True,
+                     shared_dict=shared_dict,
+                     shared_lock=shared_lock),
         batch_size=args.train_batch_size,
         **dataloader_kwargs)
 
-    test_dataloader = DataLoader(
-        ComboDataset(args=args, training=False, shared_dict=shared_dict),
-        batch_size=args.test_batch_size,
-        **dataloader_kwargs)
+    # test_dataloader = DataLoader(
+    #     ComboDataset(args=args,
+    #                  training=False,
+    #                  shared_dict=shared_dict,
+    #                  shared_lock=shared_lock),
+    #     batch_size=args.test_batch_size,
+    #     **dataloader_kwargs)
 
     # Constructing neural network and optimizer ###############################
     model = ComboModel(args=args).to(args.device)
@@ -113,9 +146,9 @@ def start(args: Namespace,
               model=model,
               optim=optim,
               dataloader=train_dataloader)
-        test(args=args,
-             model=model,
-             dataloader=test_dataloader)
+        # test(args=args,
+        #      model=model,
+        #      dataloader=test_dataloader)
 
     # TODO: summary here? Might have to think about where to put the output
 
@@ -123,13 +156,14 @@ def start(args: Namespace,
 if __name__ == '__main__':
 
     test_args_dict = {
+        'process_id': 0,
         'rand_state': 0,
         'device': 'cuda:0',
 
         # Dataloader parameters
         'feature_type': 'ecfp',
         'featurization': 'computing',
-        'dict_timeout_ms': 60000,
+        'dict_timeout_ms': c.SHARED_DICT_TIMEOUT_MS,
         'target_dscrptr_name': 'CIC5',
 
         # Model parameters
@@ -142,21 +176,34 @@ if __name__ == '__main__':
         # Optimizer and other parameters
         'train_batch_size': 32,
         'test_batch_size': 2048,
-        'max_num_epochs': 10,
+        'max_num_epochs': 1,
+        'max_batches_per_epoch': 100,
         'optimizer': 'sgd',
         'learing_rate': 1e-3,
         'l2_regularization': 1e-5,
+
+        # Debug
+        'debug': False,
     }
 
     test_args = Namespace(**test_args_dict)
 
     # Configure data loading (featurization) strategy
-    # Create shared dict (mmap)
-    # shared_dict = mmap.mmap(fileno=-1, length=c.MMAP_BYTE_SIZE,
-    #                         access=mmap.ACCESS_WRITE)
-    # args.featurization = 'mmap'
+    # MMAP for shared dict
+    shared = mmap.mmap(fileno=-1,
+                       length=c.MMAP_BYTE_SIZE,
+                       prot=mmap.PROT_WRITE)
+    shared.seek(0)
+    shared.write(pickle.dumps({}))
+    test_args.featurization = 'mmap'
 
-    start(args=test_args, shared_dict=None)
+    # Dict Proxy for shared dict
+    # manager = Manager()
+    # shared = manager.dict()
+    # test_args.featurization = 'dict_proxy'
+
+    lock = Lock()
+    start_instance(args=test_args, shared_dict=shared, shared_lock=lock)
 
 
 

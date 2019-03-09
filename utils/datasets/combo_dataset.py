@@ -8,7 +8,10 @@
 
 """
 import pickle
+import random
 import time
+from multiprocessing import Lock
+
 import h5py
 import numpy as np
 import pandas as pd
@@ -41,7 +44,8 @@ class ComboDataset(Dataset):
     def __init__(self,
                  args: Namespace,
                  training: bool = True,
-                 shared_dict: DictProxy or mmap = None):
+                 shared_dict: DictProxy or mmap = None,
+                 shared_lock: Lock = None):
 
         super().__init__()
 
@@ -84,8 +88,9 @@ class ComboDataset(Dataset):
         # Shared data structure for features
         if self.__featurization == 'dict_proxy' \
                 or self.__featurization == 'mmap':
-            assert shared_dict
+            assert shared_dict is not None
             self.__shared_dict = shared_dict
+            self.__shared_lock = shared_lock
             self.__dict_timeout_ms: int = args.dict_timeout_ms
 
         # Load the target (dragon7 descriptor) ################################
@@ -122,8 +127,15 @@ class ComboDataset(Dataset):
             {i: cid for i, cid in enumerate(self.__cid_list)}
         self.__len = len(self.__cid_list)
 
-        # Public variable that keeps track of the time spent on __getitem__
+        # Public variables for deubuging and evaluation
+        # Keeps track of the time spent on __getitem__
         self.getitem_time_ms = 0
+        self.num_hit = 0
+        self.num_miss = 0
+
+        # Debug info
+        self.__debug = args.debug
+        self.__proc_id = args.process_id
 
     def __len__(self):
         return self.__len
@@ -169,58 +181,129 @@ class ComboDataset(Dataset):
             # Otherwise, we have to compute the feature, same as 'computing'
             feature_key = '[%s][%s]' % (cid, self.__feature_type)
 
+            # try:
+            self.__shared_lock.acquire()
+            # tmp_shared_dict = self.__shared_dict.copy()
+            # self.__shared_lock.release()
+
             if feature_key in self.__shared_dict:
+
                 _, feature = self.__shared_dict[feature_key]
+                self.__shared_lock.release()
+
+                self.num_hit += 1
+                if self.__debug:
+                    print('[Process %i] Feature %s hit'
+                          % (self.__proc_id, cid))
 
             else:
                 # Compute feature and add to the dict, along with timestamp
                 feature = self.__cid_to_feature(cid)
-                curr_time_sec = int(round(time.time()))
-                self.__shared_dict[feature_key] = (curr_time_sec, feature)
+                curr_time_ms = int(round(time.time() * 1000))
+                self.__shared_dict[feature_key] = (curr_time_ms, feature)
+                self.__shared_lock.release()
 
                 # Note that this is the first process that reaches here
                 # It will take the responsibility to clean up the dict,
                 # which means that older features will be deleted.
+                # self.__shared_lock.acquire()
+                # keys = list(self.__shared_dict.keys())
                 for k in self.__shared_dict.keys():
-                    t, _ = self.__shared_dict[k]
-                    if (curr_time_sec - t) > self.__dict_timeout_ms:
-                        del self.__shared_dict[k]
+                    try:
+                        t, _ = self.__shared_dict[k]
+                        if (curr_time_ms - t) > self.__dict_timeout_ms:
+                            del self.__shared_dict[k]
+                    except KeyError:
+                        continue
+                # self.__shared_lock.release()
+
+                self.num_miss += 1
+                if self.__debug:
+                    print('[Process %i] Feature %s miss'
+                          % (self.__proc_id, cid))
+
+            # except Exception as e:
+            #     if self.__debug:
+            #         print('[Process %i] Dict Proxy error: %s'
+            #               % (self.__proc_id, e))
+            #     feature = self.__cid_to_feature(cid)
 
         elif self.__featurization == 'mmap':
 
             self.__shared_dict: mmap
+            self.__shared_lock: Lock
 
             # Similar to dict_proxy.
             # However, here we need to take care of the read and write of
             # mmap file, which contains bytes of up to size (c.MMAP_BYTE_SIZE)
             feature_key = '[%s][%s]' % (cid, self.__feature_type)
 
-            self.__shared_dict.seek(0)
-            curr_bytes: bytes = self.__shared_dict.read()
-            shared_dict: dict = pickle.loads(curr_bytes)
-
-            if feature_key in shared_dict:
-                _, feature = shared_dict[feature_key]
-
-            else:
-                # Compute feature and add to the dict, along with timestamp
-                feature = self.__cid_to_feature(cid)
-                curr_time_sec = int(round(time.time()))
-                shared_dict[feature_key] = (curr_time_sec, feature)
-
-                # Note that this is the first process that reaches here
-                # It will take the responsibility to clean up the dict,
-                # which means that older features will be deleted.
-                for k in shared_dict.keys():
-                    t, _ = shared_dict[k]
-                    if (curr_time_sec - t) > self.__dict_timeout_ms:
-                        del shared_dict[k]
-
-                # Write new dict back to mmap
-                new_bytes = pickle.dumps(shared_dict)
+            try:
+                self.__shared_lock.acquire()
                 self.__shared_dict.seek(0)
-                self.__shared_dict.write(
-                    new_bytes + b'\0' * (len(new_bytes) - len(curr_bytes)))
+                curr_bytes: bytes = self.__shared_dict.read()
+                # self.__shared_lock.release()
+                shared_dict: dict = pickle.loads(curr_bytes)
+
+                if feature_key in shared_dict:
+                    self.__shared_lock.release()
+                    _, feature = shared_dict[feature_key]
+
+                    self.num_hit += 1
+                    if self.__debug:
+                        print('[Process %i] Feature %s hit'
+                              % (self.__proc_id, cid))
+
+                else:
+                    # This minor delay could prevent processes from
+                    # completed synced up, in which case, multiple of them
+                    # will try and fetch the feature at the exact same time
+                    # if self.num_miss % 16 == 0:
+                    #     time.sleep(0.01 * random.randint(0, 9))
+
+                    # Compute feature and add to the dict, along with timestamp
+                    feature = self.__cid_to_feature(cid)
+                    curr_time_ms = int(round(time.time() * 1000))
+                    shared_dict[feature_key] = (curr_time_ms, feature)
+
+                    # Write new dict back to mmap
+                    # Note that we first write the new feature into dict so
+                    # that other processes can get immediately, then take
+                    # care of the out-dated feature removal
+                    # new_bytes = pickle.dumps(shared_dict)
+                    # self.__shared_lock.acquire()
+                    # self.__shared_dict.seek(0)
+                    # self.__shared_dict.write(new_bytes + b'\0' * (
+                    #         len(new_bytes) - len(curr_bytes)))
+
+                    # Note that this is the first process that reaches here
+                    # It will take the responsibility to clean up the dict,
+                    # which means that older features will be deleted.
+                    for k in list(shared_dict):
+                        t, _ = shared_dict[k]
+                        if (curr_time_ms - t) > self.__dict_timeout_ms:
+                            del shared_dict[k]
+
+                    # self.__shared_lock.release()
+
+                    # Write new dict back to mmap
+                    new_bytes = pickle.dumps(shared_dict)
+                    # self.__shared_lock.acquire()
+                    self.__shared_dict.seek(0)
+                    self.__shared_dict.write(
+                        new_bytes + b'\0' * (len(new_bytes) - len(curr_bytes)))
+                    self.__shared_lock.release()
+
+                    self.num_miss += 1
+                    if self.__debug:
+                        print('[Process %i] Feature %s miss'
+                              % (self.__proc_id, cid))
+
+            except Exception as e:
+                if self.__debug:
+                    print('[Process %i] MMAP error: %s'
+                          % (self.__proc_id, e))
+                feature = self.__cid_to_feature(cid)
 
         # When __featurization is set to anything else
         # Compute the feature here
