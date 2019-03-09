@@ -41,7 +41,7 @@ if __name__ == '__main__':
         'train_batch_size': 32,
         'test_batch_size': 2048,
         'max_num_epochs': 1,
-        'max_batches_per_epoch': 100,
+        'max_batches_per_epoch': 1024,
         'optimizer': 'sgd',
         'learing_rate': 1e-3,
         'l2_regularization': 1e-5,
@@ -51,7 +51,9 @@ if __name__ == '__main__':
     }
 
     for featurization in ['computing', 'mmap', 'dict_proxy']:
-    # for featurization in ['dict_proxy', ]:
+
+        print('#' * 80)
+        print('Getting features with %s method ... ' % featurization)
 
         if featurization == 'mmap':
             shared_dict = mmap.mmap(fileno=-1,

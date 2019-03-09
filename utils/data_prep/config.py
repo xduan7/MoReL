@@ -265,15 +265,11 @@ TEST_SIZE = 65536
 
 # The timeout in ms for shared dict structure
 # Features that are inserted [] ms ago or earlier will be removed
-SHARED_DICT_TIMEOUT_MS = 2500
+SHARED_DICT_TIMEOUT_MS = 4096
 
-# Maximum byte size for mmap file. Set to 64 MB, which should be sufficient
-# for 65536 features of size 1024 with dtype of np.uint8
-# MMAP_BYTE_SIZE = 2 ** 26
-# ^ This is way way way too big
-# Maximum byte size for mmap file. Set to 8 MB, which should be sufficient
-# for 8192 features of size 1024 with dtype of np.uint8
-MMAP_BYTE_SIZE = 2 ** 23
+# Maximum byte size for mmap file. Set to 16 MB, which should be sufficient
+# for 16384 features of size 1024 with dtype of np.uint8
+MMAP_BYTE_SIZE = 2 ** 24
 
 # Number of PyTorch dataloader workers
 # Set to 0 to simulate CPU cluster environment
