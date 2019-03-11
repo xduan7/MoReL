@@ -32,7 +32,7 @@ if __name__ == '__main__':
 
         # Model parameters
         'model_type': 'dense',
-        'dense_num_layers': 4,
+        'dense_num_layers': 6,
         'dense_feature_dim': 2048,
         'dense_emb_dim': 4096,
         # 'dense_dropout': 0.2,
@@ -42,8 +42,8 @@ if __name__ == '__main__':
         'test_batch_size': 2048,
         'max_num_epochs': 1,
         'max_batches_per_epoch': 1024,
-        'optimizer': 'sgd',
-        'learing_rate': 1e-3,
+        'optimizer': 'adam',
+        'learing_rate': 1e-4,
         'l2_regularization': 1e-5,
 
         # Debug

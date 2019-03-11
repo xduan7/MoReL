@@ -207,13 +207,14 @@ class ComboDataset(Dataset):
                 # which means that older features will be deleted.
                 # self.__shared_lock.acquire()
                 # keys = list(self.__shared_dict.keys())
-                for k in self.__shared_dict.keys():
-                    try:
-                        t, _ = self.__shared_dict[k]
-                        if (curr_time_ms - t) > self.__dict_timeout_ms:
-                            del self.__shared_dict[k]
-                    except KeyError:
-                        continue
+                if (self.num_hit + self.num_miss) % 64 == 0:
+                    for k in self.__shared_dict.keys():
+                        try:
+                            t, _ = self.__shared_dict[k]
+                            if (curr_time_ms - t) > self.__dict_timeout_ms:
+                                del self.__shared_dict[k]
+                        except KeyError:
+                            continue
                 # self.__shared_lock.release()
 
                 self.num_miss += 1
@@ -278,10 +279,11 @@ class ComboDataset(Dataset):
                     # Note that this is the first process that reaches here
                     # It will take the responsibility to clean up the dict,
                     # which means that older features will be deleted.
-                    for k in list(shared_dict):
-                        t, _ = shared_dict[k]
-                        if (curr_time_ms - t) > self.__dict_timeout_ms:
-                            del shared_dict[k]
+                    if (self.num_hit + self.num_miss) % 64 == 0:
+                        for k in list(shared_dict):
+                            t, _ = shared_dict[k]
+                            if (curr_time_ms - t) > self.__dict_timeout_ms:
+                                del shared_dict[k]
 
                     # self.__shared_lock.release()
 
