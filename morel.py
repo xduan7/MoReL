@@ -20,6 +20,7 @@ if __name__ == '__main__':
     NUM_DEVICES = 2
 
     base_args_dict = {
+        'num_processes': 2,
         # 'process_id': 0,
         'rand_state': 0,
         # 'device': 'cuda:0',
@@ -41,7 +42,7 @@ if __name__ == '__main__':
         'train_batch_size': 32,
         'test_batch_size': 2048,
         'max_num_epochs': 1,
-        'max_batches_per_epoch': 1024,
+        'max_batches_per_epoch': 4096,
         'optimizer': 'adam',
         'learing_rate': 1e-4,
         'l2_regularization': 1e-5,
@@ -56,14 +57,25 @@ if __name__ == '__main__':
         print('Getting features with %s method ... ' % featurization)
 
         if featurization == 'mmap':
-            shared_dict = mmap.mmap(fileno=-1,
-                                    length=c.MMAP_BYTE_SIZE,
-                                    access=mmap.ACCESS_WRITE)
-            shared_dict.seek(0)
-            shared_dict.write(pickle.dumps({}))
+            # shared_dict = mmap.mmap(fileno=-1,
+            #                         length=c.MMAP_BYTE_SIZE,
+            #                         access=mmap.ACCESS_WRITE)
+            # shared_dict.seek(0)
+            # shared_dict.write(pickle.dumps({}))
+
+            shared_dict = []
+            for _ in range(NUM_DEVICES):
+                shared_dict_i = mmap.mmap(fileno=-1,
+                                          length=c.MMAP_BYTE_SIZE,
+                                          access=mmap.ACCESS_WRITE)
+                shared_dict_i.seek(0)
+                shared_dict_i.write(pickle.dumps({}))
+                shared_dict.append(shared_dict_i)
+
         elif featurization == 'dict_proxy':
             manager = Manager()
-            shared_dict = manager.dict()
+            # shared_dict = manager.dict()
+            shared_dict = [manager.dict() for _ in range(NUM_DEVICES)]
         else:
             shared_dict = None
 

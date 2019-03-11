@@ -12,7 +12,7 @@ import numpy as np
 import torch
 
 
-def seed_random_state(rand_state: int=0):
+def seed_random_state(rand_state: int = 0):
     """seed_random_state(0)
     This function sets up with random seed in multiple libraries possibly used
     during PyTorch training and validation.

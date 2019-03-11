@@ -88,10 +88,12 @@ class ComboDataset(Dataset):
         # Shared data structure for features
         if self.__featurization == 'dict_proxy' \
                 or self.__featurization == 'mmap':
-            assert shared_dict is not None
-            self.__shared_dict = shared_dict
-            self.__shared_lock = shared_lock
-            self.__dict_timeout_ms: int = args.dict_timeout_ms
+            if shared_dict is not None:
+                self.__shared_dict = shared_dict
+                self.__shared_lock = shared_lock
+                self.__dict_timeout_ms: int = args.dict_timeout_ms
+            else:
+                self.__featurization = 'computing'
 
         # Load the target (dragon7 descriptor) ################################
         cid_target_array = pd.read_csv(

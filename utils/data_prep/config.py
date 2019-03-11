@@ -274,3 +274,7 @@ MMAP_BYTE_SIZE = 2 ** 24
 # Number of PyTorch dataloader workers
 # Set to 0 to simulate CPU cluster environment
 NUM_DATALOADER_WORKERS = 0
+
+#
+SHARED_DICT_TIMEOUT_BATCH = 16
+
