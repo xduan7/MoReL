@@ -96,6 +96,7 @@ def train_(args: Namespace,
     # Alternative training function that uses batch-wise parallelism
     start_ms = int(round(time.time() * 1000))
     dataloading_time_ms = 0
+    training_time_ms = 0
 
     model.train()
     for batch_index in range(args.max_batches_per_epoch):
@@ -211,6 +212,7 @@ def train_(args: Namespace,
         dataloading_time_ms += (int(round(time.time() * 1000)) -
                                 dataloading_start_ms)
 
+        training_start_ms = int(round(time.time() * 1000))
         feature = torch.from_numpy(feature)
         target = torch.from_numpy(target)
 
@@ -224,8 +226,11 @@ def train_(args: Namespace,
         loss.backward()
         optim.step(closure=None)
 
+        training_time_ms += (int(round(time.time() * 1000)) -
+                             training_start_ms)
+
     overall_time_ms = (int(round(time.time() * 1000)) - start_ms)
-    training_time_ms = overall_time_ms - dataloading_time_ms
+    # training_time_ms = overall_time_ms - dataloading_time_ms
 
     print('[Process %i] Training Utilization = %.2f%% (%i msec / %i msec)'
           % (args.process_id,

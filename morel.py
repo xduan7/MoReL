@@ -51,7 +51,7 @@ if __name__ == '__main__':
         'debug': False,
     }
 
-    for featurization in ['computing', 'mmap', 'dict_proxy']:
+    for featurization in ['dict_proxy', 'mmap','computing',  ]:
 
         print('#' * 80)
         print('Getting features with %s method ... ' % featurization)
