@@ -36,13 +36,11 @@
 \maketitle
 
 \begin{abstract}
-
 There are multiple ways to featurize molecules, and more than a couple of suitable deep learning models for any one of these features. 
-
-Moreover, for each one of the combinations between feature and model, there are different sets of hyper-parameters to explore. 
+Moreover, for each one of the combinations between feature and model, there are different sets of hyper-parameters, like learning rate, dropout rate, etc., to explore. 
 The combinatorial number of learning instances to run is in the scale of thousands if not more, which makes it crucial to have a robust and efficient system to help us with data loading, as well as the arrangement and parallelization of the jobs. 
-We are planning on implementing a light-weight toolkit, MoRel, for this purpose. 
 
+In this paper, we propose a system, MoReL, that can take advantage of the data parallelism during hyper-parameter searching, and accelerate the whole training process.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -57,26 +55,26 @@ However, unlike images or natural language corpora, featurizing (transforming in
 Thus, different ways of featurization have been invented to incorporate human understanding of the molecules into learning models, like SMILES (Simplified molecular-input line-entry system) strings, fingerprints \cite{ecfp}, descriptors, and graphs. 
 
 Each of these distinct molecular features is suitable for a different set of deep learning models. 
-For example, SMILES strings (e.g. "CO2", "C1CCCCC1"), which are entirely made of ASCII characters, are preferably trained on NLP (natural language processing) models like LSTM \cite{lstm} or Transformer \cite{transformer}. 
+For example, SMILES strings (e.g. "(C=O)=O", "C1CCCCC1"), which are entirely made of ASCII characters, are preferably trained on NLP (natural language processing) models like LSTM \cite{lstm} or Transformer \cite{transformer}. 
 Similarly, molecular graph features are usually fed into neural networks that are designed for learning graphs, like GGNN \cite{ggnn} or GCN \cite{gcn}. 
 
-Moreover, for each combination of features and model, we need to experiment with different hyper-parameters, like drop out ratios and optimizers, in order to get better performance. 
+Moreover, for each combination of features and model, we need to experiment with different hyper-parameters, like dropout rates and optimizer configurations, in order to get better performance. 
 A model might behave badly or even unstable using one set of hyper-parameters but beat records using another set. 
 
 To sum things up, the combinatorial number of learning instances is at least in the scale of thousands. 
 However, no matter which feature, model, and hyper-parameters we choose, the goal stays the same. That is, learning the meaningful and unique representation of a single molecule. 
-This ensures the fairness of comparison across all the combinations, which leads to the motivation of MoReL: to build a light-weight toolkit that efficiently enables the comparison between thousands of instances for molecular representation learning. 
+This ensures the fairness of comparison across all the combinations, which leads to the motivation of MoReL: to build a light-weight system that efficiently enables the comparison between thousands of instances for molecular representation learning. 
 There are a few challenges for this project:
 \begin{itemize}
-	\item[$\bullet$]  There are about 97 million molecules to train with, which take up to 500GB after featurization. With such scale, dataloading can easily become the bottleneck for training; 
-	\item[$\bullet$]  There are only a limited number of GPUs available and they are usually meant to be shared between multiple users. How to use them conservatively and efficiently is the core of this project; 
+	\item[$\bullet$]  There are about 97 million molecules to train with, which take up to 10TB after featurization. With such scale, dataloading can easily become the bottleneck for training;
+	\item[$\bullet$]  More about dataloading: the system is meant to be deployed on a supercomputer made up with a lot of CPUs, which means that the traditional approach (data prefetching with CPU and training with GPU at the same time) is no longer avaible. CPUs will be responsible of both dataloading and training, which means that the efficiency of dataloading is especially important in this project;
 	\item[$\bullet$]  Some learning methods already have their Python scripts. We would like our toolkit to utilize the existing code with minimal changes. This will not only save a lot work, but also enable MoReL to be used on other projects that requires hyper-parameter optimization with existing training scripts. 
 \end{itemize}
 
 The layout of this paper is list as follows: 
 section \ref{sec_rw} talks about some previous works that are similar or related to ours; 
-section \ref{sec_impl} contains planned implementation details and estimated timeline; 
-section \ref{sec_eval} includes some possible methods to evaluate the system, which are subject to change drastically in the future. 
+section \ref{sec_impl} contains different versions of implementations and details; 
+section \ref{sec_eval} includes the evualuations of the aforementioned implementations. 
 
 \begin{figure*}[!htb] 
 	\subfloat[]{\includegraphics[width=\linewidth]{train.png}}
