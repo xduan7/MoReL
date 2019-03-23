@@ -183,12 +183,13 @@ In the following subsections about implementation, both data sharing methods are
 
 The initial implementation is conceptually simple, but turns out to be sub-optimal in performance. 
 
-The idea is to make featurization and garbage collection as some kind of first-come-first-serve resource. 
-\textcolor{red}{If a training instance finishes the previous training batch before other training processes, it will first clean up the out-dated features in the shared data structure, and then starts taking molecules for the next batch and features them one by one. 
-Other training instances, once finished previous training batch, will join the featurization process.
-Consider the featurization of molecules as jobs in a pool, and each finished training process will act like independent workers that takes one from the pool, performs computation, stores the feature in the shared data structure, and repeat if there are still jobs to do.
-Soon we will have all the molecules in the next batch featurized, and all the training instances and continue training. 
-An example of such parallelization is shown in the Figure \ref{fig:oi}. }
+The idea is to make garbage collection and featurization jobs as some kind of first-come-first-serve responsibility. 
+Suppose that a training instance finishes the previous training batch before other training processes, it would first perform garbage collection to clean up the out-dated features in the shared data structure, and then starts featurizing molecules for the next batch, one molecule at a time.
+Other training instances, once finished previous training batch, will join the featurization process. 
+Consider the featurization of molecules as jobs in a pool, and each process/instance will act like independent workers that takes one molecule from the pool, performs computation, stores the feature in the shared data structure, and repeat if there are more jobs to do.
+Soon we will have all the molecules in the next batch featurized. 
+Finally, all the training instances will fetch the complete batch from shared data structure and continue training. 
+An example of such parallelization is shown in the Figure \ref{fig:oi}. 
 
 \begin{figure}[!htb]
 	\includegraphics[width=\linewidth]{oi.png}
