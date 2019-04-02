@@ -251,11 +251,11 @@ def data_prep(pcba_only: bool,
 
 
 if __name__ == '__main__':
-    target_prep()
 
     data_prep(pcba_only=c.PCBA_ONLY,
               count_atoms=True,
               compute_features=False)
+    target_prep()
 
     # Processing atom dict and print out the atoms for tokenization
     with open(c.ATOM_DICT_TXT_PATH, 'r') as f:
