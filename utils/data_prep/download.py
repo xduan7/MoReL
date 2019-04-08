@@ -51,9 +51,9 @@ def download():
                   % c.RAW_DATA_DIR)
 
     # CID-Dragon7 descriptor dataframe
-    if not os.path.exists(c.PCBA_CID_DSCPTR_FILE_PATH):
+    if not os.path.exists(c.PCBA_CID_D7_DSCPTR_FILE_PATH):
         os.system('wget -r -nd -nc %s -P %s'
-                  % (c.PCBA_CID_DSCPTR_ADDRESS, c.RAW_DATA_DIR))
+                  % (c.PCBA_CID_D7_DSCPTR_ADDRESS, c.RAW_DATA_DIR))
 
 
 if __name__ == '__main__':

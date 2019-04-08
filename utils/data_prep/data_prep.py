@@ -23,10 +23,7 @@ from tqdm.auto import tqdm
 
 import utils.data_prep.config as c
 from utils.data_prep.download import download
-from utils.data_prep.smiles_prep import mol_to_token
-from utils.data_prep.mol_prep import mol_to_str, str_to_mol
-from utils.data_prep.ecfp_prep import mol_to_ecfp
-from utils.data_prep.graph_prep import mol_to_graph
+
 
 
 def mol_to_features(cid: int, mol: Chem.Mol) -> tuple:
@@ -251,106 +248,159 @@ def data_prep(pcba_only: bool,
 
 
 if __name__ == '__main__':
+    pass
 
-    data_prep(pcba_only=c.PCBA_ONLY,
-              count_atoms=True,
-              compute_features=False)
-    target_prep()
+    # data_prep(pcba_only=c.PCBA_ONLY,
+    #           count_atoms=True,
+    #           compute_features=False)
+    # target_prep()
+    #
+    # # Processing atom dict and print out the atoms for tokenization
+    # with open(c.ATOM_DICT_TXT_PATH, 'r') as f:
+    #     tmp_atom_dict = json.load(f)
+    #
+    # # Construct and make sure that the atom dict
+    # ordered_atoms = sorted(tmp_atom_dict,
+    #                        key=tmp_atom_dict.__getitem__, reverse=True)
+    # token_atoms = [a for a in ordered_atoms
+    #                if tmp_atom_dict[a] > c.MIN_ATOM_FREQUENCY]
+    # atom_token_dict = {a: Chem.Atom(a).GetAtomicNum() for a in token_atoms}
+    # try:
+    #     assert atom_token_dict == c.ATOM_TOKEN_DICT
+    # except AssertionError:
+    #     print('The atom dict extract from molecules differs '
+    #           'from the one in MoReL/utils/data_prep/config.c')
+    #
+    # # Test the speed of mol_str -> features versus loading from hard drive
+    # print('Test the speed of computing mol_str -> features '
+    #       'versus loading features from disk ... ')
+    # TEST_SIZE = 1024
+    # with h5py.File(c.CID_FEATURES_HDF5_PATH, 'r') as f:
+    #
+    #     print('Opening HDF5 files and selecting the test indices ...')
+    #     cid_mol_str_grp = f.get(name='CID-Mol_str')
+    #     cid_token_grp = f.get(name='CID-token')
+    #     cid_ecfp_grp = f.get(name='CID-ECFP')
+    #     cid_graph_grp = f.get(name='CID-graph')
+    #     cid_node_grp = cid_graph_grp.get(name='CID-node')
+    #     cid_edge_grp = cid_graph_grp.get(name='CID-edge')
+    #
+    #     cid_list = list(cid_mol_str_grp.keys())
+    #     test_cid_list = np.random.choice(
+    #         cid_list, TEST_SIZE, replace=False)
+    #
+    #     print('Start testing ...')
+    #     # Testing token (from SMILES)
+    #     start_time = time.time()
+    #     for tmp_cid in test_cid_list:
+    #         # tmp_token = np.array(cid_token_grp.get(name=tmp_cid))
+    #         tmp_token = get_from_hdf5(cid=tmp_cid, cid_grp=cid_token_grp)
+    #         # print(tmp_token)
+    #         # print(tmp_token.dtype)
+    #     print("Get token from HDF5: \t%s seconds"
+    #           % (time.time() - start_time))
+    #
+    #     start_time = time.time()
+    #     for tmp_cid in test_cid_list:
+    #         tmp_mol_str = str(get_from_hdf5(cid=tmp_cid,
+    #                                         cid_grp=cid_mol_str_grp))
+    #         tmp_mol = str_to_mol(tmp_mol_str)
+    #         tmp_token = mol_to_token(tmp_mol)
+    #         # print(tmp_token)
+    #         # print(tmp_token.dtype)
+    #     print("Get token from Mol:  \t%s seconds"
+    #           % (time.time() - start_time))
+    #
+    #     # Testing ECFP
+    #     start_time = time.time()
+    #     for tmp_cid in test_cid_list:
+    #         tmp_ecfp = get_from_hdf5(cid=tmp_cid, cid_grp=cid_ecfp_grp)
+    #         # tmp_ecfp = np.array(cid_ecfp_grp.get(name=tmp_cid))
+    #         # print(tmp_ecfp)
+    #     print("Get ECFP from HDF5: \t%s seconds"
+    #           % (time.time() - start_time))
+    #
+    #     start_time = time.time()
+    #     for tmp_cid in test_cid_list:
+    #         tmp_mol_str = str(get_from_hdf5(cid=tmp_cid,
+    #                                         cid_grp=cid_mol_str_grp))
+    #         tmp_mol = str_to_mol(tmp_mol_str)
+    #         tmp_ecfp = mol_to_ecfp(tmp_mol)
+    #         # print(tmp_ecfp)
+    #     print("Get ECFP from Mol:  \t%s seconds"
+    #           % (time.time() - start_time))
+    #
+    #     # Testing graphs
+    #     start_time = time.time()
+    #     for tmp_cid in test_cid_list:
+    #         tmp_node = get_from_hdf5(cid=tmp_cid, cid_grp=cid_node_grp)
+    #         tmp_edge = get_from_hdf5(cid=tmp_cid, cid_grp=cid_edge_grp)
+    #         # tmp_node = cid_node_grp.get(name=tmp_cid)
+    #         # tmp_edge = cid_edge_grp.get(name=tmp_cid)
+    #         # print(tmp_node)
+    #         # print(tmp_edge)
+    #     print("Get graph from HDF5: \t%s seconds"
+    #           % (time.time() - start_time))
+    #
+    #     start_time = time.time()
+    #     for tmp_cid in test_cid_list:
+    #         tmp_mol_str = str(get_from_hdf5(cid=tmp_cid,
+    #                                         cid_grp=cid_mol_str_grp))
+    #         tmp_mol = str_to_mol(tmp_mol_str)
+    #         tmp_node, tmp_edge = mol_to_graph(tmp_mol)
+    #         # print(tmp_node)
+    #         # print(tmp_edge)
+    #     print("Get graph from Mol:  \t%s seconds"
+    #           % (time.time() - start_time))
 
-    # Processing atom dict and print out the atoms for tokenization
-    with open(c.ATOM_DICT_TXT_PATH, 'r') as f:
-        tmp_atom_dict = json.load(f)
 
-    # Construct and make sure that the atom dict
-    ordered_atoms = sorted(tmp_atom_dict,
-                           key=tmp_atom_dict.__getitem__, reverse=True)
-    token_atoms = [a for a in ordered_atoms
-                   if tmp_atom_dict[a] > c.MIN_ATOM_FREQUENCY]
-    atom_token_dict = {a: Chem.Atom(a).GetAtomicNum() for a in token_atoms}
-    try:
-        assert atom_token_dict == c.ATOM_TOKEN_DICT
-    except AssertionError:
-        print('The atom dict extract from molecules differs '
-              'from the one in MoReL/utils/data_prep/config.c')
+def inchi_prep(pcba_only: bool) -> None:
 
-    # Test the speed of mol_str -> features versus loading from hard drive
-    print('Test the speed of computing mol_str -> features '
-          'versus loading features from disk ... ')
-    TEST_SIZE = 1024
-    with h5py.File(c.CID_FEATURES_HDF5_PATH, 'r') as f:
+    download()
 
-        print('Opening HDF5 files and selecting the test indices ...')
-        cid_mol_str_grp = f.get(name='CID-Mol_str')
-        cid_token_grp = f.get(name='CID-token')
-        cid_ecfp_grp = f.get(name='CID-ECFP')
-        cid_graph_grp = f.get(name='CID-graph')
-        cid_node_grp = cid_graph_grp.get(name='CID-node')
-        cid_edge_grp = cid_graph_grp.get(name='CID-edge')
+    # Check if the CID-InChI HDF5 file already exist ##########################
+    cid_inchi_hdf5_path = c.PCBA_CID_INCHI_HDF5_PATH \
+        if pcba_only else c.PC_CID_INCHI_HDF5_PATH
 
-        cid_list = list(cid_mol_str_grp.keys())
-        test_cid_list = np.random.choice(
-            cid_list, TEST_SIZE, replace=False)
+    if os.path.exists(cid_inchi_hdf5_path):
+        msg = 'CID-InChI HDF5 already exits. ' \
+              'Press [Y] for overwrite, any other key to continue ... '
+        if str(input(msg)).lower().strip() != 'y':
+            return
+        os.remove(cid_inchi_hdf5_path)
 
-        print('Start testing ...')
-        # Testing token (from SMILES)
-        start_time = time.time()
-        for tmp_cid in test_cid_list:
-            # tmp_token = np.array(cid_token_grp.get(name=tmp_cid))
-            tmp_token = get_from_hdf5(cid=tmp_cid, cid_grp=cid_token_grp)
-            # print(tmp_token)
-            # print(tmp_token.dtype)
-        print("Get token from HDF5: \t%s seconds"
-              % (time.time() - start_time))
+    cid_inchi_hdf5 = h5py.File(cid_inchi_hdf5_path, 'w', libver='latest')
 
-        start_time = time.time()
-        for tmp_cid in test_cid_list:
-            tmp_mol_str = str(get_from_hdf5(cid=tmp_cid,
-                                            cid_grp=cid_mol_str_grp))
-            tmp_mol = str_to_mol(tmp_mol_str)
-            tmp_token = mol_to_token(tmp_mol)
-            # print(tmp_token)
-            # print(tmp_token.dtype)
-        print("Get token from Mol:  \t%s seconds"
-              % (time.time() - start_time))
+    # Prepare the PCBA CID set if necessary ###################################
+    pcba_cid_set = set(pd.read_csv(
+        c.PCBA_CID_FILE_PATH,
+        sep='\t',
+        header=0,
+        index_col=None,
+        usecols=[0]).values.reshape(-1)) if pcba_only else set([])
 
-        # Testing ECFP
-        start_time = time.time()
-        for tmp_cid in test_cid_list:
-            tmp_ecfp = get_from_hdf5(cid=tmp_cid, cid_grp=cid_ecfp_grp)
-            # tmp_ecfp = np.array(cid_ecfp_grp.get(name=tmp_cid))
-            # print(tmp_ecfp)
-        print("Get ECFP from HDF5: \t%s seconds"
-              % (time.time() - start_time))
+    # Looping over all the CIDs ###############################################
+    def __check_inchi(cid, inchi):
+        mol = Chem.MolFromInchi(inchi)
+        if mol is not None:
+            return cid, inchi
+        else:
+            return cid, None
 
-        start_time = time.time()
-        for tmp_cid in test_cid_list:
-            tmp_mol_str = str(get_from_hdf5(cid=tmp_cid,
-                                            cid_grp=cid_mol_str_grp))
-            tmp_mol = str_to_mol(tmp_mol_str)
-            tmp_ecfp = mol_to_ecfp(tmp_mol)
-            # print(tmp_ecfp)
-        print("Get ECFP from Mol:  \t%s seconds"
-              % (time.time() - start_time))
+    for chunk_idx, chunk_cid_inchi_df in enumerate(
+            pd.read_csv(c.CID_INCHI_FILE_PATH,
+                        sep='\t',
+                        header=None,
+                        index_col=[0],
+                        usecols=[0, 1],
+                        chunksize=2 ** 15)):
 
-        # Testing graphs
-        start_time = time.time()
-        for tmp_cid in test_cid_list:
-            tmp_node = get_from_hdf5(cid=tmp_cid, cid_grp=cid_node_grp)
-            tmp_edge = get_from_hdf5(cid=tmp_cid, cid_grp=cid_edge_grp)
-            # tmp_node = cid_node_grp.get(name=tmp_cid)
-            # tmp_edge = cid_edge_grp.get(name=tmp_cid)
-            # print(tmp_node)
-            # print(tmp_edge)
-        print("Get graph from HDF5: \t%s seconds"
-              % (time.time() - start_time))
+        chunk_cid_inchi_list = Parallel(n_jobs=c.NUM_CORES)(
+            delayed(__check_inchi)(cid, row[1])
+            for cid, row in chunk_cid_inchi_df.iterrows()
+            if ((not pcba_only) or (cid in pcba_cid_set)))
 
-        start_time = time.time()
-        for tmp_cid in test_cid_list:
-            tmp_mol_str = str(get_from_hdf5(cid=tmp_cid,
-                                            cid_grp=cid_mol_str_grp))
-            tmp_mol = str_to_mol(tmp_mol_str)
-            tmp_node, tmp_edge = mol_to_graph(tmp_mol)
-            # print(tmp_node)
-            # print(tmp_edge)
-        print("Get graph from Mol:  \t%s seconds"
-              % (time.time() - start_time))
+        for cid, row in chunk_cid_inchi_list:
+            if row is not None:
+                cid_inchi_hdf5.create_dataset(name=str(cid), data=row[1])
+

@@ -168,7 +168,7 @@ DIR_BOND_FEAT_TYPE_LIST = [
 ]
 
 # Dragon7 descriptor (target) names ###########################################
-TARGET_DSCRPTR_NAMES = [
+TARGET_D7_DSCRPTR_NAMES = [
     'CIC5',
     'SpDiam_B(m)',
     'GATS3e',
@@ -197,20 +197,23 @@ PROCESSED_DATA_DIR = join(DATA_DIR, 'processed/')
 # CID in PCBA dataset, ranging from 2 to 135,693,611, total size ~3,400,000
 PCBA_CID_FILE_NAME = 'Cid2BioactivityLink'
 CID_INCHI_FILE_NAME = 'CID-InChI-Key'
-PCBA_CID_DSCPTR_FILE_NAME = 'PCBA-CID_dragon7_descriptors.tsv'
+PCBA_CID_D7_DSCPTR_FILE_NAME = 'PCBA-CID_dragon7_descriptors.tsv'
 PCBA_CID_FTP_ADDRESS = \
     'ftp://ftp.ncbi.nlm.nih.gov/pubchem/Bioassay/Extras/%s.gz' \
     % PCBA_CID_FILE_NAME
 CID_INCHI_FTP_ADDRESS = \
     'ftp://ftp.ncbi.nlm.nih.gov/pubchem/Compound/Extras/%s.gz' \
     % CID_INCHI_FILE_NAME
-PCBA_CID_DSCPTR_ADDRESS = \
+PCBA_CID_D7_DSCPTR_ADDRESS = \
     'http://bioseed.mcs.anl.gov/~fangfang/PCBA-CID/%s' \
-    % PCBA_CID_DSCPTR_FILE_NAME
+    % PCBA_CID_D7_DSCPTR_FILE_NAME
 PCBA_CID_FILE_PATH = join(RAW_DATA_DIR, PCBA_CID_FILE_NAME)
 CID_INCHI_FILE_PATH = join(RAW_DATA_DIR, CID_INCHI_FILE_NAME)
-PCBA_CID_DSCPTR_FILE_PATH = join(RAW_DATA_DIR, PCBA_CID_DSCPTR_FILE_NAME)
+PCBA_CID_D7_DSCPTR_FILE_PATH = join(RAW_DATA_DIR, PCBA_CID_D7_DSCPTR_FILE_NAME)
 # Processed files locations ###################################################
+
+PC_CID_INCHI_HDF5_PATH = join(PROCESSED_DATA_DIR, 'CID-InChI.hdf5')
+PCBA_CID_INCHI_HDF5_PATH = join(PROCESSED_DATA_DIR, 'CID-InChI(PCBA).hdf5')
 
 CID_MOL_STR_HDF5_PATH = join(PROCESSED_DATA_DIR,
                              'CID-Mol_str%s.hdf5' % DATASET_INDICATOR)
@@ -247,9 +250,10 @@ UNUSED_CID_TXT_PATH = join(PROCESSED_DATA_DIR,
 # CID_GRAPH_HDF5_PATH = join(
 #     PROCESSED_DATA_DIR, 'CID-Graph%s.hdf5' % DATASET_INDICATOR)
 
-PCBA_CID_TARGET_DSCPTR_FILE_PATH = join(PROCESSED_DATA_DIR,
-                                        'CID-target_descriptor.csv')
-
+PCBA_CID_TARGET_D7DSCPTR_HDF5_PATH = join(PROCESSED_DATA_DIR,
+                                          'PCBA_CID-d7descriptor(target).hdf5')
+PCBA_CID_D7DSCPTR_HDF5_PATH = join(PROCESSED_DATA_DIR,
+                                   'PCBA_CID-d7descriptor.hdf5')
 # Models and training constants ###############################################
 FEATURES = []
 MODELS = {
