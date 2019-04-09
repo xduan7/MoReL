@@ -292,8 +292,8 @@ def mol_to_descriptors(mol: Chem.Mol,
 def mol_to_graph(mol: Chem.Mol,
                  master_atom: bool,
                  max_num_atoms: int,
-                 atom_feat_list: iter = None,
-                 bond_feat_list: iter = None) -> tuple:
+                 atom_feat_list: list = None,
+                 bond_feat_list: list = None) -> tuple:
 
     """
     This implementation is based on:
@@ -371,7 +371,7 @@ def mol_to_graph(mol: Chem.Mol,
         edge_attr.append(single_edge_attr)
 
     node_attr = np.array(node_attr, dtype=np.float32)
-    edge_index = np.transpose(np.array(edge_index, dtype=np.float32))
+    edge_index = np.transpose(np.array(edge_index, dtype=np.int64))
     edge_attr = np.array(edge_attr, dtype=np.float32)
     return node_attr, edge_index, edge_attr
 
