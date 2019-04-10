@@ -7,20 +7,26 @@
     File Description:   
 
 """
+
+
 import h5py
 import torch
+import logging
 import numpy as np
 from torch.utils.data import Dataset
 from torch_geometric.data import Data
+from typing import Optional
 
 import utils.data_prep.config as c
 from utils.data_prep.featurizers import inchi_to_mol, mol_to_graph
+
+logger = logging.getLogger(__name__)
 
 
 class GraphToDscrptrDataset(Dataset):
 
     def __init__(self,
-                 target_dscrptr: str,
+                 target_dscrptr: str or int,
                  cid_list: list = None,
                  pcba_only: bool = True,
                  master_atom: bool = True,
@@ -53,7 +59,9 @@ class GraphToDscrptrDataset(Dataset):
         #  probably load the full descriptor file
         dscrptr_list = [dn.decode('UTF-8') for dn in
                         self.__cid_dscrptr_hdf5.get(name='DSCRPTR_NAMES')]
-        self.__target_index = dscrptr_list.index(target_dscrptr)
+
+        self.__target_index = dscrptr_list.index(target_dscrptr) \
+            if type(target_dscrptr) == str else target_dscrptr
 
         # Check the cid_list and eliminate invalid entries ####################
         # Make sure that the argument cid list are all strings
@@ -68,7 +76,14 @@ class GraphToDscrptrDataset(Dataset):
             self.__cid_list = \
                 sorted(list(inchi_cid_set & dscrptr_cid_set), key=int)
 
+        # Properties for dataset ##############################################
         self.__len = len(self.__cid_list)
+
+        # This part is implemented awkwardly, to change this we need some
+        # changes on the featurizer, make it a class or something
+        single_data = self[0]
+        self.node_attr_dim = single_data.x.shape[1]
+        self.edge_attr_dim = single_data.edge_attr.shape[1]
 
     def __len__(self):
         return self.__len
@@ -78,7 +93,12 @@ class GraphToDscrptrDataset(Dataset):
         cid = self.get_cid(index)
 
         # Graph features, including nodes and edges features and adj matrix
-        inchi = str(np.array(self.__cid_inchi_hdf5.get(name=cid)))
+        try:
+            inchi = str(np.array(self.__cid_inchi_hdf5.get(name=cid)))
+            assert ((inchi is not None) and (inchi != 'None'))
+        except:
+            logger.warning(f'Invalid CID {cid} empty InChI key.')
+
         n, adj, e = mol_to_graph(mol=inchi_to_mol(inchi),
                                  master_atom=self.__master_atom,
                                  master_bond=self.__master_bond,
@@ -97,6 +117,12 @@ class GraphToDscrptrDataset(Dataset):
 
     def get_cid(self, index: int) -> str:
         return self.__cid_list[index]
+
+    def get_index(self, cid: str) -> Optional[int]:
+        try:
+            return self.__cid_list.index(cid)
+        except ValueError:
+            return None
 
 
 if __name__ == '__main__':

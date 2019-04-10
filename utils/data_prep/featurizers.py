@@ -173,7 +173,12 @@ def one_hot_encode(value,
         possible_values = list(type(value).values.values())
 
     enc_feat = [0] * len(possible_values)
-    enc_feat[possible_values.index(value)] = 1
+    try:
+        enc_feat[possible_values.index(value)] = 1
+    except ValueError:
+        # Will return a vector of zeros if the feature is not listed in the
+        # possible values
+        pass
 
     return enc_feat
 

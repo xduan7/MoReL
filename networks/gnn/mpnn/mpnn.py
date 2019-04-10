@@ -60,11 +60,11 @@ class MPNN(nn.Module):
         h = out.unsqueeze(0)
 
         for i in range(3):
-            m = F.relu(self.conv(out, data.edge_index, data.edge_attr))
-            out, h = self.gru(m.unsqueeze(0), h)
+            m = F.relu(self.__nn_conv(out, data.edge_index, data.edge_attr))
+            out, h = self.__gru(m.unsqueeze(0), h)
             out = out.squeeze(0)
 
-        out = self.set2set(out, data.batch)
+        out = self.__set2set(out, data.batch)
         out = self.__out_linear(out)
         return out.view(-1)
 
