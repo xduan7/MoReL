@@ -1,5 +1,5 @@
 """ 
-    File Name:          MoReL/graph2dscrptr_dataset.py
+    File Name:          MoReL/graph_to_dscrptr_dataset.py
     Author:             Xiaotian Duan (xduan7)
     Email:              xduan7@uchicago.edu
     Date:               4/9/19
@@ -24,6 +24,7 @@ class GraphToDscrptrDataset(Dataset):
                  cid_list: list = None,
                  pcba_only: bool = True,
                  master_atom: bool = True,
+                 master_bond: bool = True,
                  max_num_atoms: int = 128,
                  atom_feat_list: list = None,
                  bond_feat_list: list = None,
@@ -32,6 +33,7 @@ class GraphToDscrptrDataset(Dataset):
 
         super().__init__()
         self.__master_atom = master_atom
+        self.__master_bond = master_bond
         self.__max_num_atoms = max_num_atoms
         self.__atom_feat_list = atom_feat_list
         self.__bond_feat_list = bond_feat_list
@@ -55,14 +57,17 @@ class GraphToDscrptrDataset(Dataset):
 
         # Check the cid_list and eliminate invalid entries ####################
         # Make sure that the argument cid list are all strings
-        inchi_cid_set = set(list(self.__cid_inchi_hdf5.keys()))
-        dscrptr_cid_set = set(list(self.__cid_dscrptr_hdf5.keys()))
-
         if cid_list is not None:
-            cid_set = set([str(cid) for cid in cid_list])
-            self.__cid_list = list(inchi_cid_set & dscrptr_cid_set & cid_set)
+            # If the list of CIDs are given, we trust them to be valid
+            self.__cid_list = cid_list
         else:
-            self.__cid_list = list(inchi_cid_set & dscrptr_cid_set)
+            inchi_cid_set = set(list(self.__cid_inchi_hdf5.keys()))
+            dscrptr_cid_set = set(list(self.__cid_dscrptr_hdf5.keys()))
+            # Sort the CID list to make sure that we didn't introduce extra
+            # randomness, and the results are easily reproducible
+            self.__cid_list = \
+                sorted(list(inchi_cid_set & dscrptr_cid_set), key=int)
+
         self.__len = len(self.__cid_list)
 
     def __len__(self):
@@ -70,33 +75,30 @@ class GraphToDscrptrDataset(Dataset):
 
     def __getitem__(self, index: int):
 
-        cid: str = self.__cid_list[index]
-
-        print(cid)
+        cid = self.get_cid(index)
 
         # Graph features, including nodes and edges features and adj matrix
+        inchi = str(np.array(self.__cid_inchi_hdf5.get(name=cid)))
+        n, adj, e = mol_to_graph(mol=inchi_to_mol(inchi),
+                                 master_atom=self.__master_atom,
+                                 master_bond=self.__master_bond,
+                                 max_num_atoms=self.__max_num_atoms,
+                                 atom_feat_list=self.__atom_feat_list,
+                                 bond_feat_list=self.__bond_feat_list)
 
-        inchi: str = self.__cid_inchi_hdf5.get(name=cid)
-        #
-        # print(inchi)
-        # print(str(inchi))
-        return inchi
+        # Target descriptor
+        target = np.array([self.__cid_dscrptr_hdf5.get(
+            name=cid)[self.__target_index]], dtype=np.float32)
 
-        # n, adj, e = mol_to_graph(mol=inchi_to_mol(inchi),
-        #                          master_atom=self.__master_atom,
-        #                          max_num_atoms=self.__max_num_atoms,
-        #                          atom_feat_list=self.__atom_feat_list,
-        #                          bond_feat_list=self.__bond_feat_list)
-        #
-        # # Target descriptor
-        # target = np.array([self.__cid_dscrptr_hdf5.get(
-        #     name=cid)[self.__target_index]], dtype=np.float32)
-        #
-        # return Data(x=torch.from_numpy(n),
-        #             edge_index=torch.from_numpy(adj),
-        #             edge_attr=torch.from_numpy(e),
-        #             y=torch.from_numpy(target))
+        return Data(x=torch.from_numpy(n),
+                    edge_index=torch.from_numpy(adj),
+                    edge_attr=torch.from_numpy(e),
+                    y=torch.from_numpy(target))
+
+    def get_cid(self, index: int) -> str:
+        return self.__cid_list[index]
 
 
 if __name__ == '__main__':
     ds = GraphToDscrptrDataset(target_dscrptr='CIC5')
+    d = ds[0]

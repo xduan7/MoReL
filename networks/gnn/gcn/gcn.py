@@ -10,7 +10,7 @@
         https://github.com/tkipf/pygcn
 """
 import torch.nn as nn
-from networks.gcn.graph_conv_layer import GraphConvLayer
+from networks.gnn.gcn.graph_conv_layer import GraphConvLayer
 
 
 class GCN(nn.Module):

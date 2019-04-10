@@ -291,6 +291,7 @@ def mol_to_descriptors(mol: Chem.Mol,
 
 def mol_to_graph(mol: Chem.Mol,
                  master_atom: bool,
+                 master_bond: bool,
                  max_num_atoms: int,
                  atom_feat_list: list = None,
                  bond_feat_list: list = None) -> tuple:
@@ -349,7 +350,7 @@ def mol_to_graph(mol: Chem.Mol,
     for bond in mol.GetBonds():
 
         # edge_index.append([bond.GetBeginAtomIdx(), bond.GetEndAtomIdx()])
-        single_edge_attr = []
+        single_edge_attr = [1, ] if master_bond else []
         for bond_feat_name in bond_feat_list:
 
             feat_func: callable = BOND_FEAT_FUNC_DICT[bond_feat_name]

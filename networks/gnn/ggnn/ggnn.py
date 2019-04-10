@@ -15,7 +15,7 @@
 """
 import torch
 import torch.nn as nn
-from networks.ggnn.propagator import Propagator
+from networks.gnn.ggnn.propagator import Propagator
 
 
 class GGNN(nn.Module):

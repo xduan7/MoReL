@@ -12,8 +12,8 @@ import torch.nn as nn
 import utils.data_prep.config as c
 from argparse import Namespace
 from networks.common.reshape import Reshape
-from networks.gcn.gcn import GCN
-from networks.ggnn.ggnn import GGNN
+from networks.gnn.gcn.gcn import GCN
+from networks.gnn.ggnn.ggnn import GGNN
 from networks.transformer.encoder import Encoder
 
 
