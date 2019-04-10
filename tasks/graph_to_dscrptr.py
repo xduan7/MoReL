@@ -20,10 +20,13 @@
         https://github.com/rusty1s/pytorch_geometric/issues/147
         https://github.com/rusty1s/pytorch_geometric/issues/175
 """
-import torch
+
 import h5py
+import torch
+import numpy as np
 import torch.nn.functional as F
 import torch_geometric.data as pyg_data
+from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 
 import utils.data_prep.config as c
@@ -70,7 +73,7 @@ trn_cid_list, val_cid_list = train_test_split(trn_cid_list,
 
 # Sample the training CID list
 _, trn_cid_list = train_test_split(trn_cid_list,
-                                   test_size=VALIDATION_SIZE * 5,
+                                   test_size=VALIDATION_SIZE * 20,
                                    random_state=RAND_STATE)
 
 
@@ -102,7 +105,7 @@ model = MPNN(node_attr_dim=trn_dataset.node_attr_dim,
              edge_attr_dim=trn_dataset.edge_attr_dim).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-    optimizer, mode='min', factor=0.7, patience=5, min_lr=0.00001)
+    optimizer, mode='min', factor=0.8, patience=5, min_lr=0.00001)
 
 
 def train(epoch):
@@ -121,25 +124,39 @@ def train(epoch):
 
 def test(loader):
     model.eval()
-    error = 0
+    sum_mae = 0.
+
+    trgt_array, pred_array = np.array([]), np.array([])
 
     for data in loader:
+
         data = data.to(device)
-        error += (model(data) - data.y).abs().sum().item()  # MAE
-    return error / len(loader.dataset)
+        pred = model(data)
+
+        sum_mae += (pred - data.y).abs().sum().item()  # MAE
+
+        trgt_array = np.concatenate(
+            (trgt_array, data.y.cpu().numpy().flatten()))
+        pred_array = np.concatenate(
+            (pred_array, pred.cpu().detach().numpy().flatten()))
+
+    mae = sum_mae / len(loader.dataset)
+    r2 = r2_score(y_pred=pred_array, y_true=trgt_array)
+    return r2, mae
 
 
-best_val_error = None
+best_val_r2 = None
 for epoch in range(1, 301):
     lr = scheduler.optimizer.param_groups[0]['lr']
     loss = train(epoch)
-    val_error = test(val_loader)
-    scheduler.step(val_error)
+    val_r2, val_mae = test(val_loader)
+    scheduler.step(val_r2)
 
-    if best_val_error is None or val_error <= best_val_error:
-        test_error = test(tst_loader)
-        best_val_error = val_error
+    if best_val_r2 is None or val_r2 > best_val_r2:
+        best_val_r2 = val_r2
+        tst_r2, tst_mae = test(tst_loader)
 
-    print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Validation MAE: {:.7f}, '
-          'Test MAE: {:.7f},'.format(epoch, lr, loss, val_error, test_error))
+    print('Epoch: {:03d}, LR: {:6f}, Loss: {:.4f}, '.format(epoch, lr, loss),
+          'Validation R2: {:.3f} MAE: {:.4f}; '.format(val_r2, val_mae),
+          'Testing R2: {:.3f} MAE: {:.4f};'.format(tst_r2, tst_mae))
 
