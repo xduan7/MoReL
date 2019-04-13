@@ -10,8 +10,8 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
-from networks.transformer.decoder import Decoder
-from networks.transformer.encoder import Encoder
+from network.transformer.decoder import Decoder
+from network.transformer.encoder import Encoder
 
 
 class Transformer(nn.Module):

@@ -30,9 +30,9 @@ from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 
 import utils.data_prep.config as c
-from networks.gnn.mpnn.mpnn import MPNN
+from network.gnn.mpnn.mpnn import MPNN
 from utils.misc.random_seeding import seed_random_state
-from utils.datasets.graph_to_dscrptr_dataset import GraphToDscrptrDataset
+from utils.dataset.graph_to_dscrptr_dataset import GraphToDscrptrDataset
 
 
 # Constants and initializations ###############################################
@@ -42,14 +42,14 @@ USE_CUDA = True
 RAND_STATE = 0
 TEST_SIZE = 10000
 VALIDATION_SIZE = 10000
-TARGET_LIST = ['GATS3e']
+TARGET_LIST = c.TARGET_D7_DSCRPTR_NAMES
 
 use_cuda = torch.cuda.is_available() and USE_CUDA
 seed_random_state(RAND_STATE)
 device = torch.device('cuda: 1' if use_cuda else 'cpu')
 print(f'Training on device {device}')
 
-# Get the trn/val/tst datasets and dataloaders ################################
+# Get the trn/val/tst dataset and dataloaders ################################
 cid_smiles_csv_path = c.PCBA_CID_SMILES_CSV_PATH \
     if PCBA_ONLY else c.PC_CID_SMILES_CSV_PATH
 cid_smiles_df = pd.read_csv(cid_smiles_csv_path,
@@ -70,8 +70,8 @@ cid_dscrptr_df = pd.read_csv(cid_dscrptr_csv_path,
 cid_dscrptr_df.index = cid_dscrptr_df.index.map(str)
 
 # Perform STD normalization for multi-target regression
-cid_dscrptr_df_mean = cid_dscrptr_df.mean().values
-cid_dscrptr_df_std = cid_dscrptr_df.std().values
+dscrptr_mean = cid_dscrptr_df.mean().values
+dscrptr_std = cid_dscrptr_df.std().values
 cid_dscrptr_df = \
     (cid_dscrptr_df - cid_dscrptr_df.mean()) / cid_dscrptr_df.std()
 
@@ -90,6 +90,11 @@ trn_cid_list, val_cid_list = train_test_split(trn_cid_list,
                                               test_size=VALIDATION_SIZE,
                                               random_state=RAND_STATE)
 
+# Downsizing training set for the purpose of testing
+# _, trn_cid_list = train_test_split(trn_cid_list,
+#                                    test_size=VALIDATION_SIZE * 10,
+#                                    random_state=RAND_STATE)
+
 # Datasets and dataloaders
 dataset_kwargs = {
     'target_list': TARGET_LIST,
@@ -103,7 +108,7 @@ dataloader_kwargs = {
     'batch_size': 64,
     'timeout': 1,
     'pin_memory': True if use_cuda else False,
-    'num_workers': 16 if use_cuda else 0}
+    'num_workers': 8 if use_cuda else 0}
 trn_loader = pyg_data.DataLoader(trn_dataset,
                                  shuffle=True,
                                  **dataloader_kwargs)
@@ -115,7 +120,8 @@ tst_loader = pyg_data.DataLoader(tst_dataset,
 
 # Model, optimizer, and scheduler #############################################
 model = MPNN(node_attr_dim=trn_dataset.node_attr_dim,
-             edge_attr_dim=trn_dataset.edge_attr_dim).to(device)
+             edge_attr_dim=trn_dataset.edge_attr_dim,
+             out_dim=len(TARGET_LIST)).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
     optimizer, mode='min', factor=0.8, patience=5, min_lr=0.00001)
@@ -137,39 +143,55 @@ def train(epoch):
 
 def test(loader):
     model.eval()
-    sum_mae = 0.
-
-    trgt_array, pred_array = np.array([]), np.array([])
+    mae_array = np.zeros(shape=[len(TARGET_LIST)])
+    trgt_array = np.zeros(shape=[0, len(TARGET_LIST)])
+    pred_array = np.zeros(shape=[0, len(TARGET_LIST)])
 
     for data in loader:
 
         data = data.to(device)
         pred = model(data)
 
-        sum_mae += (pred - data.y).abs().sum().item()  # MAE
+        mae_array += (pred - data.y).abs().sum(dim=-1).item() * dscrptr_std
 
-        trgt_array = np.concatenate(
-            (trgt_array, data.y.cpu().numpy().flatten()))
-        pred_array = np.concatenate(
-            (pred_array, pred.cpu().detach().numpy().flatten()))
+        trgt = data.y.cpu().numpy().reshape(-1, len(TARGET_LIST))
+        pred = pred.detach().cpu().numpy().reshape(-1, len(TARGET_LIST))
 
-    mae = sum_mae / len(loader.dataset)
-    r2 = r2_score(y_pred=pred_array, y_true=trgt_array)
-    return r2, mae
+        trgt_array = np.vstack((trgt_array, trgt))
+        pred_array = np.vstack((pred_array, pred))
+
+    mae_array = mae_array / len(loader.dataset)
+
+    print(trgt_array.shape)
+    print(pred_array.shape)
+
+    r2_array = np.array(
+        [r2_score(y_pred=pred_array[:, i], y_true=trgt_array[:, i]) \
+         for i, t in enumerate(TARGET_LIST)])
+
+    for i, target in enumerate(TARGET_LIST):
+        print(f'Target Descriptor Name: {target:15s}, '
+              f'R2: {r2_array[i]:.4f}, MAE: {mae_array[i]:.4f}')
+
+    return np.mean(r2_array), np.mean(mae_array)
 
 
 best_val_r2 = None
 for epoch in range(1, 301):
     lr = scheduler.optimizer.param_groups[0]['lr']
     loss = train(epoch)
+    print('Validation ' + '#' * 80)
     val_r2, val_mae = test(val_loader)
+    print('#' * 80)
     scheduler.step(val_r2)
 
     if best_val_r2 is None or val_r2 > best_val_r2:
         best_val_r2 = val_r2
+        print('Testing ' + '#' * 80)
         tst_r2, tst_mae = test(tst_loader)
+        print('#' * 80)
 
     print('Epoch: {:03d}, LR: {:6f}, Loss: {:.4f}, '.format(epoch, lr, loss),
-          'Validation R2: {:.3f} MAE: {:.4f}; '.format(val_r2, val_mae),
-          'Testing R2: {:.3f} MAE: {:.4f};'.format(tst_r2, tst_mae))
+          'Validation R2: {:.4f} MAE: {:.4f}; '.format(val_r2, val_mae),
+          'Testing R2: {:.4f} MAE: {:.4f};'.format(tst_r2, tst_mae))
 

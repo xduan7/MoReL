@@ -11,10 +11,10 @@ import torch.nn as nn
 
 import utils.data_prep.config as c
 from argparse import Namespace
-from networks.common.reshape import Reshape
-from networks.gnn.gcn.gcn import GCN
-from networks.gnn.ggnn.ggnn import GGNN
-from networks.transformer.encoder import Encoder
+from network.common.reshape import Reshape
+from network.gnn.gcn.gcn import GCN
+from network.gnn.ggnn.ggnn import GGNN
+from network.transformer.encoder import Encoder
 
 
 class ComboModel(nn.Module):

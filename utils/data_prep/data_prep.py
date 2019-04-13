@@ -178,10 +178,10 @@ def feature_prep(pcba_only: bool,
             # not. Moreover, if HDF5 libver is not set to 'latest',
             # the writing would be less than 1 MB per second later on in the
             # data preparation loop. This is because the internal structure
-            # of HDF5, which is not efficient when we have too many datasets
+            # of HDF5, which is not efficient when we have too many dataset
             # inserted in a incremental fashion.
             # TODO: a possible solution to this is by writing in memory
-            #  first and then construct such datasets
+            #  first and then construct such dataset
             if compute_features:
                 cid_mol_str_hdf5_grp.create_dataset(
                     name=str(cid), data=mol_str)

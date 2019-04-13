@@ -29,7 +29,8 @@ class MPNN(nn.Module):
     def __init__(self,
                  node_attr_dim: int,
                  edge_attr_dim: int,
-                 state_dim: int = 64):
+                 state_dim: int = 64,
+                 out_dim: int = 1):
 
         super(MPNN, self).__init__()
 
@@ -51,7 +52,7 @@ class MPNN(nn.Module):
         self.__out_linear = nn.Sequential(
             Linear(2 * state_dim, state_dim),
             ReLU(),
-            Linear(state_dim, 1))
+            Linear(state_dim, out_dim))
 
     def forward(self, data: pyg_data.Data):
 

@@ -8,8 +8,8 @@
 
 """
 import torch.nn as nn
-from networks.transformer.feed_forward import FeedForward
-from networks.transformer.multi_head_attn import MultiHeadAttention
+from network.transformer.feed_forward import FeedForward
+from network.transformer.multi_head_attn import MultiHeadAttention
 
 
 class DecoderLayer(nn.Module):

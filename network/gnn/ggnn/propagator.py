@@ -28,7 +28,7 @@ class Propagator(nn.Module):
         self.__directional_edges = directional_edges
 
         # Uses the same names as PyTorch GRUs
-        # pytorch.org/docs/stable/_modules/torch/nn/modules/rnn.html#GRU
+        # pytorch.org/doc/stable/_modules/torch/nn/modules/rnn.html#GRU
         self.__reset_gate = nn.Sequential(
             nn.Linear(state_dim*3, state_dim),
             nn.Sigmoid())

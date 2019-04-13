@@ -26,8 +26,8 @@ from torch.optim import Optimizer
 from torch.utils.data import DataLoader, Dataset
 
 import utils.data_prep.config as c
-from networks.combo_model import ComboModel
-from utils.datasets.combo_dataset import ComboDataset
+from network.combo_model import ComboModel
+from utils.dataset.combo_dataset import ComboDataset
 from utils.misc.optimizer import get_optimizer
 from utils.misc.random_seeding import seed_random_state
 
