@@ -21,9 +21,9 @@
         https://github.com/rusty1s/pytorch_geometric/issues/175
 """
 
-import h5py
 import torch
 import numpy as np
+import pandas as pd
 import torch.nn.functional as F
 import torch_geometric.data as pyg_data
 from sklearn.metrics import r2_score
@@ -42,7 +42,7 @@ USE_CUDA = True
 RAND_STATE = 0
 TEST_SIZE = 10000
 VALIDATION_SIZE = 10000
-TARGET_DSCRPTR = 'CIC5'
+TARGET_LIST = ['GATS3e']
 
 use_cuda = torch.cuda.is_available() and USE_CUDA
 seed_random_state(RAND_STATE)
@@ -50,19 +50,38 @@ device = torch.device('cuda: 1' if use_cuda else 'cpu')
 print(f'Training on device {device}')
 
 # Get the trn/val/tst datasets and dataloaders ################################
-# HDF5 files
-cid_inchi_hdf5_path = c.PCBA_CID_INCHI_HDF5_PATH \
-    if PCBA_ONLY else c.PC_CID_INCHI_HDF5_PATH
-cid_inchi_hdf5 = h5py.File(cid_inchi_hdf5_path, 'r',  libver='latest')
+cid_smiles_csv_path = c.PCBA_CID_SMILES_CSV_PATH \
+    if PCBA_ONLY else c.PC_CID_SMILES_CSV_PATH
+cid_smiles_df = pd.read_csv(cid_smiles_csv_path,
+                            sep='\t',
+                            header=0,
+                            index_col=0,
+                            dtype=str)
+cid_smiles_df.index = cid_smiles_df.index.map(str)
+cid_smiles_dict = cid_smiles_df.to_dict()['SMILES']
 
-cid_dscrptr_hdf5_path = c.PCBA_CID_TARGET_D7DSCPTR_HDF5_PATH
-cid_dscrptr_hdf5 = h5py.File(cid_dscrptr_hdf5_path, 'r', libver='latest')
+cid_dscrptr_csv_path = c.PCBA_CID_TARGET_D7DSCPTR_CSV_PATH
+cid_dscrptr_df = pd.read_csv(cid_dscrptr_csv_path,
+                             sep='\t',
+                             header=0,
+                             index_col=0,
+                             usecols=['CID'] + TARGET_LIST,
+                             dtype={t: np.float32 for t in TARGET_LIST})
+cid_dscrptr_df.index = cid_dscrptr_df.index.map(str)
+
+# Perform STD normalization for multi-target regression
+cid_dscrptr_df_mean = cid_dscrptr_df.mean().values
+cid_dscrptr_df_std = cid_dscrptr_df.std().values
+cid_dscrptr_df = \
+    (cid_dscrptr_df - cid_dscrptr_df.mean()) / cid_dscrptr_df.std()
+
+cid_dscrptr_dict = cid_dscrptr_df.to_dict()
 
 # List of CIDs for training, validation, and testing
 # Make sure that all entries in the CID list is valid
-inchi_cid_set = set(list(cid_inchi_hdf5.keys()))
-dscrptr_cid_set = set(list(cid_dscrptr_hdf5.keys()))
-cid_list = sorted(list(inchi_cid_set & dscrptr_cid_set), key=int)
+smiles_cid_set = set(list(cid_smiles_dict.keys()))
+dscrptr_cid_set = set(list(cid_dscrptr_dict[TARGET_LIST[0]].keys()))
+cid_list = sorted(list(smiles_cid_set & dscrptr_cid_set), key=int)
 
 trn_cid_list, tst_cid_list = train_test_split(cid_list,
                                               test_size=TEST_SIZE,
@@ -71,17 +90,11 @@ trn_cid_list, val_cid_list = train_test_split(trn_cid_list,
                                               test_size=VALIDATION_SIZE,
                                               random_state=RAND_STATE)
 
-# Sample the training CID list
-_, trn_cid_list = train_test_split(trn_cid_list,
-                                   test_size=VALIDATION_SIZE * 20,
-                                   random_state=RAND_STATE)
-
-
 # Datasets and dataloaders
 dataset_kwargs = {
-    'target_dscrptr': TARGET_DSCRPTR,
-    'cid_inchi_hdf5': cid_inchi_hdf5,
-    'cid_dscrptr_hdf5': cid_dscrptr_hdf5}
+    'target_list': TARGET_LIST,
+    'cid_smiles_dict': cid_smiles_dict,
+    'cid_dscrptr_dict': cid_dscrptr_dict}
 trn_dataset = GraphToDscrptrDataset(cid_list=trn_cid_list, **dataset_kwargs)
 val_dataset = GraphToDscrptrDataset(cid_list=val_cid_list, **dataset_kwargs)
 tst_dataset = GraphToDscrptrDataset(cid_list=tst_cid_list, **dataset_kwargs)
@@ -90,7 +103,7 @@ dataloader_kwargs = {
     'batch_size': 64,
     'timeout': 1,
     'pin_memory': True if use_cuda else False,
-    'num_workers': 1 if use_cuda else 0}
+    'num_workers': 16 if use_cuda else 0}
 trn_loader = pyg_data.DataLoader(trn_dataset,
                                  shuffle=True,
                                  **dataloader_kwargs)

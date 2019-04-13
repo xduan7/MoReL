@@ -55,131 +55,25 @@ ALL_BONDS_EXPLICIT = False
 # * set to True: '[CH2]1[CH2][CH2][CH2][CH2][CH2]1'
 ALL_HS_EXPLICIT = False
 
-# This is the size of stored string length in HDF5
-# Note that 1024 is sufficient for molecules with less than 65 atoms mostly
-# MAX_LEN_MOL_STR = 1024
-
-# Molecule SMILES string featurization ########################################
-MAX_LEN_SMILES = 128
-MAX_LEN_TOKENIZED_SMILES = MAX_LEN_SMILES + 2
-SMILES_PADDING = True
-
-# The minimum frequency of an atom occurring in molecule
-MIN_ATOM_FREQUENCY = 1 / 1024
-
-SPECIAL_TOKEN_DICT = {
-    'SOS':  0,               # Start of the sentence
-    'UNK':  128,             # Unknown token
-    'EOS':  254,             # End of the sentence
-    'PAD':  255,             # Padding
-}
-
-# High frequency/occurrence atoms first
-# This token dict is based on MIN_ATOM_FREQUENCY = 0.001
-# Check data_prep.py for more details
-ATOM_TOKEN_DICT = {
-    'C':    6,
-    'N':    7,
-    'O':    8,
-    'S':    16,
-    'F':    9,
-    'Cl':   17,
-    'Br':   35,
-    'P':    15,
-    'I':    53,
-    'Na':   11,
-    'Si':   14,
-    'B':    5,
-    # 'Se':   34,
-    # 'K':    19,
-    # 'Sn':   50
-}
-
-# Tokenize bonds and other structural characters
-NON_ATOM_TOKEN_DICT = {
-
-    # Bonds
-    '.':    193,
-    '-':    194,
-    '=':    195,
-    '#':    196,
-    '$':    197,
-    ':':    198,
-    '/':    199,
-    '\\':   200,
-
-    # Annotations and charges
-    '[':    224,
-    ']':    225,
-    '(':    226,
-    ')':    227,
-    '+':    228,
-    '%':    229,
-    '@':    230,
-}
-
-# Tokenize numbers from ['0', ..., '63'] -> [129, 192]
-NUMBER_TOKEN_DICT = {str(i): i + 129 for i in range(64)}
-
-# TODO: maybe check for collision
-SMILES_TOKEN_DICT = {
-    **SPECIAL_TOKEN_DICT,
-    **ATOM_TOKEN_DICT,
-    **NON_ATOM_TOKEN_DICT,
-    **NUMBER_TOKEN_DICT,
-}
-
-# Molecule fingerprint (ECFP) featurization ###################################
-ECFP_RADIUS = [2, 3, ]
-ECFP_N_BITS = 1024
-
-# Molecule graph featurization ################################################
-MAX_NUM_ATOMS = 64
-GRAPH_PADDING = True
-GRAPH_MASTER_ATOM = True
-
-ATOM_FEAT_FUNC_LIST = [
-    Chem.Atom.GetAtomicNum,
-    Chem.Atom.GetDegree,
-    Chem.Atom.GetExplicitValence,
-    Chem.Atom.GetFormalCharge,
-    Chem.Atom.GetHybridization,
-    Chem.Atom.GetIsAromatic,
-    # Chem.Atom.GetMass,
-    Chem.Atom.GetTotalDegree,
-    Chem.Atom.IsInRing,
-]
-
-BOND_FEAT_FUNC_LIST = [
-    # The first feature will always be bond existence
-
-    # Chem.Bond.GetBeginAtomIdx()
-    # Chem.Bond.GetEndAtomIdx()
-    Chem.Bond.GetBondType,
-    Chem.Bond.GetBondDir,
-    Chem.Bond.GetIsAromatic,
-    Chem.Bond.GetIsConjugated,
-    Chem.Bond.IsInRing
-]
-
-# Bond feature types that are directional
-DIR_BOND_FEAT_TYPE_LIST = [
-    Chem.rdchem.BondDir,
-]
 
 # Dragon7 descriptor (target) names ###########################################
 TARGET_D7_DSCRPTR_NAMES = [
-    'CIC5',
-    'SpDiam_B(m)',
-    'GATS3e',
-    'VE1_A',
-    'SM6_H2',
-    'SM14_AEA(dm)',
-    'SpMin1_Bh(e)',
-    'SpMax1_Bh(s)',
-    'SpPosA_X',
-    'P_VSA_LogP_3'
-]
+    'MW', 'AMW', 'VE1sign_B(s)', 'IC1', 'GATS4e', 'RBF', 'GATS3e', 'Eta_sh_y',
+    'Mp', 'GATS5i', 'IC2', 'MATS7e', 'Mi', 'Mv', 'Me', 'SssO', 'VE3sign_B(s)',
+    'MATS5i', 'GATS3s', 'MATS7i', 'MATS3e', 'GATS5m', 'MATS5m', 'PW2',
+    'GATS6e', 'MATS4m', 'MATS6s', 'GATS1s', 'SpPosA_X', 'GATS5s', 'P_VSA_MR_5',
+    'VE1sign_D/Dt', 'ALOGP', 'BIC2', 'MATS3v', 'VE1sign_D', 'MATS5s', 'MATS3s',
+    'VE1sign_Dt', 'VE3sign_D', 'MATS2e', 'SIC2', 'GATS8s', 'MATS4p', 'GATS8e',
+    'VE3sign_Dt', 'GATS4m', 'O%', 'MATS8p', 'GATS5e', 'MATS3i', 'PJI2', 'BIC4',
+    'CATS2D_02_AL', 'MATS8i', 'MATS3p', 'GATS7m', 'GATS6m', 'JGT',
+    'VE1sign_Dz(p)', 'MATS4e', 'N%', 'MATS1e', 'P_VSA_LogP_4', 'GATS2i', 'PW3',
+    'MATS4s', 'VE1_B(s)', 'P_VSA_LogP_3', 'MATS4i', 'MATS2s', 'JGI2', 'MATS6m',
+    'MATS7p', 'GATS8p', 'GATS8v', 'GATS4s', 'GATS5p', 'TI2_L', 'MATS6p',
+    'MATS5e', 'GATS4i', 'VE3sign_D/Dt', 'GATS3m', 'VE1sign_X', 'P_VSA_LogP_2',
+    'MAXDN', 'nBM', 'MATS8m', 'MATS1s', 'GATS4p', 'GATS1e', 'D/Dtr05',
+    'MATS3m', 'BLI', 'P_VSA_MR_7', 'GATS7s', 'MATS6i', 'MATS5p', 'MATS7m']
+# Missing 'CIC5', 'SpDiam_B(m)', 'VE1_A', 'SM6_H2', 'SM14_AEA(dm)',
+# 'SpMin1_Bh(e)', 'SpMax1_Bh(s)'
 
 # Directories #################################################################
 
@@ -214,6 +108,8 @@ PCBA_CID_D7_DSCPTR_FILE_PATH = join(RAW_DATA_DIR, PCBA_CID_D7_DSCPTR_FILE_NAME)
 
 PC_CID_INCHI_HDF5_PATH = join(PROCESSED_DATA_DIR, 'CID-InChI.hdf5')
 PCBA_CID_INCHI_HDF5_PATH = join(PROCESSED_DATA_DIR, 'CID-InChI(PCBA).hdf5')
+PC_CID_SMILES_CSV_PATH = join(PROCESSED_DATA_DIR, 'CID-SMILES.csv')
+PCBA_CID_SMILES_CSV_PATH = join(PROCESSED_DATA_DIR, 'CID-SMILES(PCBA).csv')
 
 CID_MOL_STR_HDF5_PATH = join(PROCESSED_DATA_DIR,
                              'CID-Mol_str%s.hdf5' % DATASET_INDICATOR)
@@ -254,6 +150,12 @@ PCBA_CID_TARGET_D7DSCPTR_HDF5_PATH = join(PROCESSED_DATA_DIR,
                                           'PCBA_CID-d7descriptor(target).hdf5')
 PCBA_CID_D7DSCPTR_HDF5_PATH = join(PROCESSED_DATA_DIR,
                                    'PCBA_CID-d7descriptor.hdf5')
+
+PCBA_CID_TARGET_D7DSCPTR_CSV_PATH = join(PROCESSED_DATA_DIR,
+                                         'CID-target_DD(PCBA).csv')
+PCBA_CID_D7DSCPTR_CSV_PATH = join(PROCESSED_DATA_DIR,
+                                  'CID-DD(PCBA).csv')
+
 # Models and training constants ###############################################
 FEATURES = []
 MODELS = {
@@ -281,4 +183,7 @@ NUM_DATALOADER_WORKERS = 0
 
 #
 SHARED_DICT_TIMEOUT_BATCH = 16
+
+
+
 
