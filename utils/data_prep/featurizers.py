@@ -417,6 +417,9 @@ if __name__ == '__main__':
         fp = mol_to_fingerprints(m)
         d = mol_to_descriptors(m)
 
-        n, adj, e = mol_to_graph(m, True, 128)
+        n, adj, e = mol_to_graph(m, True, True, 128)
         assert n.shape[0] == m.GetNumAtoms()
         assert adj.shape[1] == e.shape[0]
+
+        # Convert edge attributes to adjacency matrix
+        # tmp = torch.masked_select(adj, mask=e[:, 2].byte()).view(2, -1)
