@@ -30,6 +30,7 @@ class MPNN(nn.Module):
                  node_attr_dim: int,
                  edge_attr_dim: int,
                  state_dim: int = 64,
+                 num_conv: int = 3,
                  out_dim: int = 1):
 
         super(MPNN, self).__init__()
@@ -38,6 +39,7 @@ class MPNN(nn.Module):
             nn.Linear(node_attr_dim, state_dim),
             ReLU())
 
+        self.__num_conv = num_conv
         self.__nn_conv_linear = Sequential(
             Linear(edge_attr_dim, state_dim),
             ReLU(),
@@ -60,7 +62,7 @@ class MPNN(nn.Module):
 
         h = out.unsqueeze(0)
 
-        for i in range(3):
+        for i in range(self.__num_conv):
             m = F.relu(self.__nn_conv(out, data.edge_index, data.edge_attr))
             out, h = self.__gru(m.unsqueeze(0), h)
             out = out.squeeze(0)

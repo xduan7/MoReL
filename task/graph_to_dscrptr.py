@@ -42,7 +42,7 @@ USE_CUDA = True
 RAND_STATE = 0
 TEST_SIZE = 10000
 VALIDATION_SIZE = 10000
-TARGET_LIST = c.TARGET_D7_DSCRPTR_NAMES
+TARGET_LIST = c.TARGET_D7_DSCRPTR_NAMES[:20]
 
 use_cuda = torch.cuda.is_available() and USE_CUDA
 seed_random_state(RAND_STATE)
@@ -121,6 +121,8 @@ tst_loader = pyg_data.DataLoader(tst_dataset,
 # Model, optimizer, and scheduler #############################################
 model = MPNN(node_attr_dim=trn_dataset.node_attr_dim,
              edge_attr_dim=trn_dataset.edge_attr_dim,
+             state_dim=128,
+             num_conv=6,
              out_dim=len(TARGET_LIST)).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
@@ -141,32 +143,38 @@ def train(epoch):
     return loss_all / len(trn_loader.dataset)
 
 
-def test(loader):
+def test(loader, validation=True):
     model.eval()
-    mae_array = np.zeros(shape=[len(TARGET_LIST)])
-    trgt_array = np.zeros(shape=[0, len(TARGET_LIST)])
-    pred_array = np.zeros(shape=[0, len(TARGET_LIST)])
+    mae_array = np.zeros(shape=(len(TARGET_LIST)))
+    trgt_array = np.zeros(shape=(0, len(TARGET_LIST)))
+    pred_array = np.zeros(shape=(0, len(TARGET_LIST)))
 
     for data in loader:
 
         data = data.to(device)
         pred = model(data)
 
-        mae_array += (pred - data.y).abs().sum(dim=-1).item() * dscrptr_std
+        # mae_array += (pred - data.y).abs().sum(dim=-1).item() * dscrptr_std
 
         trgt = data.y.cpu().numpy().reshape(-1, len(TARGET_LIST))
         pred = pred.detach().cpu().numpy().reshape(-1, len(TARGET_LIST))
 
+        trgt = trgt * dscrptr_std + dscrptr_mean
+        pred = pred * dscrptr_std + dscrptr_mean
+
         trgt_array = np.vstack((trgt_array, trgt))
         pred_array = np.vstack((pred_array, pred))
+        mae_array += np.sum(np.abs(trgt - pred), axis=0)
 
     mae_array = mae_array / len(loader.dataset)
 
-    print(trgt_array.shape)
-    print(pred_array.shape)
+    # Save the results
+    if not validation:
+        np.save(c.PROCESSED_DATA_DIR + '/pred_array.npy', pred_array)
+        np.save(c.PROCESSED_DATA_DIR + '/trgt_array.npy', trgt_array)
 
     r2_array = np.array(
-        [r2_score(y_pred=pred_array[:, i], y_true=trgt_array[:, i]) \
+        [r2_score(y_pred=pred_array[:, i], y_true=trgt_array[:, i])
          for i, t in enumerate(TARGET_LIST)])
 
     for i, target in enumerate(TARGET_LIST):
@@ -188,7 +196,7 @@ for epoch in range(1, 301):
     if best_val_r2 is None or val_r2 > best_val_r2:
         best_val_r2 = val_r2
         print('Testing ' + '#' * 80)
-        tst_r2, tst_mae = test(tst_loader)
+        tst_r2, tst_mae = test(tst_loader, validation=False)
         print('#' * 80)
 
     print('Epoch: {:03d}, LR: {:6f}, Loss: {:.4f}, '.format(epoch, lr, loss),
