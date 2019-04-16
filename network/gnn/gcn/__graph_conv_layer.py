@@ -1,5 +1,5 @@
 """ 
-    File Name:          MoReL/graph_conv_layer.py
+    File Name:          MoReL/__graph_conv_layer.py
     Author:             Xiaotian Duan (xduan7)
     Email:              xduan7@uchicago.edu
     Date:               2/7/19

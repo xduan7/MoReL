@@ -47,10 +47,9 @@ class MPNN(nn.Module):
         self.__nn_conv = pyg_nn.NNConv(
             state_dim, state_dim, self.__nn_conv_linear,
             aggr='mean', root_weight=False)
-
         self.__gru = GRU(state_dim, state_dim)
-        self.__set2set = pyg_nn.Set2Set(state_dim, processing_steps=3)
 
+        self.__set2set = pyg_nn.Set2Set(state_dim, processing_steps=3)
         self.__out_linear = nn.Sequential(
             Linear(2 * state_dim, state_dim),
             ReLU(),
