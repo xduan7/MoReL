@@ -186,12 +186,12 @@ def test(loader, validation=True):
 
 best_val_r2 = None
 for epoch in range(1, 301):
-    lr = scheduler.optimizer.param_groups[0]['lr']
+
+    scheduler.step()
     loss = train(epoch)
     print('Validation ' + '#' * 80)
     val_r2, val_mae = test(val_loader)
     print('#' * 80)
-    scheduler.step(val_r2)
 
     if best_val_r2 is None or val_r2 > best_val_r2:
         best_val_r2 = val_r2
