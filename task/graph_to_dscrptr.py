@@ -37,12 +37,14 @@ from utils.dataset.graph_to_dscrptr_dataset import GraphToDscrptrDataset
 
 # Constants and initializations ###############################################
 # TODO: Need to incorporate constants into argparse
+from utils.misc.scheduler import CyclicCosAnnealingLR
+
 PCBA_ONLY = True
 USE_CUDA = True
 RAND_STATE = 0
 TEST_SIZE = 10000
 VALIDATION_SIZE = 10000
-TARGET_LIST = c.TARGET_D7_DSCRPTR_NAMES[:20]
+TARGET_LIST = c.TARGET_D7_DSCRPTR_NAMES
 
 use_cuda = torch.cuda.is_available() and USE_CUDA
 seed_random_state(RAND_STATE)
@@ -50,6 +52,7 @@ device = torch.device('cuda: 1' if use_cuda else 'cpu')
 print(f'Training on device {device}')
 
 # Get the trn/val/tst dataset and dataloaders ################################
+print('Preparing CID-SMILES dictionary ... ')
 cid_smiles_csv_path = c.PCBA_CID_SMILES_CSV_PATH \
     if PCBA_ONLY else c.PC_CID_SMILES_CSV_PATH
 cid_smiles_df = pd.read_csv(cid_smiles_csv_path,
@@ -59,28 +62,58 @@ cid_smiles_df = pd.read_csv(cid_smiles_csv_path,
                             dtype=str)
 cid_smiles_df.index = cid_smiles_df.index.map(str)
 cid_smiles_dict = cid_smiles_df.to_dict()['SMILES']
+del cid_smiles_df
 
-cid_dscrptr_csv_path = c.PCBA_CID_TARGET_D7DSCPTR_CSV_PATH
-cid_dscrptr_df = pd.read_csv(cid_dscrptr_csv_path,
-                             sep='\t',
-                             header=0,
-                             index_col=0,
-                             usecols=['CID'] + TARGET_LIST,
-                             dtype={t: np.float32 for t in TARGET_LIST})
-cid_dscrptr_df.index = cid_dscrptr_df.index.map(str)
+print('Preparing CID-dscrptr dictionary ... ')
+# cid_dscrptr_dict has a structure of dict[target_name][str(cid)]
+
+# cid_dscrptr_df = pd.read_csv(c.PCBA_CID_TARGET_D7DSCPTR_CSV_PATH,
+#                              sep='\t',
+#                              header=0,
+#                              index_col=0,
+#                              usecols=['CID'] + TARGET_LIST,
+#                              dtype={t: np.float32 for t in TARGET_LIST})
+# cid_dscrptr_df.index = cid_dscrptr_df.index.map(str)
+#
+# # Perform STD normalization for multi-target regression
+# dscrptr_mean = cid_dscrptr_df.mean().values
+# dscrptr_std = cid_dscrptr_df.std().values
+# cid_dscrptr_df = \
+#     (cid_dscrptr_df - cid_dscrptr_df.mean()) / cid_dscrptr_df.std()
+#
+# cid_dscrptr_dict = cid_dscrptr_df.to_dict()
+# del cid_dscrptr_df
+
+cid_list = []
+dscrptr_array = np.array([], dtype=np.float32).reshape(0, len(TARGET_LIST))
+for chunk_cid_dscrptr_df in pd.read_csv(
+        c.PCBA_CID_TARGET_D7DSCPTR_CSV_PATH,
+        sep='\t',
+        header=0,
+        index_col=0,
+        usecols=['CID'] + TARGET_LIST,
+        dtype={**{'CID': str}, **{t: np.float32 for t in TARGET_LIST}},
+        chunksize=2 ** 16):
+
+    chunk_cid_dscrptr_df.index = chunk_cid_dscrptr_df.index.map(str)
+    cid_list.extend(list(chunk_cid_dscrptr_df.index))
+    dscrptr_array = np.vstack((dscrptr_array, chunk_cid_dscrptr_df.values))
 
 # Perform STD normalization for multi-target regression
-dscrptr_mean = cid_dscrptr_df.mean().values
-dscrptr_std = cid_dscrptr_df.std().values
-cid_dscrptr_df = \
-    (cid_dscrptr_df - cid_dscrptr_df.mean()) / cid_dscrptr_df.std()
+dscrptr_mean = np.mean(dscrptr_array, axis=0)
+dscrptr_std = np.std(dscrptr_array, axis=0)
+dscrptr_array = (dscrptr_array - dscrptr_mean) / dscrptr_std
 
-cid_dscrptr_dict = cid_dscrptr_df.to_dict()
+assert len(cid_list) == len(dscrptr_array)
+cid_dscrptr_dict = {cid: dscrptr
+                    for cid, dscrptr in zip(cid_list, dscrptr_array)}
 
+
+print('Preparing datasets and dataloaders ... ')
 # List of CIDs for training, validation, and testing
 # Make sure that all entries in the CID list is valid
 smiles_cid_set = set(list(cid_smiles_dict.keys()))
-dscrptr_cid_set = set(list(cid_dscrptr_dict[TARGET_LIST[0]].keys()))
+dscrptr_cid_set = set(list(cid_dscrptr_dict.keys()))
 cid_list = sorted(list(smiles_cid_set & dscrptr_cid_set), key=int)
 
 trn_cid_list, tst_cid_list = train_test_split(cid_list,
@@ -125,8 +158,10 @@ model = MPNN(node_attr_dim=trn_dataset.node_attr_dim,
              num_conv=6,
              out_dim=len(TARGET_LIST)).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-    optimizer, mode='min', factor=0.8, patience=5, min_lr=0.00001)
+# scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+#     optimizer, mode='min', factor=0.8, patience=5, min_lr=0.00001)
+scheduler = CyclicCosAnnealingLR(
+    optimizer, milestones=[(2 ** x) * 4 for x in range(10)], eta_min=1e-5)
 
 
 def train(epoch):
@@ -184,6 +219,7 @@ def test(loader, validation=True):
     return np.mean(r2_array), np.mean(mae_array)
 
 
+print('Training, validation, and testing ... ')
 best_val_r2 = None
 for epoch in range(1, 301):
 
