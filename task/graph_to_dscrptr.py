@@ -30,6 +30,7 @@ from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 
 import utils.data_prep.config as c
+from network.gnn.gcn.gcn import EdgeGCNEncoder
 from network.gnn.mpnn.mpnn import MPNN
 from utils.misc.random_seeding import seed_random_state
 from utils.dataset.graph_to_dscrptr_dataset import GraphToDscrptrDataset
@@ -48,7 +49,7 @@ TARGET_LIST = c.TARGET_D7_DSCRPTR_NAMES
 
 use_cuda = torch.cuda.is_available() and USE_CUDA
 seed_random_state(RAND_STATE)
-device = torch.device('cuda: 1' if use_cuda else 'cpu')
+device = torch.device('cuda: 0' if use_cuda else 'cpu')
 print(f'Training on device {device}')
 
 # Get the trn/val/tst dataset and dataloaders ################################
@@ -152,16 +153,27 @@ tst_loader = pyg_data.DataLoader(tst_dataset,
 
 
 # Model, optimizer, and scheduler #############################################
-model = MPNN(node_attr_dim=trn_dataset.node_attr_dim,
-             edge_attr_dim=trn_dataset.edge_attr_dim,
-             state_dim=128,
-             num_conv=6,
-             out_dim=len(TARGET_LIST)).to(device)
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+# model = MPNN(node_attr_dim=trn_dataset.node_attr_dim,
+#              edge_attr_dim=trn_dataset.edge_attr_dim,
+#              state_dim=256,
+#              num_conv=3,
+#              out_dim=len(TARGET_LIST)).to(device)
+model = EdgeGCNEncoder(node_attr_dim=trn_dataset.node_attr_dim,
+                       edge_attr_dim=trn_dataset.edge_attr_dim,
+                       out_dim=len(TARGET_LIST),
+                       attention_pooling=True).to(device)
+
+# optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 # scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
 #     optimizer, mode='min', factor=0.8, patience=5, min_lr=0.00001)
-scheduler = CyclicCosAnnealingLR(
-    optimizer, milestones=[(2 ** x) * 4 for x in range(10)], eta_min=1e-5)
+optimizer = torch.optim.SGD(model.parameters(),
+                            lr=1e-3,
+                            momentum=0.9,
+                            weight_decay=1e-4,
+                            nesterov=True)
+scheduler = CyclicCosAnnealingLR(optimizer,
+                                 milestones=[(2**i) * 4 for i in range(10)],
+                                 eta_min=1e-5)
 
 
 def train(epoch):
@@ -171,7 +183,7 @@ def train(epoch):
     for data in trn_loader:
         data = data.to(device)
         optimizer.zero_grad()
-        loss = F.mse_loss(model(data), data.y)
+        loss = F.mse_loss(model(data), data.y.view(-1, len(TARGET_LIST)))
         loss.backward()
         loss_all += loss.item() * data.num_graphs
         optimizer.step()
