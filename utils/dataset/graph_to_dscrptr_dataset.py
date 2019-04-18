@@ -62,20 +62,47 @@ class GraphToDscrptrDataset(Dataset):
         self.__cid_smiles_dict = cid_smiles_dict
 
         if cid_dscrptr_dict is None:
-            cid_dscrptr_csv_path = c.PCBA_CID_TARGET_D7DSCPTR_CSV_PATH
-            cid_dscrptr_df = pd.read_csv(
-                cid_dscrptr_csv_path,
-                sep='\t',
-                header=0,
-                index_col=0,
-                usecols=['CID'] + self.__target_list,
-                dtype={t: np.float32 for t in self.__target_list})
-            cid_dscrptr_df.index = cid_dscrptr_df.index.map(str)
-            self.__cid_dscrptr_dict = cid_dscrptr_df.to_dict()
+            # cid_dscrptr_csv_path = c.PCBA_CID_TARGET_D7DSCPTR_CSV_PATH
+            # cid_dscrptr_df = pd.read_csv(
+            #     cid_dscrptr_csv_path,
+            #     sep='\t',
+            #     header=0,
+            #     index_col=0,
+            #     usecols=['CID'] + self.__target_list,
+            #     dtype={t: np.float32 for t in self.__target_list})
+            # cid_dscrptr_df.index = cid_dscrptr_df.index.map(str)
+            # self.__cid_dscrptr_dict = cid_dscrptr_df.to_dict()
+            cid_list = []
+            dscrptr_array = np.array([]).reshape(0, len(self.__target_list))
+            for chunk_cid_dscrptr_df in pd.read_csv(
+                    c.PCBA_CID_TARGET_D7DSCPTR_CSV_PATH,
+                    sep='\t',
+                    header=0,
+                    index_col=0,
+                    usecols=['CID'] + self.__target_list,
+                    dtype={**{'CID': str},
+                           **{t: np.float32 for t in self.__target_list}},
+                    chunksize=2 ** 16):
+                chunk_cid_dscrptr_df.index = chunk_cid_dscrptr_df.index.map(
+                    str)
+                cid_list.extend(list(chunk_cid_dscrptr_df.index))
+                dscrptr_array = np.vstack(
+                    (dscrptr_array, chunk_cid_dscrptr_df.values))
+
+            # Perform STD normalization for multi-target regression
+            dscrptr_mean = np.mean(dscrptr_array, axis=0)
+            dscrptr_std = np.std(dscrptr_array, axis=0)
+            dscrptr_array = (dscrptr_array - dscrptr_mean) / dscrptr_std
+
+            assert len(cid_list) == len(dscrptr_array)
+            self.__cid_dscrptr_dict = \
+                {cid: dscrptr for cid, dscrptr in zip(cid_list, dscrptr_array)}
+
         else:
-            self.__cid_dscrptr_dict = {k: v for k, v
-                                       in cid_dscrptr_dict.items()
-                                       if k in self.__target_list}
+            # self.__cid_dscrptr_dict = {k: v for k, v
+            #                            in cid_dscrptr_dict.items()
+            #                            if k in self.__target_list}
+            self.__cid_dscrptr_dict = cid_dscrptr_dict
 
         # Old code for HDF5 file processing
         # cid_inchi_hdf5_path = c.PCBA_CID_INCHI_HDF5_PATH \
@@ -131,8 +158,9 @@ class GraphToDscrptrDataset(Dataset):
                                  bond_feat_list=self.__bond_feat_list)
 
         # Target descriptors
-        target = np.array([self.__cid_dscrptr_dict[t][cid] for t in
-                           self.__target_list], dtype=np.float32)
+        # target = np.array([self.__cid_dscrptr_dict[t][cid] for t in
+        #                    self.__target_list], dtype=np.float32)
+        target = self.__cid_dscrptr_dict[cid]
 
         return Data(x=torch.from_numpy(n),
                     edge_index=torch.from_numpy(adj),

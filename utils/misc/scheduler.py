@@ -33,7 +33,6 @@ class CyclicCosAnnealingLR(_LRScheduler):
         if self.last_epoch >= self.milestones[-1]:
             return [self.eta_min for _ in self.base_lrs]
 
-        print(self.last_epoch)
         base_index = sum(self.last_epoch > ms for ms in self.milestones)
         progress = self.last_epoch if base_index == 0 else \
             self.last_epoch - self.milestones[base_index - 1]
