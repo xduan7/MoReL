@@ -72,5 +72,5 @@ class MPNN(nn.Module):
         out = self.__set2set(out, data.batch)
 
         # Now out is of size [batch_size, 2 * state_dim]
-        out = self.__out_linear(out)
-        return out.view(-1)
+        return self.__out_linear(out)
+        # return out.view(-1)

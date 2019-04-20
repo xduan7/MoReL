@@ -26,15 +26,16 @@ class GCN(nn.Module):
         super(GCN, self).__init__()
 
         self.__dropout = dropout
+
+        # Convolution layers
+        # Note that if 'cached' is set
         self.__conv_layers = nn.ModuleList([pyg_nn.GCNConv(
             node_attr_dim if (i == 0) else state_dim,
             out_dim if (i == (num_conv - 1)) else state_dim,
-            cached=True) for i in range(num_conv)])
+            cached=False) for i in range(num_conv)])
 
     def forward(self, data: pyg_data.Data):
-
         out = data.x
-
         for i, layer in enumerate(self.__conv_layers):
             out = layer(out, data.edge_index)
             if i != (len(self.__conv_layers) - 1):
@@ -75,9 +76,12 @@ class EdgeGCN(nn.Module):
 
         out = []
         for i in range(self.__edge_attr_dim):
+
             # New graph that corresponds to the edge attributes
+            _mask = data.edge_attr[:, i].byte()
             _edge_index = torch.masked_select(
-                data.edge_index, mask=data.edge_attr[:, i].byte()).view(2, -1)
+                data.edge_index, mask=_mask).view(2, -1)
+
             _data = pyg_data.Data(x=data.x, edge_index=_edge_index)
             out.append(self.__gcn_nets[i](_data))
 

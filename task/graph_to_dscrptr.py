@@ -49,7 +49,7 @@ TARGET_LIST = c.TARGET_D7_DSCRPTR_NAMES
 
 use_cuda = torch.cuda.is_available() and USE_CUDA
 seed_random_state(RAND_STATE)
-device = torch.device('cuda: 0' if use_cuda else 'cpu')
+device = torch.device('cuda' if use_cuda else 'cpu')
 print(f'Training on device {device}')
 
 # Get the trn/val/tst dataset and dataloaders ################################
@@ -155,25 +155,27 @@ tst_loader = pyg_data.DataLoader(tst_dataset,
 # Model, optimizer, and scheduler #############################################
 # model = MPNN(node_attr_dim=trn_dataset.node_attr_dim,
 #              edge_attr_dim=trn_dataset.edge_attr_dim,
-#              state_dim=256,
+#              state_dim=128,
 #              num_conv=3,
 #              out_dim=len(TARGET_LIST)).to(device)
 model = EdgeGCNEncoder(node_attr_dim=trn_dataset.node_attr_dim,
                        edge_attr_dim=trn_dataset.edge_attr_dim,
+                       state_dim=16,
+                       num_conv=3,
                        out_dim=len(TARGET_LIST),
                        attention_pooling=True).to(device)
 
-# optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-# scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-#     optimizer, mode='min', factor=0.8, patience=5, min_lr=0.00001)
-optimizer = torch.optim.SGD(model.parameters(),
-                            lr=1e-3,
-                            momentum=0.9,
-                            weight_decay=1e-4,
-                            nesterov=True)
-scheduler = CyclicCosAnnealingLR(optimizer,
-                                 milestones=[(2**i) * 4 for i in range(10)],
-                                 eta_min=1e-5)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+    optimizer, mode='min', factor=0.8, patience=5, min_lr=0.00001)
+# optimizer = torch.optim.SGD(model.parameters(),
+#                             lr=1e-3,
+#                             momentum=0.9,
+#                             weight_decay=1e-4,
+#                             nesterov=True)
+# scheduler = CyclicCosAnnealingLR(optimizer,
+#                                  milestones=[(2**i) * 4 for i in range(10)],
+#                                  eta_min=1e-5)
 
 
 def train(epoch):
@@ -235,11 +237,13 @@ print('Training, validation, and testing ... ')
 best_val_r2 = None
 for epoch in range(1, 301):
 
-    scheduler.step()
+    # scheduler.step()
+    lr = scheduler.optimizer.param_groups[0]['lr']
     loss = train(epoch)
     print('Validation ' + '#' * 80)
     val_r2, val_mae = test(val_loader)
     print('#' * 80)
+    scheduler.step(val_r2)
 
     if best_val_r2 is None or val_r2 > best_val_r2:
         best_val_r2 = val_r2

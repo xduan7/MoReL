@@ -1,0 +1,2552 @@
+Training on device cuda:1
+/home/xduan7/anaconda3/envs/pytorch/lib/python3.7/site-packages/numpy/lib/arraysetops.py:569: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+  mask |= (ar1 == a)
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9117, MAE: 142.9750
+Target Descriptor Name: AMW            , R2: 0.9922, MAE: 1.9637
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.7985, MAE: 0.0608
+Target Descriptor Name: IC1            , R2: 0.9455, MAE: 0.0610
+Target Descriptor Name: GATS4e         , R2: 0.9472, MAE: 0.5284
+Target Descriptor Name: RBF            , R2: 0.9879, MAE: 0.0955
+Target Descriptor Name: GATS3e         , R2: 0.9675, MAE: 0.2822
+Target Descriptor Name: Eta_sh_y       , R2: 0.9865, MAE: 0.3661
+Target Descriptor Name: Mp             , R2: 0.9921, MAE: 0.2086
+Target Descriptor Name: GATS5i         , R2: 0.8400, MAE: 0.0954
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9060, MAE: 143.8496
+Target Descriptor Name: AMW            , R2: 0.9922, MAE: 1.9757
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.7963, MAE: 0.0612
+Target Descriptor Name: IC1            , R2: 0.9448, MAE: 0.0614
+Target Descriptor Name: GATS4e         , R2: 0.9494, MAE: 0.5316
+Target Descriptor Name: RBF            , R2: 0.9875, MAE: 0.0961
+Target Descriptor Name: GATS3e         , R2: 0.9662, MAE: 0.2839
+Target Descriptor Name: Eta_sh_y       , R2: 0.9868, MAE: 0.3683
+Target Descriptor Name: Mp             , R2: 0.9922, MAE: 0.2099
+Target Descriptor Name: GATS5i         , R2: 0.8400, MAE: 0.0960
+################################################################################
+Epoch: 001, LR: 0.001000, Loss: 0.1162,  Validation R2: 0.9369 MAE: 14.6637;  Testing R2: 0.9361 MAE: 14.7534;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9304, MAE: 122.7078
+Target Descriptor Name: AMW            , R2: 0.9965, MAE: 1.6853
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8358, MAE: 0.0522
+Target Descriptor Name: IC1            , R2: 0.9541, MAE: 0.0524
+Target Descriptor Name: GATS4e         , R2: 0.9630, MAE: 0.4535
+Target Descriptor Name: RBF            , R2: 0.9916, MAE: 0.0819
+Target Descriptor Name: GATS3e         , R2: 0.9771, MAE: 0.2422
+Target Descriptor Name: Eta_sh_y       , R2: 0.9923, MAE: 0.3142
+Target Descriptor Name: Mp             , R2: 0.9935, MAE: 0.1790
+Target Descriptor Name: GATS5i         , R2: 0.8901, MAE: 0.0819
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9290, MAE: 123.1698
+Target Descriptor Name: AMW            , R2: 0.9964, MAE: 1.6916
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8358, MAE: 0.0524
+Target Descriptor Name: IC1            , R2: 0.9534, MAE: 0.0526
+Target Descriptor Name: GATS4e         , R2: 0.9627, MAE: 0.4552
+Target Descriptor Name: RBF            , R2: 0.9919, MAE: 0.0822
+Target Descriptor Name: GATS3e         , R2: 0.9776, MAE: 0.2431
+Target Descriptor Name: Eta_sh_y       , R2: 0.9923, MAE: 0.3154
+Target Descriptor Name: Mp             , R2: 0.9933, MAE: 0.1797
+Target Descriptor Name: GATS5i         , R2: 0.8898, MAE: 0.0822
+################################################################################
+Epoch: 002, LR: 0.001000, Loss: 0.0565,  Validation R2: 0.9524 MAE: 12.5850;  Testing R2: 0.9522 MAE: 12.6324;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9459, MAE: 113.5074
+Target Descriptor Name: AMW            , R2: 0.9969, MAE: 1.5589
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8499, MAE: 0.0483
+Target Descriptor Name: IC1            , R2: 0.9598, MAE: 0.0485
+Target Descriptor Name: GATS4e         , R2: 0.9683, MAE: 0.4195
+Target Descriptor Name: RBF            , R2: 0.9924, MAE: 0.0758
+Target Descriptor Name: GATS3e         , R2: 0.9809, MAE: 0.2240
+Target Descriptor Name: Eta_sh_y       , R2: 0.9923, MAE: 0.2907
+Target Descriptor Name: Mp             , R2: 0.9956, MAE: 0.1656
+Target Descriptor Name: GATS5i         , R2: 0.8969, MAE: 0.0758
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9452, MAE: 113.6917
+Target Descriptor Name: AMW            , R2: 0.9971, MAE: 1.5615
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8470, MAE: 0.0484
+Target Descriptor Name: IC1            , R2: 0.9596, MAE: 0.0485
+Target Descriptor Name: GATS4e         , R2: 0.9685, MAE: 0.4201
+Target Descriptor Name: RBF            , R2: 0.9920, MAE: 0.0759
+Target Descriptor Name: GATS3e         , R2: 0.9815, MAE: 0.2244
+Target Descriptor Name: Eta_sh_y       , R2: 0.9925, MAE: 0.2911
+Target Descriptor Name: Mp             , R2: 0.9956, MAE: 0.1659
+Target Descriptor Name: GATS5i         , R2: 0.8952, MAE: 0.0759
+################################################################################
+Epoch: 003, LR: 0.001000, Loss: 0.0468,  Validation R2: 0.9579 MAE: 11.6414;  Testing R2: 0.9574 MAE: 11.6603;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9449, MAE: 106.9698
+Target Descriptor Name: AMW            , R2: 0.9978, MAE: 1.4692
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8586, MAE: 0.0455
+Target Descriptor Name: IC1            , R2: 0.9651, MAE: 0.0457
+Target Descriptor Name: GATS4e         , R2: 0.9711, MAE: 0.3953
+Target Descriptor Name: RBF            , R2: 0.9935, MAE: 0.0714
+Target Descriptor Name: GATS3e         , R2: 0.9830, MAE: 0.2111
+Target Descriptor Name: Eta_sh_y       , R2: 0.9943, MAE: 0.2739
+Target Descriptor Name: Mp             , R2: 0.9971, MAE: 0.1561
+Target Descriptor Name: GATS5i         , R2: 0.9101, MAE: 0.0714
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9464, MAE: 107.2098
+Target Descriptor Name: AMW            , R2: 0.9976, MAE: 1.4724
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8567, MAE: 0.0456
+Target Descriptor Name: IC1            , R2: 0.9638, MAE: 0.0458
+Target Descriptor Name: GATS4e         , R2: 0.9727, MAE: 0.3962
+Target Descriptor Name: RBF            , R2: 0.9937, MAE: 0.0716
+Target Descriptor Name: GATS3e         , R2: 0.9821, MAE: 0.2116
+Target Descriptor Name: Eta_sh_y       , R2: 0.9943, MAE: 0.2745
+Target Descriptor Name: Mp             , R2: 0.9970, MAE: 0.1564
+Target Descriptor Name: GATS5i         , R2: 0.9061, MAE: 0.0716
+################################################################################
+Epoch: 004, LR: 0.001000, Loss: 0.0418,  Validation R2: 0.9615 MAE: 10.9709;  Testing R2: 0.9611 MAE: 10.9955;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9371, MAE: 107.5360
+Target Descriptor Name: AMW            , R2: 0.9972, MAE: 1.4769
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8659, MAE: 0.0457
+Target Descriptor Name: IC1            , R2: 0.9679, MAE: 0.0459
+Target Descriptor Name: GATS4e         , R2: 0.9725, MAE: 0.3974
+Target Descriptor Name: RBF            , R2: 0.9944, MAE: 0.0718
+Target Descriptor Name: GATS3e         , R2: 0.9844, MAE: 0.2122
+Target Descriptor Name: Eta_sh_y       , R2: 0.9923, MAE: 0.2754
+Target Descriptor Name: Mp             , R2: 0.9969, MAE: 0.1569
+Target Descriptor Name: GATS5i         , R2: 0.9232, MAE: 0.0718
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9372, MAE: 107.6282
+Target Descriptor Name: AMW            , R2: 0.9964, MAE: 1.4782
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8633, MAE: 0.0458
+Target Descriptor Name: IC1            , R2: 0.9663, MAE: 0.0460
+Target Descriptor Name: GATS4e         , R2: 0.9735, MAE: 0.3977
+Target Descriptor Name: RBF            , R2: 0.9947, MAE: 0.0719
+Target Descriptor Name: GATS3e         , R2: 0.9842, MAE: 0.2124
+Target Descriptor Name: Eta_sh_y       , R2: 0.9924, MAE: 0.2756
+Target Descriptor Name: Mp             , R2: 0.9959, MAE: 0.1570
+Target Descriptor Name: GATS5i         , R2: 0.9219, MAE: 0.0718
+################################################################################
+Epoch: 005, LR: 0.001000, Loss: 0.0389,  Validation R2: 0.9632 MAE: 11.0290;  Testing R2: 0.9626 MAE: 11.0385;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9550, MAE: 102.7607
+Target Descriptor Name: AMW            , R2: 0.9980, MAE: 1.4113
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8694, MAE: 0.0437
+Target Descriptor Name: IC1            , R2: 0.9682, MAE: 0.0439
+Target Descriptor Name: GATS4e         , R2: 0.9717, MAE: 0.3797
+Target Descriptor Name: RBF            , R2: 0.9938, MAE: 0.0686
+Target Descriptor Name: GATS3e         , R2: 0.9851, MAE: 0.2028
+Target Descriptor Name: Eta_sh_y       , R2: 0.9948, MAE: 0.2631
+Target Descriptor Name: Mp             , R2: 0.9968, MAE: 0.1499
+Target Descriptor Name: GATS5i         , R2: 0.9146, MAE: 0.0686
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9545, MAE: 102.9563
+Target Descriptor Name: AMW            , R2: 0.9982, MAE: 1.4140
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8691, MAE: 0.0438
+Target Descriptor Name: IC1            , R2: 0.9669, MAE: 0.0440
+Target Descriptor Name: GATS4e         , R2: 0.9735, MAE: 0.3805
+Target Descriptor Name: RBF            , R2: 0.9938, MAE: 0.0688
+Target Descriptor Name: GATS3e         , R2: 0.9846, MAE: 0.2032
+Target Descriptor Name: Eta_sh_y       , R2: 0.9949, MAE: 0.2636
+Target Descriptor Name: Mp             , R2: 0.9970, MAE: 0.1502
+Target Descriptor Name: GATS5i         , R2: 0.9113, MAE: 0.0687
+################################################################################
+Epoch: 006, LR: 0.001000, Loss: 0.0368,  Validation R2: 0.9648 MAE: 10.5392;  Testing R2: 0.9644 MAE: 10.5593;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9546, MAE: 101.4458
+Target Descriptor Name: AMW            , R2: 0.9979, MAE: 1.3933
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8565, MAE: 0.0431
+Target Descriptor Name: IC1            , R2: 0.9708, MAE: 0.0433
+Target Descriptor Name: GATS4e         , R2: 0.9745, MAE: 0.3749
+Target Descriptor Name: RBF            , R2: 0.9925, MAE: 0.0677
+Target Descriptor Name: GATS3e         , R2: 0.9863, MAE: 0.2002
+Target Descriptor Name: Eta_sh_y       , R2: 0.9957, MAE: 0.2598
+Target Descriptor Name: Mp             , R2: 0.9975, MAE: 0.1480
+Target Descriptor Name: GATS5i         , R2: 0.9267, MAE: 0.0677
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9534, MAE: 102.0734
+Target Descriptor Name: AMW            , R2: 0.9974, MAE: 1.4019
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8590, MAE: 0.0434
+Target Descriptor Name: IC1            , R2: 0.9693, MAE: 0.0436
+Target Descriptor Name: GATS4e         , R2: 0.9759, MAE: 0.3772
+Target Descriptor Name: RBF            , R2: 0.9926, MAE: 0.0682
+Target Descriptor Name: GATS3e         , R2: 0.9854, MAE: 0.2015
+Target Descriptor Name: Eta_sh_y       , R2: 0.9957, MAE: 0.2614
+Target Descriptor Name: Mp             , R2: 0.9975, MAE: 0.1489
+Target Descriptor Name: GATS5i         , R2: 0.9210, MAE: 0.0681
+################################################################################
+Epoch: 007, LR: 0.001000, Loss: 0.0352,  Validation R2: 0.9653 MAE: 10.4044;  Testing R2: 0.9647 MAE: 10.4688;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9607, MAE: 94.1263
+Target Descriptor Name: AMW            , R2: 0.9981, MAE: 1.2928
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8733, MAE: 0.0400
+Target Descriptor Name: IC1            , R2: 0.9719, MAE: 0.0402
+Target Descriptor Name: GATS4e         , R2: 0.9708, MAE: 0.3478
+Target Descriptor Name: RBF            , R2: 0.9948, MAE: 0.0629
+Target Descriptor Name: GATS3e         , R2: 0.9870, MAE: 0.1858
+Target Descriptor Name: Eta_sh_y       , R2: 0.9962, MAE: 0.2410
+Target Descriptor Name: Mp             , R2: 0.9976, MAE: 0.1373
+Target Descriptor Name: GATS5i         , R2: 0.9399, MAE: 0.0628
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9629, MAE: 93.7751
+Target Descriptor Name: AMW            , R2: 0.9976, MAE: 1.2879
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8761, MAE: 0.0399
+Target Descriptor Name: IC1            , R2: 0.9698, MAE: 0.0400
+Target Descriptor Name: GATS4e         , R2: 0.9734, MAE: 0.3465
+Target Descriptor Name: RBF            , R2: 0.9950, MAE: 0.0626
+Target Descriptor Name: GATS3e         , R2: 0.9865, MAE: 0.1851
+Target Descriptor Name: Eta_sh_y       , R2: 0.9961, MAE: 0.2401
+Target Descriptor Name: Mp             , R2: 0.9975, MAE: 0.1368
+Target Descriptor Name: GATS5i         , R2: 0.9364, MAE: 0.0626
+################################################################################
+Epoch: 008, LR: 0.000800, Loss: 0.0321,  Validation R2: 0.9690 MAE: 9.6537;  Testing R2: 0.9691 MAE: 9.6177;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9560, MAE: 95.1003
+Target Descriptor Name: AMW            , R2: 0.9977, MAE: 1.3061
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8740, MAE: 0.0404
+Target Descriptor Name: IC1            , R2: 0.9717, MAE: 0.0406
+Target Descriptor Name: GATS4e         , R2: 0.9771, MAE: 0.3514
+Target Descriptor Name: RBF            , R2: 0.9948, MAE: 0.0635
+Target Descriptor Name: GATS3e         , R2: 0.9863, MAE: 0.1877
+Target Descriptor Name: Eta_sh_y       , R2: 0.9953, MAE: 0.2435
+Target Descriptor Name: Mp             , R2: 0.9975, MAE: 0.1388
+Target Descriptor Name: GATS5i         , R2: 0.9438, MAE: 0.0635
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9568, MAE: 95.3079
+Target Descriptor Name: AMW            , R2: 0.9975, MAE: 1.3090
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8775, MAE: 0.0405
+Target Descriptor Name: IC1            , R2: 0.9710, MAE: 0.0407
+Target Descriptor Name: GATS4e         , R2: 0.9792, MAE: 0.3522
+Target Descriptor Name: RBF            , R2: 0.9949, MAE: 0.0636
+Target Descriptor Name: GATS3e         , R2: 0.9861, MAE: 0.1881
+Target Descriptor Name: Eta_sh_y       , R2: 0.9952, MAE: 0.2440
+Target Descriptor Name: Mp             , R2: 0.9974, MAE: 0.1391
+Target Descriptor Name: GATS5i         , R2: 0.9412, MAE: 0.0636
+################################################################################
+Epoch: 009, LR: 0.000800, Loss: 0.0311,  Validation R2: 0.9694 MAE: 9.7536;  Testing R2: 0.9697 MAE: 9.7749;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9656, MAE: 88.2031
+Target Descriptor Name: AMW            , R2: 0.9982, MAE: 1.2114
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8800, MAE: 0.0375
+Target Descriptor Name: IC1            , R2: 0.9739, MAE: 0.0377
+Target Descriptor Name: GATS4e         , R2: 0.9786, MAE: 0.3259
+Target Descriptor Name: RBF            , R2: 0.9958, MAE: 0.0589
+Target Descriptor Name: GATS3e         , R2: 0.9878, MAE: 0.1741
+Target Descriptor Name: Eta_sh_y       , R2: 0.9957, MAE: 0.2259
+Target Descriptor Name: Mp             , R2: 0.9978, MAE: 0.1287
+Target Descriptor Name: GATS5i         , R2: 0.9468, MAE: 0.0589
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9659, MAE: 88.4659
+Target Descriptor Name: AMW            , R2: 0.9983, MAE: 1.2150
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8827, MAE: 0.0376
+Target Descriptor Name: IC1            , R2: 0.9729, MAE: 0.0378
+Target Descriptor Name: GATS4e         , R2: 0.9806, MAE: 0.3269
+Target Descriptor Name: RBF            , R2: 0.9961, MAE: 0.0591
+Target Descriptor Name: GATS3e         , R2: 0.9872, MAE: 0.1746
+Target Descriptor Name: Eta_sh_y       , R2: 0.9957, MAE: 0.2265
+Target Descriptor Name: Mp             , R2: 0.9977, MAE: 0.1291
+Target Descriptor Name: GATS5i         , R2: 0.9395, MAE: 0.0590
+################################################################################
+Epoch: 010, LR: 0.000800, Loss: 0.0304,  Validation R2: 0.9720 MAE: 9.0462;  Testing R2: 0.9717 MAE: 9.0732;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9636, MAE: 90.7915
+Target Descriptor Name: AMW            , R2: 0.9971, MAE: 1.2470
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8762, MAE: 0.0386
+Target Descriptor Name: IC1            , R2: 0.9732, MAE: 0.0388
+Target Descriptor Name: GATS4e         , R2: 0.9791, MAE: 0.3355
+Target Descriptor Name: RBF            , R2: 0.9957, MAE: 0.0606
+Target Descriptor Name: GATS3e         , R2: 0.9864, MAE: 0.1792
+Target Descriptor Name: Eta_sh_y       , R2: 0.9966, MAE: 0.2325
+Target Descriptor Name: Mp             , R2: 0.9977, MAE: 0.1325
+Target Descriptor Name: GATS5i         , R2: 0.9438, MAE: 0.0606
+################################################################################
+Epoch: 011, LR: 0.000800, Loss: 0.0299,  Validation R2: 0.9709 MAE: 9.3117;  Testing R2: 0.9717 MAE: 9.0732;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9632, MAE: 92.1657
+Target Descriptor Name: AMW            , R2: 0.9980, MAE: 1.2658
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8773, MAE: 0.0392
+Target Descriptor Name: IC1            , R2: 0.9706, MAE: 0.0393
+Target Descriptor Name: GATS4e         , R2: 0.9756, MAE: 0.3406
+Target Descriptor Name: RBF            , R2: 0.9952, MAE: 0.0615
+Target Descriptor Name: GATS3e         , R2: 0.9873, MAE: 0.1819
+Target Descriptor Name: Eta_sh_y       , R2: 0.9967, MAE: 0.2360
+Target Descriptor Name: Mp             , R2: 0.9977, MAE: 0.1345
+Target Descriptor Name: GATS5i         , R2: 0.9408, MAE: 0.0615
+################################################################################
+Epoch: 012, LR: 0.000800, Loss: 0.0293,  Validation R2: 0.9702 MAE: 9.4526;  Testing R2: 0.9717 MAE: 9.0732;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9628, MAE: 91.6261
+Target Descriptor Name: AMW            , R2: 0.9978, MAE: 1.2584
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8815, MAE: 0.0390
+Target Descriptor Name: IC1            , R2: 0.9749, MAE: 0.0391
+Target Descriptor Name: GATS4e         , R2: 0.9708, MAE: 0.3386
+Target Descriptor Name: RBF            , R2: 0.9962, MAE: 0.0612
+Target Descriptor Name: GATS3e         , R2: 0.9883, MAE: 0.1808
+Target Descriptor Name: Eta_sh_y       , R2: 0.9969, MAE: 0.2346
+Target Descriptor Name: Mp             , R2: 0.9977, MAE: 0.1337
+Target Descriptor Name: GATS5i         , R2: 0.9453, MAE: 0.0612
+################################################################################
+Epoch: 013, LR: 0.000800, Loss: 0.0289,  Validation R2: 0.9712 MAE: 9.3973;  Testing R2: 0.9717 MAE: 9.0732;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9693, MAE: 83.3464
+Target Descriptor Name: AMW            , R2: 0.9983, MAE: 1.1447
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8875, MAE: 0.0355
+Target Descriptor Name: IC1            , R2: 0.9761, MAE: 0.0356
+Target Descriptor Name: GATS4e         , R2: 0.9808, MAE: 0.3080
+Target Descriptor Name: RBF            , R2: 0.9965, MAE: 0.0557
+Target Descriptor Name: GATS3e         , R2: 0.9884, MAE: 0.1645
+Target Descriptor Name: Eta_sh_y       , R2: 0.9973, MAE: 0.2134
+Target Descriptor Name: Mp             , R2: 0.9979, MAE: 0.1216
+Target Descriptor Name: GATS5i         , R2: 0.9499, MAE: 0.0556
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9688, MAE: 84.0938
+Target Descriptor Name: AMW            , R2: 0.9981, MAE: 1.1550
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8890, MAE: 0.0358
+Target Descriptor Name: IC1            , R2: 0.9751, MAE: 0.0359
+Target Descriptor Name: GATS4e         , R2: 0.9818, MAE: 0.3108
+Target Descriptor Name: RBF            , R2: 0.9964, MAE: 0.0562
+Target Descriptor Name: GATS3e         , R2: 0.9875, MAE: 0.1660
+Target Descriptor Name: Eta_sh_y       , R2: 0.9972, MAE: 0.2153
+Target Descriptor Name: Mp             , R2: 0.9977, MAE: 0.1227
+Target Descriptor Name: GATS5i         , R2: 0.9436, MAE: 0.0561
+################################################################################
+Epoch: 014, LR: 0.000640, Loss: 0.0270,  Validation R2: 0.9742 MAE: 8.5481;  Testing R2: 0.9735 MAE: 8.6247;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9481, MAE: 96.7719
+Target Descriptor Name: AMW            , R2: 0.9950, MAE: 1.3291
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8838, MAE: 0.0412
+Target Descriptor Name: IC1            , R2: 0.9726, MAE: 0.0413
+Target Descriptor Name: GATS4e         , R2: 0.9749, MAE: 0.3576
+Target Descriptor Name: RBF            , R2: 0.9945, MAE: 0.0646
+Target Descriptor Name: GATS3e         , R2: 0.9870, MAE: 0.1910
+Target Descriptor Name: Eta_sh_y       , R2: 0.9964, MAE: 0.2478
+Target Descriptor Name: Mp             , R2: 0.9951, MAE: 0.1412
+Target Descriptor Name: GATS5i         , R2: 0.9281, MAE: 0.0646
+################################################################################
+Epoch: 015, LR: 0.000640, Loss: 0.0266,  Validation R2: 0.9675 MAE: 9.9250;  Testing R2: 0.9735 MAE: 8.6247;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9691, MAE: 84.5791
+Target Descriptor Name: AMW            , R2: 0.9985, MAE: 1.1616
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8856, MAE: 0.0360
+Target Descriptor Name: IC1            , R2: 0.9762, MAE: 0.0361
+Target Descriptor Name: GATS4e         , R2: 0.9800, MAE: 0.3126
+Target Descriptor Name: RBF            , R2: 0.9964, MAE: 0.0565
+Target Descriptor Name: GATS3e         , R2: 0.9899, MAE: 0.1669
+Target Descriptor Name: Eta_sh_y       , R2: 0.9970, MAE: 0.2166
+Target Descriptor Name: Mp             , R2: 0.9979, MAE: 0.1234
+Target Descriptor Name: GATS5i         , R2: 0.9481, MAE: 0.0565
+################################################################################
+Epoch: 016, LR: 0.000640, Loss: 0.0263,  Validation R2: 0.9739 MAE: 8.6745;  Testing R2: 0.9735 MAE: 8.6247;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9678, MAE: 84.5213
+Target Descriptor Name: AMW            , R2: 0.9976, MAE: 1.1608
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8859, MAE: 0.0360
+Target Descriptor Name: IC1            , R2: 0.9759, MAE: 0.0361
+Target Descriptor Name: GATS4e         , R2: 0.9808, MAE: 0.3123
+Target Descriptor Name: RBF            , R2: 0.9963, MAE: 0.0564
+Target Descriptor Name: GATS3e         , R2: 0.9894, MAE: 0.1668
+Target Descriptor Name: Eta_sh_y       , R2: 0.9965, MAE: 0.2164
+Target Descriptor Name: Mp             , R2: 0.9975, MAE: 0.1233
+Target Descriptor Name: GATS5i         , R2: 0.9526, MAE: 0.0564
+################################################################################
+Epoch: 017, LR: 0.000640, Loss: 0.0259,  Validation R2: 0.9740 MAE: 8.6686;  Testing R2: 0.9735 MAE: 8.6247;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9697, MAE: 82.3543
+Target Descriptor Name: AMW            , R2: 0.9985, MAE: 1.1311
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8906, MAE: 0.0350
+Target Descriptor Name: IC1            , R2: 0.9765, MAE: 0.0352
+Target Descriptor Name: GATS4e         , R2: 0.9809, MAE: 0.3043
+Target Descriptor Name: RBF            , R2: 0.9964, MAE: 0.0550
+Target Descriptor Name: GATS3e         , R2: 0.9884, MAE: 0.1625
+Target Descriptor Name: Eta_sh_y       , R2: 0.9969, MAE: 0.2109
+Target Descriptor Name: Mp             , R2: 0.9983, MAE: 0.1202
+Target Descriptor Name: GATS5i         , R2: 0.9544, MAE: 0.0550
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9707, MAE: 82.4398
+Target Descriptor Name: AMW            , R2: 0.9986, MAE: 1.1323
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8932, MAE: 0.0351
+Target Descriptor Name: IC1            , R2: 0.9757, MAE: 0.0352
+Target Descriptor Name: GATS4e         , R2: 0.9829, MAE: 0.3047
+Target Descriptor Name: RBF            , R2: 0.9963, MAE: 0.0551
+Target Descriptor Name: GATS3e         , R2: 0.9880, MAE: 0.1627
+Target Descriptor Name: Eta_sh_y       , R2: 0.9969, MAE: 0.2111
+Target Descriptor Name: Mp             , R2: 0.9983, MAE: 0.1203
+Target Descriptor Name: GATS5i         , R2: 0.9497, MAE: 0.0550
+################################################################################
+Epoch: 018, LR: 0.000640, Loss: 0.0257,  Validation R2: 0.9751 MAE: 8.4463;  Testing R2: 0.9750 MAE: 8.4551;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9698, MAE: 85.3728
+Target Descriptor Name: AMW            , R2: 0.9984, MAE: 1.1725
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8869, MAE: 0.0363
+Target Descriptor Name: IC1            , R2: 0.9752, MAE: 0.0364
+Target Descriptor Name: GATS4e         , R2: 0.9777, MAE: 0.3155
+Target Descriptor Name: RBF            , R2: 0.9963, MAE: 0.0570
+Target Descriptor Name: GATS3e         , R2: 0.9879, MAE: 0.1685
+Target Descriptor Name: Eta_sh_y       , R2: 0.9974, MAE: 0.2186
+Target Descriptor Name: Mp             , R2: 0.9984, MAE: 0.1246
+Target Descriptor Name: GATS5i         , R2: 0.9445, MAE: 0.0570
+################################################################################
+Epoch: 019, LR: 0.000640, Loss: 0.0255,  Validation R2: 0.9732 MAE: 8.7559;  Testing R2: 0.9750 MAE: 8.4551;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9718, MAE: 81.4213
+Target Descriptor Name: AMW            , R2: 0.9987, MAE: 1.1183
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8916, MAE: 0.0346
+Target Descriptor Name: IC1            , R2: 0.9778, MAE: 0.0348
+Target Descriptor Name: GATS4e         , R2: 0.9812, MAE: 0.3009
+Target Descriptor Name: RBF            , R2: 0.9966, MAE: 0.0544
+Target Descriptor Name: GATS3e         , R2: 0.9900, MAE: 0.1607
+Target Descriptor Name: Eta_sh_y       , R2: 0.9970, MAE: 0.2085
+Target Descriptor Name: Mp             , R2: 0.9983, MAE: 0.1188
+Target Descriptor Name: GATS5i         , R2: 0.9490, MAE: 0.0543
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9721, MAE: 81.5977
+Target Descriptor Name: AMW            , R2: 0.9987, MAE: 1.1207
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8926, MAE: 0.0347
+Target Descriptor Name: IC1            , R2: 0.9770, MAE: 0.0348
+Target Descriptor Name: GATS4e         , R2: 0.9828, MAE: 0.3015
+Target Descriptor Name: RBF            , R2: 0.9964, MAE: 0.0545
+Target Descriptor Name: GATS3e         , R2: 0.9889, MAE: 0.1610
+Target Descriptor Name: Eta_sh_y       , R2: 0.9970, MAE: 0.2089
+Target Descriptor Name: Mp             , R2: 0.9982, MAE: 0.1191
+Target Descriptor Name: GATS5i         , R2: 0.9476, MAE: 0.0545
+################################################################################
+Epoch: 020, LR: 0.000512, Loss: 0.0241,  Validation R2: 0.9752 MAE: 8.3507;  Testing R2: 0.9751 MAE: 8.3687;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9730, MAE: 78.9296
+Target Descriptor Name: AMW            , R2: 0.9988, MAE: 1.0840
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8966, MAE: 0.0336
+Target Descriptor Name: IC1            , R2: 0.9772, MAE: 0.0337
+Target Descriptor Name: GATS4e         , R2: 0.9828, MAE: 0.2917
+Target Descriptor Name: RBF            , R2: 0.9965, MAE: 0.0527
+Target Descriptor Name: GATS3e         , R2: 0.9903, MAE: 0.1558
+Target Descriptor Name: Eta_sh_y       , R2: 0.9973, MAE: 0.2021
+Target Descriptor Name: Mp             , R2: 0.9986, MAE: 0.1152
+Target Descriptor Name: GATS5i         , R2: 0.9556, MAE: 0.0527
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9740, MAE: 78.9406
+Target Descriptor Name: AMW            , R2: 0.9988, MAE: 1.0842
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8996, MAE: 0.0336
+Target Descriptor Name: IC1            , R2: 0.9766, MAE: 0.0337
+Target Descriptor Name: GATS4e         , R2: 0.9832, MAE: 0.2917
+Target Descriptor Name: RBF            , R2: 0.9965, MAE: 0.0527
+Target Descriptor Name: GATS3e         , R2: 0.9896, MAE: 0.1558
+Target Descriptor Name: Eta_sh_y       , R2: 0.9974, MAE: 0.2021
+Target Descriptor Name: Mp             , R2: 0.9985, MAE: 0.1152
+Target Descriptor Name: GATS5i         , R2: 0.9525, MAE: 0.0527
+################################################################################
+Epoch: 021, LR: 0.000512, Loss: 0.0239,  Validation R2: 0.9767 MAE: 8.0951;  Testing R2: 0.9767 MAE: 8.0962;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9737, MAE: 78.8146
+Target Descriptor Name: AMW            , R2: 0.9989, MAE: 1.0825
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8920, MAE: 0.0335
+Target Descriptor Name: IC1            , R2: 0.9778, MAE: 0.0336
+Target Descriptor Name: GATS4e         , R2: 0.9812, MAE: 0.2913
+Target Descriptor Name: RBF            , R2: 0.9969, MAE: 0.0526
+Target Descriptor Name: GATS3e         , R2: 0.9896, MAE: 0.1556
+Target Descriptor Name: Eta_sh_y       , R2: 0.9977, MAE: 0.2018
+Target Descriptor Name: Mp             , R2: 0.9985, MAE: 0.1150
+Target Descriptor Name: GATS5i         , R2: 0.9560, MAE: 0.0526
+################################################################################
+Epoch: 022, LR: 0.000512, Loss: 0.0237,  Validation R2: 0.9762 MAE: 8.0833;  Testing R2: 0.9767 MAE: 8.0962;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9713, MAE: 81.1920
+Target Descriptor Name: AMW            , R2: 0.9988, MAE: 1.1151
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8934, MAE: 0.0345
+Target Descriptor Name: IC1            , R2: 0.9763, MAE: 0.0347
+Target Descriptor Name: GATS4e         , R2: 0.9802, MAE: 0.3000
+Target Descriptor Name: RBF            , R2: 0.9969, MAE: 0.0542
+Target Descriptor Name: GATS3e         , R2: 0.9907, MAE: 0.1602
+Target Descriptor Name: Eta_sh_y       , R2: 0.9971, MAE: 0.2079
+Target Descriptor Name: Mp             , R2: 0.9985, MAE: 0.1185
+Target Descriptor Name: GATS5i         , R2: 0.9556, MAE: 0.0542
+################################################################################
+Epoch: 023, LR: 0.000512, Loss: 0.0235,  Validation R2: 0.9759 MAE: 8.3271;  Testing R2: 0.9767 MAE: 8.0962;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9718, MAE: 77.2364
+Target Descriptor Name: AMW            , R2: 0.9989, MAE: 1.0608
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8981, MAE: 0.0329
+Target Descriptor Name: IC1            , R2: 0.9788, MAE: 0.0330
+Target Descriptor Name: GATS4e         , R2: 0.9823, MAE: 0.2854
+Target Descriptor Name: RBF            , R2: 0.9969, MAE: 0.0516
+Target Descriptor Name: GATS3e         , R2: 0.9910, MAE: 0.1524
+Target Descriptor Name: Eta_sh_y       , R2: 0.9976, MAE: 0.1978
+Target Descriptor Name: Mp             , R2: 0.9986, MAE: 0.1127
+Target Descriptor Name: GATS5i         , R2: 0.9584, MAE: 0.0516
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9716, MAE: 77.3848
+Target Descriptor Name: AMW            , R2: 0.9989, MAE: 1.0628
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9011, MAE: 0.0329
+Target Descriptor Name: IC1            , R2: 0.9783, MAE: 0.0330
+Target Descriptor Name: GATS4e         , R2: 0.9835, MAE: 0.2860
+Target Descriptor Name: RBF            , R2: 0.9970, MAE: 0.0517
+Target Descriptor Name: GATS3e         , R2: 0.9904, MAE: 0.1527
+Target Descriptor Name: Eta_sh_y       , R2: 0.9976, MAE: 0.1982
+Target Descriptor Name: Mp             , R2: 0.9985, MAE: 0.1129
+Target Descriptor Name: GATS5i         , R2: 0.9570, MAE: 0.0517
+################################################################################
+Epoch: 024, LR: 0.000512, Loss: 0.0234,  Validation R2: 0.9772 MAE: 7.9214;  Testing R2: 0.9774 MAE: 7.9367;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9715, MAE: 77.6145
+Target Descriptor Name: AMW            , R2: 0.9987, MAE: 1.0660
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8996, MAE: 0.0330
+Target Descriptor Name: IC1            , R2: 0.9781, MAE: 0.0331
+Target Descriptor Name: GATS4e         , R2: 0.9819, MAE: 0.2868
+Target Descriptor Name: RBF            , R2: 0.9968, MAE: 0.0518
+Target Descriptor Name: GATS3e         , R2: 0.9906, MAE: 0.1532
+Target Descriptor Name: Eta_sh_y       , R2: 0.9977, MAE: 0.1987
+Target Descriptor Name: Mp             , R2: 0.9983, MAE: 0.1132
+Target Descriptor Name: GATS5i         , R2: 0.9578, MAE: 0.0518
+################################################################################
+Epoch: 025, LR: 0.000512, Loss: 0.0232,  Validation R2: 0.9771 MAE: 7.9602;  Testing R2: 0.9774 MAE: 7.9367;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9734, MAE: 76.2825
+Target Descriptor Name: AMW            , R2: 0.9986, MAE: 1.0477
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9007, MAE: 0.0324
+Target Descriptor Name: IC1            , R2: 0.9778, MAE: 0.0326
+Target Descriptor Name: GATS4e         , R2: 0.9845, MAE: 0.2819
+Target Descriptor Name: RBF            , R2: 0.9971, MAE: 0.0509
+Target Descriptor Name: GATS3e         , R2: 0.9916, MAE: 0.1506
+Target Descriptor Name: Eta_sh_y       , R2: 0.9979, MAE: 0.1953
+Target Descriptor Name: Mp             , R2: 0.9986, MAE: 0.1113
+Target Descriptor Name: GATS5i         , R2: 0.9596, MAE: 0.0509
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9738, MAE: 76.5409
+Target Descriptor Name: AMW            , R2: 0.9985, MAE: 1.0512
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9025, MAE: 0.0326
+Target Descriptor Name: IC1            , R2: 0.9772, MAE: 0.0327
+Target Descriptor Name: GATS4e         , R2: 0.9854, MAE: 0.2829
+Target Descriptor Name: RBF            , R2: 0.9972, MAE: 0.0511
+Target Descriptor Name: GATS3e         , R2: 0.9909, MAE: 0.1511
+Target Descriptor Name: Eta_sh_y       , R2: 0.9979, MAE: 0.1960
+Target Descriptor Name: Mp             , R2: 0.9984, MAE: 0.1117
+Target Descriptor Name: GATS5i         , R2: 0.9553, MAE: 0.0511
+################################################################################
+Epoch: 026, LR: 0.000410, Loss: 0.0222,  Validation R2: 0.9780 MAE: 7.8236;  Testing R2: 0.9777 MAE: 7.8501;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9750, MAE: 75.6014
+Target Descriptor Name: AMW            , R2: 0.9990, MAE: 1.0383
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8989, MAE: 0.0322
+Target Descriptor Name: IC1            , R2: 0.9778, MAE: 0.0323
+Target Descriptor Name: GATS4e         , R2: 0.9839, MAE: 0.2794
+Target Descriptor Name: RBF            , R2: 0.9968, MAE: 0.0505
+Target Descriptor Name: GATS3e         , R2: 0.9916, MAE: 0.1492
+Target Descriptor Name: Eta_sh_y       , R2: 0.9977, MAE: 0.1936
+Target Descriptor Name: Mp             , R2: 0.9986, MAE: 0.1103
+Target Descriptor Name: GATS5i         , R2: 0.9600, MAE: 0.0505
+################################################################################
+Epoch: 027, LR: 0.000410, Loss: 0.0220,  Validation R2: 0.9779 MAE: 7.7538;  Testing R2: 0.9777 MAE: 7.8501;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9724, MAE: 75.3777
+Target Descriptor Name: AMW            , R2: 0.9990, MAE: 1.0353
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9031, MAE: 0.0321
+Target Descriptor Name: IC1            , R2: 0.9790, MAE: 0.0322
+Target Descriptor Name: GATS4e         , R2: 0.9840, MAE: 0.2786
+Target Descriptor Name: RBF            , R2: 0.9972, MAE: 0.0503
+Target Descriptor Name: GATS3e         , R2: 0.9910, MAE: 0.1488
+Target Descriptor Name: Eta_sh_y       , R2: 0.9980, MAE: 0.1930
+Target Descriptor Name: Mp             , R2: 0.9984, MAE: 0.1100
+Target Descriptor Name: GATS5i         , R2: 0.9607, MAE: 0.0503
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9728, MAE: 75.7386
+Target Descriptor Name: AMW            , R2: 0.9989, MAE: 1.0402
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9045, MAE: 0.0322
+Target Descriptor Name: IC1            , R2: 0.9784, MAE: 0.0323
+Target Descriptor Name: GATS4e         , R2: 0.9851, MAE: 0.2799
+Target Descriptor Name: RBF            , R2: 0.9972, MAE: 0.0506
+Target Descriptor Name: GATS3e         , R2: 0.9902, MAE: 0.1495
+Target Descriptor Name: Eta_sh_y       , R2: 0.9980, MAE: 0.1939
+Target Descriptor Name: Mp             , R2: 0.9983, MAE: 0.1105
+Target Descriptor Name: GATS5i         , R2: 0.9562, MAE: 0.0506
+################################################################################
+Epoch: 028, LR: 0.000410, Loss: 0.0219,  Validation R2: 0.9783 MAE: 7.7308;  Testing R2: 0.9780 MAE: 7.7678;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9669, MAE: 82.5903
+Target Descriptor Name: AMW            , R2: 0.9989, MAE: 1.1343
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8947, MAE: 0.0351
+Target Descriptor Name: IC1            , R2: 0.9776, MAE: 0.0353
+Target Descriptor Name: GATS4e         , R2: 0.9820, MAE: 0.3052
+Target Descriptor Name: RBF            , R2: 0.9967, MAE: 0.0552
+Target Descriptor Name: GATS3e         , R2: 0.9895, MAE: 0.1630
+Target Descriptor Name: Eta_sh_y       , R2: 0.9974, MAE: 0.2115
+Target Descriptor Name: Mp             , R2: 0.9985, MAE: 0.1205
+Target Descriptor Name: GATS5i         , R2: 0.9488, MAE: 0.0551
+################################################################################
+Epoch: 029, LR: 0.000410, Loss: 0.0218,  Validation R2: 0.9751 MAE: 8.4706;  Testing R2: 0.9780 MAE: 7.7678;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9728, MAE: 76.1058
+Target Descriptor Name: AMW            , R2: 0.9990, MAE: 1.0453
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9015, MAE: 0.0324
+Target Descriptor Name: IC1            , R2: 0.9796, MAE: 0.0325
+Target Descriptor Name: GATS4e         , R2: 0.9842, MAE: 0.2812
+Target Descriptor Name: RBF            , R2: 0.9972, MAE: 0.0508
+Target Descriptor Name: GATS3e         , R2: 0.9912, MAE: 0.1502
+Target Descriptor Name: Eta_sh_y       , R2: 0.9977, MAE: 0.1949
+Target Descriptor Name: Mp             , R2: 0.9985, MAE: 0.1110
+Target Descriptor Name: GATS5i         , R2: 0.9564, MAE: 0.0508
+################################################################################
+Epoch: 030, LR: 0.000410, Loss: 0.0217,  Validation R2: 0.9778 MAE: 7.8055;  Testing R2: 0.9780 MAE: 7.7678;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9774, MAE: 73.7827
+Target Descriptor Name: AMW            , R2: 0.9990, MAE: 1.0134
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9029, MAE: 0.0314
+Target Descriptor Name: IC1            , R2: 0.9799, MAE: 0.0315
+Target Descriptor Name: GATS4e         , R2: 0.9848, MAE: 0.2727
+Target Descriptor Name: RBF            , R2: 0.9973, MAE: 0.0493
+Target Descriptor Name: GATS3e         , R2: 0.9911, MAE: 0.1456
+Target Descriptor Name: Eta_sh_y       , R2: 0.9981, MAE: 0.1889
+Target Descriptor Name: Mp             , R2: 0.9987, MAE: 0.1077
+Target Descriptor Name: GATS5i         , R2: 0.9596, MAE: 0.0492
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9775, MAE: 74.2073
+Target Descriptor Name: AMW            , R2: 0.9989, MAE: 1.0192
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9030, MAE: 0.0316
+Target Descriptor Name: IC1            , R2: 0.9791, MAE: 0.0317
+Target Descriptor Name: GATS4e         , R2: 0.9858, MAE: 0.2742
+Target Descriptor Name: RBF            , R2: 0.9973, MAE: 0.0496
+Target Descriptor Name: GATS3e         , R2: 0.9899, MAE: 0.1465
+Target Descriptor Name: Eta_sh_y       , R2: 0.9981, MAE: 0.1900
+Target Descriptor Name: Mp             , R2: 0.9987, MAE: 0.1083
+Target Descriptor Name: GATS5i         , R2: 0.9580, MAE: 0.0495
+################################################################################
+Epoch: 031, LR: 0.000410, Loss: 0.0216,  Validation R2: 0.9789 MAE: 7.5672;  Testing R2: 0.9786 MAE: 7.6108;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9721, MAE: 74.8290
+Target Descriptor Name: AMW            , R2: 0.9990, MAE: 1.0277
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9034, MAE: 0.0318
+Target Descriptor Name: IC1            , R2: 0.9777, MAE: 0.0319
+Target Descriptor Name: GATS4e         , R2: 0.9850, MAE: 0.2765
+Target Descriptor Name: RBF            , R2: 0.9965, MAE: 0.0500
+Target Descriptor Name: GATS3e         , R2: 0.9916, MAE: 0.1477
+Target Descriptor Name: Eta_sh_y       , R2: 0.9979, MAE: 0.1916
+Target Descriptor Name: Mp             , R2: 0.9988, MAE: 0.1092
+Target Descriptor Name: GATS5i         , R2: 0.9630, MAE: 0.0499
+################################################################################
+Epoch: 032, LR: 0.000328, Loss: 0.0208,  Validation R2: 0.9785 MAE: 7.6745;  Testing R2: 0.9786 MAE: 7.6108;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9760, MAE: 72.7212
+Target Descriptor Name: AMW            , R2: 0.9990, MAE: 0.9988
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9018, MAE: 0.0309
+Target Descriptor Name: IC1            , R2: 0.9800, MAE: 0.0310
+Target Descriptor Name: GATS4e         , R2: 0.9851, MAE: 0.2687
+Target Descriptor Name: RBF            , R2: 0.9974, MAE: 0.0486
+Target Descriptor Name: GATS3e         , R2: 0.9922, MAE: 0.1435
+Target Descriptor Name: Eta_sh_y       , R2: 0.9982, MAE: 0.1862
+Target Descriptor Name: Mp             , R2: 0.9987, MAE: 0.1061
+Target Descriptor Name: GATS5i         , R2: 0.9622, MAE: 0.0485
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9775, MAE: 72.7108
+Target Descriptor Name: AMW            , R2: 0.9990, MAE: 0.9986
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9064, MAE: 0.0309
+Target Descriptor Name: IC1            , R2: 0.9791, MAE: 0.0310
+Target Descriptor Name: GATS4e         , R2: 0.9862, MAE: 0.2687
+Target Descriptor Name: RBF            , R2: 0.9974, MAE: 0.0486
+Target Descriptor Name: GATS3e         , R2: 0.9912, MAE: 0.1435
+Target Descriptor Name: Eta_sh_y       , R2: 0.9982, MAE: 0.1862
+Target Descriptor Name: Mp             , R2: 0.9987, MAE: 0.1061
+Target Descriptor Name: GATS5i         , R2: 0.9606, MAE: 0.0485
+################################################################################
+Epoch: 033, LR: 0.000328, Loss: 0.0207,  Validation R2: 0.9791 MAE: 7.4584;  Testing R2: 0.9794 MAE: 7.4573;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9761, MAE: 72.7381
+Target Descriptor Name: AMW            , R2: 0.9991, MAE: 0.9990
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8998, MAE: 0.0309
+Target Descriptor Name: IC1            , R2: 0.9800, MAE: 0.0311
+Target Descriptor Name: GATS4e         , R2: 0.9851, MAE: 0.2688
+Target Descriptor Name: RBF            , R2: 0.9975, MAE: 0.0486
+Target Descriptor Name: GATS3e         , R2: 0.9921, MAE: 0.1436
+Target Descriptor Name: Eta_sh_y       , R2: 0.9975, MAE: 0.1863
+Target Descriptor Name: Mp             , R2: 0.9986, MAE: 0.1061
+Target Descriptor Name: GATS5i         , R2: 0.9641, MAE: 0.0486
+################################################################################
+Epoch: 034, LR: 0.000328, Loss: 0.0206,  Validation R2: 0.9790 MAE: 7.4601;  Testing R2: 0.9794 MAE: 7.4573;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9751, MAE: 73.2167
+Target Descriptor Name: AMW            , R2: 0.9990, MAE: 1.0056
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9055, MAE: 0.0311
+Target Descriptor Name: IC1            , R2: 0.9805, MAE: 0.0313
+Target Descriptor Name: GATS4e         , R2: 0.9854, MAE: 0.2706
+Target Descriptor Name: RBF            , R2: 0.9974, MAE: 0.0489
+Target Descriptor Name: GATS3e         , R2: 0.9914, MAE: 0.1445
+Target Descriptor Name: Eta_sh_y       , R2: 0.9978, MAE: 0.1875
+Target Descriptor Name: Mp             , R2: 0.9988, MAE: 0.1068
+Target Descriptor Name: GATS5i         , R2: 0.9627, MAE: 0.0489
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9752, MAE: 73.4257
+Target Descriptor Name: AMW            , R2: 0.9988, MAE: 1.0084
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9071, MAE: 0.0312
+Target Descriptor Name: IC1            , R2: 0.9795, MAE: 0.0313
+Target Descriptor Name: GATS4e         , R2: 0.9865, MAE: 0.2713
+Target Descriptor Name: RBF            , R2: 0.9974, MAE: 0.0490
+Target Descriptor Name: GATS3e         , R2: 0.9907, MAE: 0.1449
+Target Descriptor Name: Eta_sh_y       , R2: 0.9978, MAE: 0.1880
+Target Descriptor Name: Mp             , R2: 0.9988, MAE: 0.1071
+Target Descriptor Name: GATS5i         , R2: 0.9610, MAE: 0.0490
+################################################################################
+Epoch: 035, LR: 0.000328, Loss: 0.0206,  Validation R2: 0.9794 MAE: 7.5092;  Testing R2: 0.9793 MAE: 7.5306;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9724, MAE: 75.1349
+Target Descriptor Name: AMW            , R2: 0.9991, MAE: 1.0319
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9026, MAE: 0.0320
+Target Descriptor Name: IC1            , R2: 0.9802, MAE: 0.0321
+Target Descriptor Name: GATS4e         , R2: 0.9855, MAE: 0.2777
+Target Descriptor Name: RBF            , R2: 0.9974, MAE: 0.0502
+Target Descriptor Name: GATS3e         , R2: 0.9915, MAE: 0.1483
+Target Descriptor Name: Eta_sh_y       , R2: 0.9978, MAE: 0.1924
+Target Descriptor Name: Mp             , R2: 0.9988, MAE: 0.1096
+Target Descriptor Name: GATS5i         , R2: 0.9619, MAE: 0.0501
+################################################################################
+Epoch: 036, LR: 0.000328, Loss: 0.0205,  Validation R2: 0.9787 MAE: 7.7059;  Testing R2: 0.9793 MAE: 7.5306;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9712, MAE: 77.0646
+Target Descriptor Name: AMW            , R2: 0.9992, MAE: 1.0584
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9057, MAE: 0.0328
+Target Descriptor Name: IC1            , R2: 0.9802, MAE: 0.0329
+Target Descriptor Name: GATS4e         , R2: 0.9857, MAE: 0.2848
+Target Descriptor Name: RBF            , R2: 0.9959, MAE: 0.0515
+Target Descriptor Name: GATS3e         , R2: 0.9923, MAE: 0.1521
+Target Descriptor Name: Eta_sh_y       , R2: 0.9969, MAE: 0.1973
+Target Descriptor Name: Mp             , R2: 0.9989, MAE: 0.1124
+Target Descriptor Name: GATS5i         , R2: 0.9621, MAE: 0.0514
+################################################################################
+Epoch: 037, LR: 0.000328, Loss: 0.0204,  Validation R2: 0.9788 MAE: 7.9038;  Testing R2: 0.9793 MAE: 7.5306;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9787, MAE: 71.2512
+Target Descriptor Name: AMW            , R2: 0.9991, MAE: 0.9786
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9033, MAE: 0.0303
+Target Descriptor Name: IC1            , R2: 0.9806, MAE: 0.0304
+Target Descriptor Name: GATS4e         , R2: 0.9857, MAE: 0.2633
+Target Descriptor Name: RBF            , R2: 0.9976, MAE: 0.0476
+Target Descriptor Name: GATS3e         , R2: 0.9923, MAE: 0.1406
+Target Descriptor Name: Eta_sh_y       , R2: 0.9981, MAE: 0.1824
+Target Descriptor Name: Mp             , R2: 0.9988, MAE: 0.1040
+Target Descriptor Name: GATS5i         , R2: 0.9643, MAE: 0.0476
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9791, MAE: 71.5383
+Target Descriptor Name: AMW            , R2: 0.9990, MAE: 0.9825
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9064, MAE: 0.0304
+Target Descriptor Name: IC1            , R2: 0.9796, MAE: 0.0305
+Target Descriptor Name: GATS4e         , R2: 0.9864, MAE: 0.2644
+Target Descriptor Name: RBF            , R2: 0.9975, MAE: 0.0478
+Target Descriptor Name: GATS3e         , R2: 0.9915, MAE: 0.1412
+Target Descriptor Name: Eta_sh_y       , R2: 0.9981, MAE: 0.1832
+Target Descriptor Name: Mp             , R2: 0.9988, MAE: 0.1044
+Target Descriptor Name: GATS5i         , R2: 0.9613, MAE: 0.0477
+################################################################################
+Epoch: 038, LR: 0.000262, Loss: 0.0198,  Validation R2: 0.9798 MAE: 7.3076;  Testing R2: 0.9798 MAE: 7.3370;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9754, MAE: 72.7835
+Target Descriptor Name: AMW            , R2: 0.9991, MAE: 0.9996
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9032, MAE: 0.0310
+Target Descriptor Name: IC1            , R2: 0.9809, MAE: 0.0311
+Target Descriptor Name: GATS4e         , R2: 0.9863, MAE: 0.2690
+Target Descriptor Name: RBF            , R2: 0.9976, MAE: 0.0486
+Target Descriptor Name: GATS3e         , R2: 0.9919, MAE: 0.1436
+Target Descriptor Name: Eta_sh_y       , R2: 0.9981, MAE: 0.1864
+Target Descriptor Name: Mp             , R2: 0.9988, MAE: 0.1062
+Target Descriptor Name: GATS5i         , R2: 0.9639, MAE: 0.0486
+################################################################################
+Epoch: 039, LR: 0.000262, Loss: 0.0197,  Validation R2: 0.9795 MAE: 7.4648;  Testing R2: 0.9798 MAE: 7.3370;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9798, MAE: 69.4401
+Target Descriptor Name: AMW            , R2: 0.9990, MAE: 0.9537
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9061, MAE: 0.0295
+Target Descriptor Name: IC1            , R2: 0.9808, MAE: 0.0296
+Target Descriptor Name: GATS4e         , R2: 0.9866, MAE: 0.2566
+Target Descriptor Name: RBF            , R2: 0.9976, MAE: 0.0464
+Target Descriptor Name: GATS3e         , R2: 0.9922, MAE: 0.1370
+Target Descriptor Name: Eta_sh_y       , R2: 0.9983, MAE: 0.1778
+Target Descriptor Name: Mp             , R2: 0.9987, MAE: 0.1013
+Target Descriptor Name: GATS5i         , R2: 0.9664, MAE: 0.0463
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9800, MAE: 69.6317
+Target Descriptor Name: AMW            , R2: 0.9990, MAE: 0.9563
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9108, MAE: 0.0296
+Target Descriptor Name: IC1            , R2: 0.9799, MAE: 0.0297
+Target Descriptor Name: GATS4e         , R2: 0.9873, MAE: 0.2573
+Target Descriptor Name: RBF            , R2: 0.9977, MAE: 0.0465
+Target Descriptor Name: GATS3e         , R2: 0.9914, MAE: 0.1374
+Target Descriptor Name: Eta_sh_y       , R2: 0.9983, MAE: 0.1783
+Target Descriptor Name: Mp             , R2: 0.9987, MAE: 0.1016
+Target Descriptor Name: GATS5i         , R2: 0.9628, MAE: 0.0465
+################################################################################
+Epoch: 040, LR: 0.000262, Loss: 0.0196,  Validation R2: 0.9805 MAE: 7.1218;  Testing R2: 0.9806 MAE: 7.1415;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9774, MAE: 71.1225
+Target Descriptor Name: AMW            , R2: 0.9991, MAE: 0.9768
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9048, MAE: 0.0303
+Target Descriptor Name: IC1            , R2: 0.9808, MAE: 0.0304
+Target Descriptor Name: GATS4e         , R2: 0.9861, MAE: 0.2628
+Target Descriptor Name: RBF            , R2: 0.9976, MAE: 0.0475
+Target Descriptor Name: GATS3e         , R2: 0.9917, MAE: 0.1404
+Target Descriptor Name: Eta_sh_y       , R2: 0.9983, MAE: 0.1821
+Target Descriptor Name: Mp             , R2: 0.9987, MAE: 0.1038
+Target Descriptor Name: GATS5i         , R2: 0.9647, MAE: 0.0475
+################################################################################
+Epoch: 041, LR: 0.000262, Loss: 0.0196,  Validation R2: 0.9799 MAE: 7.2944;  Testing R2: 0.9806 MAE: 7.1415;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9782, MAE: 72.3764
+Target Descriptor Name: AMW            , R2: 0.9992, MAE: 0.9940
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9028, MAE: 0.0308
+Target Descriptor Name: IC1            , R2: 0.9792, MAE: 0.0309
+Target Descriptor Name: GATS4e         , R2: 0.9852, MAE: 0.2675
+Target Descriptor Name: RBF            , R2: 0.9975, MAE: 0.0483
+Target Descriptor Name: GATS3e         , R2: 0.9915, MAE: 0.1428
+Target Descriptor Name: Eta_sh_y       , R2: 0.9982, MAE: 0.1853
+Target Descriptor Name: Mp             , R2: 0.9988, MAE: 0.1056
+Target Descriptor Name: GATS5i         , R2: 0.9609, MAE: 0.0483
+################################################################################
+Epoch: 042, LR: 0.000262, Loss: 0.0195,  Validation R2: 0.9791 MAE: 7.4230;  Testing R2: 0.9806 MAE: 7.1415;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9792, MAE: 69.6962
+Target Descriptor Name: AMW            , R2: 0.9992, MAE: 0.9572
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9052, MAE: 0.0296
+Target Descriptor Name: IC1            , R2: 0.9807, MAE: 0.0298
+Target Descriptor Name: GATS4e         , R2: 0.9862, MAE: 0.2576
+Target Descriptor Name: RBF            , R2: 0.9977, MAE: 0.0465
+Target Descriptor Name: GATS3e         , R2: 0.9921, MAE: 0.1376
+Target Descriptor Name: Eta_sh_y       , R2: 0.9983, MAE: 0.1785
+Target Descriptor Name: Mp             , R2: 0.9988, MAE: 0.1017
+Target Descriptor Name: GATS5i         , R2: 0.9664, MAE: 0.0465
+################################################################################
+Epoch: 043, LR: 0.000262, Loss: 0.0195,  Validation R2: 0.9804 MAE: 7.1481;  Testing R2: 0.9806 MAE: 7.1415;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9787, MAE: 68.1443
+Target Descriptor Name: AMW            , R2: 0.9992, MAE: 0.9359
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9081, MAE: 0.0290
+Target Descriptor Name: IC1            , R2: 0.9815, MAE: 0.0291
+Target Descriptor Name: GATS4e         , R2: 0.9866, MAE: 0.2518
+Target Descriptor Name: RBF            , R2: 0.9977, MAE: 0.0455
+Target Descriptor Name: GATS3e         , R2: 0.9923, MAE: 0.1345
+Target Descriptor Name: Eta_sh_y       , R2: 0.9984, MAE: 0.1745
+Target Descriptor Name: Mp             , R2: 0.9989, MAE: 0.0994
+Target Descriptor Name: GATS5i         , R2: 0.9677, MAE: 0.0455
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9795, MAE: 68.4284
+Target Descriptor Name: AMW            , R2: 0.9992, MAE: 0.9398
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9104, MAE: 0.0291
+Target Descriptor Name: IC1            , R2: 0.9808, MAE: 0.0292
+Target Descriptor Name: GATS4e         , R2: 0.9876, MAE: 0.2529
+Target Descriptor Name: RBF            , R2: 0.9977, MAE: 0.0457
+Target Descriptor Name: GATS3e         , R2: 0.9920, MAE: 0.1351
+Target Descriptor Name: Eta_sh_y       , R2: 0.9984, MAE: 0.1752
+Target Descriptor Name: Mp             , R2: 0.9989, MAE: 0.0998
+Target Descriptor Name: GATS5i         , R2: 0.9628, MAE: 0.0457
+################################################################################
+Epoch: 044, LR: 0.000210, Loss: 0.0190,  Validation R2: 0.9809 MAE: 6.9890;  Testing R2: 0.9807 MAE: 7.0181;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9796, MAE: 67.4729
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.9267
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9094, MAE: 0.0287
+Target Descriptor Name: IC1            , R2: 0.9816, MAE: 0.0288
+Target Descriptor Name: GATS4e         , R2: 0.9863, MAE: 0.2493
+Target Descriptor Name: RBF            , R2: 0.9979, MAE: 0.0451
+Target Descriptor Name: GATS3e         , R2: 0.9925, MAE: 0.1332
+Target Descriptor Name: Eta_sh_y       , R2: 0.9982, MAE: 0.1728
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0984
+Target Descriptor Name: GATS5i         , R2: 0.9678, MAE: 0.0450
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9805, MAE: 67.6603
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.9293
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9115, MAE: 0.0288
+Target Descriptor Name: IC1            , R2: 0.9807, MAE: 0.0289
+Target Descriptor Name: GATS4e         , R2: 0.9873, MAE: 0.2500
+Target Descriptor Name: RBF            , R2: 0.9978, MAE: 0.0452
+Target Descriptor Name: GATS3e         , R2: 0.9922, MAE: 0.1335
+Target Descriptor Name: Eta_sh_y       , R2: 0.9983, MAE: 0.1733
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0987
+Target Descriptor Name: GATS5i         , R2: 0.9645, MAE: 0.0452
+################################################################################
+Epoch: 045, LR: 0.000210, Loss: 0.0189,  Validation R2: 0.9812 MAE: 6.9201;  Testing R2: 0.9811 MAE: 6.9393;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9810, MAE: 67.5289
+Target Descriptor Name: AMW            , R2: 0.9991, MAE: 0.9275
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9097, MAE: 0.0287
+Target Descriptor Name: IC1            , R2: 0.9809, MAE: 0.0288
+Target Descriptor Name: GATS4e         , R2: 0.9867, MAE: 0.2495
+Target Descriptor Name: RBF            , R2: 0.9976, MAE: 0.0451
+Target Descriptor Name: GATS3e         , R2: 0.9928, MAE: 0.1333
+Target Descriptor Name: Eta_sh_y       , R2: 0.9983, MAE: 0.1729
+Target Descriptor Name: Mp             , R2: 0.9989, MAE: 0.0985
+Target Descriptor Name: GATS5i         , R2: 0.9682, MAE: 0.0451
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9813, MAE: 67.9920
+Target Descriptor Name: AMW            , R2: 0.9991, MAE: 0.9338
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9115, MAE: 0.0289
+Target Descriptor Name: IC1            , R2: 0.9797, MAE: 0.0290
+Target Descriptor Name: GATS4e         , R2: 0.9876, MAE: 0.2513
+Target Descriptor Name: RBF            , R2: 0.9975, MAE: 0.0454
+Target Descriptor Name: GATS3e         , R2: 0.9921, MAE: 0.1342
+Target Descriptor Name: Eta_sh_y       , R2: 0.9983, MAE: 0.1741
+Target Descriptor Name: Mp             , R2: 0.9989, MAE: 0.0992
+Target Descriptor Name: GATS5i         , R2: 0.9654, MAE: 0.0454
+################################################################################
+Epoch: 046, LR: 0.000210, Loss: 0.0189,  Validation R2: 0.9813 MAE: 6.9258;  Testing R2: 0.9812 MAE: 6.9733;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9794, MAE: 68.7883
+Target Descriptor Name: AMW            , R2: 0.9992, MAE: 0.9448
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9031, MAE: 0.0293
+Target Descriptor Name: IC1            , R2: 0.9812, MAE: 0.0294
+Target Descriptor Name: GATS4e         , R2: 0.9868, MAE: 0.2542
+Target Descriptor Name: RBF            , R2: 0.9977, MAE: 0.0459
+Target Descriptor Name: GATS3e         , R2: 0.9925, MAE: 0.1358
+Target Descriptor Name: Eta_sh_y       , R2: 0.9982, MAE: 0.1761
+Target Descriptor Name: Mp             , R2: 0.9989, MAE: 0.1004
+Target Descriptor Name: GATS5i         , R2: 0.9671, MAE: 0.0459
+################################################################################
+Epoch: 047, LR: 0.000210, Loss: 0.0188,  Validation R2: 0.9804 MAE: 7.0550;  Testing R2: 0.9812 MAE: 6.9733;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9805, MAE: 67.3193
+Target Descriptor Name: AMW            , R2: 0.9991, MAE: 0.9246
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9092, MAE: 0.0286
+Target Descriptor Name: IC1            , R2: 0.9818, MAE: 0.0287
+Target Descriptor Name: GATS4e         , R2: 0.9869, MAE: 0.2488
+Target Descriptor Name: RBF            , R2: 0.9977, MAE: 0.0450
+Target Descriptor Name: GATS3e         , R2: 0.9927, MAE: 0.1329
+Target Descriptor Name: Eta_sh_y       , R2: 0.9984, MAE: 0.1724
+Target Descriptor Name: Mp             , R2: 0.9988, MAE: 0.0982
+Target Descriptor Name: GATS5i         , R2: 0.9680, MAE: 0.0449
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9805, MAE: 67.4157
+Target Descriptor Name: AMW            , R2: 0.9992, MAE: 0.9259
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9122, MAE: 0.0287
+Target Descriptor Name: IC1            , R2: 0.9808, MAE: 0.0288
+Target Descriptor Name: GATS4e         , R2: 0.9879, MAE: 0.2491
+Target Descriptor Name: RBF            , R2: 0.9977, MAE: 0.0450
+Target Descriptor Name: GATS3e         , R2: 0.9920, MAE: 0.1331
+Target Descriptor Name: Eta_sh_y       , R2: 0.9984, MAE: 0.1726
+Target Descriptor Name: Mp             , R2: 0.9989, MAE: 0.0984
+Target Descriptor Name: GATS5i         , R2: 0.9657, MAE: 0.0450
+################################################################################
+Epoch: 048, LR: 0.000210, Loss: 0.0188,  Validation R2: 0.9813 MAE: 6.9043;  Testing R2: 0.9813 MAE: 6.9142;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9809, MAE: 68.0897
+Target Descriptor Name: AMW            , R2: 0.9992, MAE: 0.9352
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9095, MAE: 0.0290
+Target Descriptor Name: IC1            , R2: 0.9817, MAE: 0.0291
+Target Descriptor Name: GATS4e         , R2: 0.9868, MAE: 0.2516
+Target Descriptor Name: RBF            , R2: 0.9975, MAE: 0.0455
+Target Descriptor Name: GATS3e         , R2: 0.9923, MAE: 0.1344
+Target Descriptor Name: Eta_sh_y       , R2: 0.9984, MAE: 0.1744
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0993
+Target Descriptor Name: GATS5i         , R2: 0.9663, MAE: 0.0454
+################################################################################
+Epoch: 049, LR: 0.000210, Loss: 0.0187,  Validation R2: 0.9812 MAE: 6.9834;  Testing R2: 0.9813 MAE: 6.9142;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9810, MAE: 66.7395
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.9166
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9109, MAE: 0.0284
+Target Descriptor Name: IC1            , R2: 0.9820, MAE: 0.0285
+Target Descriptor Name: GATS4e         , R2: 0.9870, MAE: 0.2466
+Target Descriptor Name: RBF            , R2: 0.9978, MAE: 0.0446
+Target Descriptor Name: GATS3e         , R2: 0.9925, MAE: 0.1317
+Target Descriptor Name: Eta_sh_y       , R2: 0.9984, MAE: 0.1709
+Target Descriptor Name: Mp             , R2: 0.9989, MAE: 0.0974
+Target Descriptor Name: GATS5i         , R2: 0.9682, MAE: 0.0445
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9815, MAE: 66.6840
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.9159
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9121, MAE: 0.0284
+Target Descriptor Name: IC1            , R2: 0.9811, MAE: 0.0285
+Target Descriptor Name: GATS4e         , R2: 0.9883, MAE: 0.2464
+Target Descriptor Name: RBF            , R2: 0.9978, MAE: 0.0445
+Target Descriptor Name: GATS3e         , R2: 0.9926, MAE: 0.1316
+Target Descriptor Name: Eta_sh_y       , R2: 0.9984, MAE: 0.1708
+Target Descriptor Name: Mp             , R2: 0.9989, MAE: 0.0973
+Target Descriptor Name: GATS5i         , R2: 0.9661, MAE: 0.0445
+################################################################################
+Epoch: 050, LR: 0.000168, Loss: 0.0183,  Validation R2: 0.9816 MAE: 6.8449;  Testing R2: 0.9816 MAE: 6.8392;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9797, MAE: 67.6721
+Target Descriptor Name: AMW            , R2: 0.9992, MAE: 0.9294
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9102, MAE: 0.0288
+Target Descriptor Name: IC1            , R2: 0.9815, MAE: 0.0289
+Target Descriptor Name: GATS4e         , R2: 0.9871, MAE: 0.2501
+Target Descriptor Name: RBF            , R2: 0.9977, MAE: 0.0452
+Target Descriptor Name: GATS3e         , R2: 0.9926, MAE: 0.1336
+Target Descriptor Name: Eta_sh_y       , R2: 0.9983, MAE: 0.1733
+Target Descriptor Name: Mp             , R2: 0.9989, MAE: 0.0987
+Target Descriptor Name: GATS5i         , R2: 0.9669, MAE: 0.0452
+################################################################################
+Epoch: 051, LR: 0.000168, Loss: 0.0183,  Validation R2: 0.9812 MAE: 6.9405;  Testing R2: 0.9816 MAE: 6.8392;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9807, MAE: 66.3243
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.9109
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9107, MAE: 0.0282
+Target Descriptor Name: IC1            , R2: 0.9818, MAE: 0.0283
+Target Descriptor Name: GATS4e         , R2: 0.9874, MAE: 0.2451
+Target Descriptor Name: RBF            , R2: 0.9978, MAE: 0.0443
+Target Descriptor Name: GATS3e         , R2: 0.9930, MAE: 0.1309
+Target Descriptor Name: Eta_sh_y       , R2: 0.9984, MAE: 0.1698
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0968
+Target Descriptor Name: GATS5i         , R2: 0.9684, MAE: 0.0443
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9811, MAE: 66.4993
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.9133
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9131, MAE: 0.0283
+Target Descriptor Name: IC1            , R2: 0.9810, MAE: 0.0284
+Target Descriptor Name: GATS4e         , R2: 0.9883, MAE: 0.2457
+Target Descriptor Name: RBF            , R2: 0.9978, MAE: 0.0444
+Target Descriptor Name: GATS3e         , R2: 0.9926, MAE: 0.1312
+Target Descriptor Name: Eta_sh_y       , R2: 0.9985, MAE: 0.1703
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0970
+Target Descriptor Name: GATS5i         , R2: 0.9641, MAE: 0.0444
+################################################################################
+Epoch: 052, LR: 0.000168, Loss: 0.0182,  Validation R2: 0.9816 MAE: 6.8023;  Testing R2: 0.9815 MAE: 6.8202;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9800, MAE: 68.0526
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.9347
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9080, MAE: 0.0289
+Target Descriptor Name: IC1            , R2: 0.9816, MAE: 0.0291
+Target Descriptor Name: GATS4e         , R2: 0.9874, MAE: 0.2515
+Target Descriptor Name: RBF            , R2: 0.9978, MAE: 0.0454
+Target Descriptor Name: GATS3e         , R2: 0.9921, MAE: 0.1343
+Target Descriptor Name: Eta_sh_y       , R2: 0.9980, MAE: 0.1743
+Target Descriptor Name: Mp             , R2: 0.9989, MAE: 0.0993
+Target Descriptor Name: GATS5i         , R2: 0.9689, MAE: 0.0454
+################################################################################
+Epoch: 053, LR: 0.000168, Loss: 0.0182,  Validation R2: 0.9812 MAE: 6.9795;  Testing R2: 0.9815 MAE: 6.8202;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9781, MAE: 71.8823
+Target Descriptor Name: AMW            , R2: 0.9991, MAE: 0.9873
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.8942, MAE: 0.0306
+Target Descriptor Name: IC1            , R2: 0.9810, MAE: 0.0307
+Target Descriptor Name: GATS4e         , R2: 0.9866, MAE: 0.2656
+Target Descriptor Name: RBF            , R2: 0.9975, MAE: 0.0480
+Target Descriptor Name: GATS3e         , R2: 0.9922, MAE: 0.1419
+Target Descriptor Name: Eta_sh_y       , R2: 0.9983, MAE: 0.1841
+Target Descriptor Name: Mp             , R2: 0.9989, MAE: 0.1049
+Target Descriptor Name: GATS5i         , R2: 0.9625, MAE: 0.0480
+################################################################################
+Epoch: 054, LR: 0.000168, Loss: 0.0182,  Validation R2: 0.9788 MAE: 7.3723;  Testing R2: 0.9815 MAE: 6.8202;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9806, MAE: 66.4677
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.9129
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9105, MAE: 0.0283
+Target Descriptor Name: IC1            , R2: 0.9810, MAE: 0.0284
+Target Descriptor Name: GATS4e         , R2: 0.9873, MAE: 0.2456
+Target Descriptor Name: RBF            , R2: 0.9977, MAE: 0.0444
+Target Descriptor Name: GATS3e         , R2: 0.9930, MAE: 0.1312
+Target Descriptor Name: Eta_sh_y       , R2: 0.9985, MAE: 0.1702
+Target Descriptor Name: Mp             , R2: 0.9989, MAE: 0.0970
+Target Descriptor Name: GATS5i         , R2: 0.9690, MAE: 0.0444
+################################################################################
+Epoch: 055, LR: 0.000168, Loss: 0.0181,  Validation R2: 0.9816 MAE: 6.8170;  Testing R2: 0.9815 MAE: 6.8202;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9817, MAE: 65.4520
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.8989
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9111, MAE: 0.0278
+Target Descriptor Name: IC1            , R2: 0.9822, MAE: 0.0279
+Target Descriptor Name: GATS4e         , R2: 0.9877, MAE: 0.2419
+Target Descriptor Name: RBF            , R2: 0.9979, MAE: 0.0437
+Target Descriptor Name: GATS3e         , R2: 0.9927, MAE: 0.1292
+Target Descriptor Name: Eta_sh_y       , R2: 0.9985, MAE: 0.1676
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0955
+Target Descriptor Name: GATS5i         , R2: 0.9692, MAE: 0.0437
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9822, MAE: 65.3794
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.8979
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9151, MAE: 0.0278
+Target Descriptor Name: IC1            , R2: 0.9815, MAE: 0.0279
+Target Descriptor Name: GATS4e         , R2: 0.9887, MAE: 0.2416
+Target Descriptor Name: RBF            , R2: 0.9979, MAE: 0.0437
+Target Descriptor Name: GATS3e         , R2: 0.9924, MAE: 0.1290
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1674
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0954
+Target Descriptor Name: GATS5i         , R2: 0.9678, MAE: 0.0436
+################################################################################
+Epoch: 056, LR: 0.000134, Loss: 0.0178,  Validation R2: 0.9819 MAE: 6.7128;  Testing R2: 0.9822 MAE: 6.7054;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9812, MAE: 65.5064
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.8997
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9113, MAE: 0.0279
+Target Descriptor Name: IC1            , R2: 0.9823, MAE: 0.0280
+Target Descriptor Name: GATS4e         , R2: 0.9878, MAE: 0.2421
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0437
+Target Descriptor Name: GATS3e         , R2: 0.9927, MAE: 0.1293
+Target Descriptor Name: Eta_sh_y       , R2: 0.9983, MAE: 0.1677
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0956
+Target Descriptor Name: GATS5i         , R2: 0.9693, MAE: 0.0437
+################################################################################
+Epoch: 057, LR: 0.000134, Loss: 0.0178,  Validation R2: 0.9819 MAE: 6.7184;  Testing R2: 0.9822 MAE: 6.7054;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9809, MAE: 66.6880
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.9159
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9112, MAE: 0.0284
+Target Descriptor Name: IC1            , R2: 0.9821, MAE: 0.0285
+Target Descriptor Name: GATS4e         , R2: 0.9878, MAE: 0.2464
+Target Descriptor Name: RBF            , R2: 0.9977, MAE: 0.0445
+Target Descriptor Name: GATS3e         , R2: 0.9928, MAE: 0.1316
+Target Descriptor Name: Eta_sh_y       , R2: 0.9985, MAE: 0.1708
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0973
+Target Descriptor Name: GATS5i         , R2: 0.9679, MAE: 0.0445
+################################################################################
+Epoch: 058, LR: 0.000134, Loss: 0.0178,  Validation R2: 0.9817 MAE: 6.8396;  Testing R2: 0.9822 MAE: 6.7054;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9809, MAE: 66.3839
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.9117
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9087, MAE: 0.0282
+Target Descriptor Name: IC1            , R2: 0.9814, MAE: 0.0283
+Target Descriptor Name: GATS4e         , R2: 0.9871, MAE: 0.2453
+Target Descriptor Name: RBF            , R2: 0.9979, MAE: 0.0443
+Target Descriptor Name: GATS3e         , R2: 0.9927, MAE: 0.1310
+Target Descriptor Name: Eta_sh_y       , R2: 0.9984, MAE: 0.1700
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0969
+Target Descriptor Name: GATS5i         , R2: 0.9697, MAE: 0.0443
+################################################################################
+Epoch: 059, LR: 0.000134, Loss: 0.0177,  Validation R2: 0.9815 MAE: 6.8084;  Testing R2: 0.9822 MAE: 6.7054;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9812, MAE: 65.9247
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.9054
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9079, MAE: 0.0280
+Target Descriptor Name: IC1            , R2: 0.9822, MAE: 0.0281
+Target Descriptor Name: GATS4e         , R2: 0.9878, MAE: 0.2436
+Target Descriptor Name: RBF            , R2: 0.9979, MAE: 0.0440
+Target Descriptor Name: GATS3e         , R2: 0.9928, MAE: 0.1301
+Target Descriptor Name: Eta_sh_y       , R2: 0.9985, MAE: 0.1688
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0962
+Target Descriptor Name: GATS5i         , R2: 0.9696, MAE: 0.0440
+################################################################################
+Epoch: 060, LR: 0.000134, Loss: 0.0177,  Validation R2: 0.9816 MAE: 6.7613;  Testing R2: 0.9822 MAE: 6.7054;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9809, MAE: 66.1070
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.9079
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9073, MAE: 0.0281
+Target Descriptor Name: IC1            , R2: 0.9824, MAE: 0.0282
+Target Descriptor Name: GATS4e         , R2: 0.9875, MAE: 0.2443
+Target Descriptor Name: RBF            , R2: 0.9978, MAE: 0.0441
+Target Descriptor Name: GATS3e         , R2: 0.9931, MAE: 0.1305
+Target Descriptor Name: Eta_sh_y       , R2: 0.9985, MAE: 0.1693
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0965
+Target Descriptor Name: GATS5i         , R2: 0.9687, MAE: 0.0441
+################################################################################
+Epoch: 061, LR: 0.000134, Loss: 0.0177,  Validation R2: 0.9815 MAE: 6.7800;  Testing R2: 0.9822 MAE: 6.7054;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9818, MAE: 64.6246
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.8876
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9120, MAE: 0.0275
+Target Descriptor Name: IC1            , R2: 0.9825, MAE: 0.0276
+Target Descriptor Name: GATS4e         , R2: 0.9879, MAE: 0.2388
+Target Descriptor Name: RBF            , R2: 0.9979, MAE: 0.0432
+Target Descriptor Name: GATS3e         , R2: 0.9933, MAE: 0.1275
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1655
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0943
+Target Descriptor Name: GATS5i         , R2: 0.9705, MAE: 0.0431
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9825, MAE: 64.8497
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.8907
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9139, MAE: 0.0276
+Target Descriptor Name: IC1            , R2: 0.9817, MAE: 0.0277
+Target Descriptor Name: GATS4e         , R2: 0.9884, MAE: 0.2396
+Target Descriptor Name: RBF            , R2: 0.9978, MAE: 0.0433
+Target Descriptor Name: GATS3e         , R2: 0.9929, MAE: 0.1280
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1661
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0946
+Target Descriptor Name: GATS5i         , R2: 0.9671, MAE: 0.0433
+################################################################################
+Epoch: 062, LR: 0.000107, Loss: 0.0174,  Validation R2: 0.9823 MAE: 6.6280;  Testing R2: 0.9821 MAE: 6.6511;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9819, MAE: 64.4788
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.8856
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9119, MAE: 0.0274
+Target Descriptor Name: IC1            , R2: 0.9820, MAE: 0.0275
+Target Descriptor Name: GATS4e         , R2: 0.9878, MAE: 0.2383
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0431
+Target Descriptor Name: GATS3e         , R2: 0.9933, MAE: 0.1273
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1651
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0941
+Target Descriptor Name: GATS5i         , R2: 0.9703, MAE: 0.0430
+################################################################################
+Epoch: 063, LR: 0.000107, Loss: 0.0174,  Validation R2: 0.9822 MAE: 6.6130;  Testing R2: 0.9821 MAE: 6.6511;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9820, MAE: 65.2279
+Target Descriptor Name: AMW            , R2: 0.9992, MAE: 0.8959
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9123, MAE: 0.0277
+Target Descriptor Name: IC1            , R2: 0.9825, MAE: 0.0278
+Target Descriptor Name: GATS4e         , R2: 0.9879, MAE: 0.2410
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0436
+Target Descriptor Name: GATS3e         , R2: 0.9931, MAE: 0.1287
+Target Descriptor Name: Eta_sh_y       , R2: 0.9985, MAE: 0.1670
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0952
+Target Descriptor Name: GATS5i         , R2: 0.9684, MAE: 0.0435
+################################################################################
+Epoch: 064, LR: 0.000107, Loss: 0.0173,  Validation R2: 0.9821 MAE: 6.6898;  Testing R2: 0.9821 MAE: 6.6511;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9812, MAE: 65.6726
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.9020
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9075, MAE: 0.0279
+Target Descriptor Name: IC1            , R2: 0.9823, MAE: 0.0280
+Target Descriptor Name: GATS4e         , R2: 0.9874, MAE: 0.2427
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0439
+Target Descriptor Name: GATS3e         , R2: 0.9931, MAE: 0.1296
+Target Descriptor Name: Eta_sh_y       , R2: 0.9985, MAE: 0.1682
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0958
+Target Descriptor Name: GATS5i         , R2: 0.9698, MAE: 0.0438
+################################################################################
+Epoch: 065, LR: 0.000107, Loss: 0.0173,  Validation R2: 0.9816 MAE: 6.7355;  Testing R2: 0.9821 MAE: 6.6511;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9819, MAE: 64.5825
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.8870
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9118, MAE: 0.0275
+Target Descriptor Name: IC1            , R2: 0.9820, MAE: 0.0276
+Target Descriptor Name: GATS4e         , R2: 0.9879, MAE: 0.2387
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0431
+Target Descriptor Name: GATS3e         , R2: 0.9933, MAE: 0.1275
+Target Descriptor Name: Eta_sh_y       , R2: 0.9985, MAE: 0.1654
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0942
+Target Descriptor Name: GATS5i         , R2: 0.9696, MAE: 0.0431
+################################################################################
+Epoch: 066, LR: 0.000107, Loss: 0.0173,  Validation R2: 0.9821 MAE: 6.6236;  Testing R2: 0.9821 MAE: 6.6511;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9822, MAE: 64.2218
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.8820
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9129, MAE: 0.0273
+Target Descriptor Name: IC1            , R2: 0.9826, MAE: 0.0274
+Target Descriptor Name: GATS4e         , R2: 0.9879, MAE: 0.2373
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0429
+Target Descriptor Name: GATS3e         , R2: 0.9933, MAE: 0.1268
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1644
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0937
+Target Descriptor Name: GATS5i         , R2: 0.9698, MAE: 0.0429
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9828, MAE: 64.3771
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.8842
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9150, MAE: 0.0274
+Target Descriptor Name: IC1            , R2: 0.9817, MAE: 0.0275
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2379
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0430
+Target Descriptor Name: GATS3e         , R2: 0.9930, MAE: 0.1271
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1648
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0939
+Target Descriptor Name: GATS5i         , R2: 0.9672, MAE: 0.0430
+################################################################################
+Epoch: 067, LR: 0.000107, Loss: 0.0173,  Validation R2: 0.9824 MAE: 6.5867;  Testing R2: 0.9824 MAE: 6.6026;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9821, MAE: 64.1553
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8811
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9133, MAE: 0.0273
+Target Descriptor Name: IC1            , R2: 0.9828, MAE: 0.0274
+Target Descriptor Name: GATS4e         , R2: 0.9879, MAE: 0.2371
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0428
+Target Descriptor Name: GATS3e         , R2: 0.9933, MAE: 0.1266
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1643
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0936
+Target Descriptor Name: GATS5i         , R2: 0.9700, MAE: 0.0428
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9826, MAE: 64.3435
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.8837
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9157, MAE: 0.0274
+Target Descriptor Name: IC1            , R2: 0.9819, MAE: 0.0275
+Target Descriptor Name: GATS4e         , R2: 0.9886, MAE: 0.2378
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0430
+Target Descriptor Name: GATS3e         , R2: 0.9930, MAE: 0.1270
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1648
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0939
+Target Descriptor Name: GATS5i         , R2: 0.9674, MAE: 0.0429
+################################################################################
+Epoch: 068, LR: 0.000086, Loss: 0.0171,  Validation R2: 0.9824 MAE: 6.5798;  Testing R2: 0.9824 MAE: 6.5991;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9826, MAE: 63.8297
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.8767
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9108, MAE: 0.0271
+Target Descriptor Name: IC1            , R2: 0.9825, MAE: 0.0273
+Target Descriptor Name: GATS4e         , R2: 0.9883, MAE: 0.2359
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0426
+Target Descriptor Name: GATS3e         , R2: 0.9935, MAE: 0.1260
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1634
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0931
+Target Descriptor Name: GATS5i         , R2: 0.9709, MAE: 0.0426
+################################################################################
+Epoch: 069, LR: 0.000086, Loss: 0.0170,  Validation R2: 0.9824 MAE: 6.5464;  Testing R2: 0.9824 MAE: 6.5991;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9816, MAE: 64.0223
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8793
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9138, MAE: 0.0272
+Target Descriptor Name: IC1            , R2: 0.9826, MAE: 0.0273
+Target Descriptor Name: GATS4e         , R2: 0.9882, MAE: 0.2366
+Target Descriptor Name: RBF            , R2: 0.9979, MAE: 0.0428
+Target Descriptor Name: GATS3e         , R2: 0.9933, MAE: 0.1264
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1639
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0934
+Target Descriptor Name: GATS5i         , R2: 0.9703, MAE: 0.0427
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9827, MAE: 64.3221
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.8834
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9153, MAE: 0.0274
+Target Descriptor Name: IC1            , R2: 0.9817, MAE: 0.0275
+Target Descriptor Name: GATS4e         , R2: 0.9888, MAE: 0.2377
+Target Descriptor Name: RBF            , R2: 0.9979, MAE: 0.0430
+Target Descriptor Name: GATS3e         , R2: 0.9929, MAE: 0.1269
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1647
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0938
+Target Descriptor Name: GATS5i         , R2: 0.9683, MAE: 0.0429
+################################################################################
+Epoch: 070, LR: 0.000086, Loss: 0.0170,  Validation R2: 0.9825 MAE: 6.5662;  Testing R2: 0.9825 MAE: 6.5969;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9820, MAE: 64.1091
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8805
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9145, MAE: 0.0273
+Target Descriptor Name: IC1            , R2: 0.9827, MAE: 0.0274
+Target Descriptor Name: GATS4e         , R2: 0.9874, MAE: 0.2369
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0428
+Target Descriptor Name: GATS3e         , R2: 0.9935, MAE: 0.1265
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1642
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0935
+Target Descriptor Name: GATS5i         , R2: 0.9697, MAE: 0.0428
+################################################################################
+Epoch: 071, LR: 0.000086, Loss: 0.0170,  Validation R2: 0.9825 MAE: 6.5751;  Testing R2: 0.9825 MAE: 6.5969;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9822, MAE: 63.6790
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.8746
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9128, MAE: 0.0271
+Target Descriptor Name: IC1            , R2: 0.9826, MAE: 0.0272
+Target Descriptor Name: GATS4e         , R2: 0.9882, MAE: 0.2353
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0425
+Target Descriptor Name: GATS3e         , R2: 0.9934, MAE: 0.1257
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1631
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0929
+Target Descriptor Name: GATS5i         , R2: 0.9714, MAE: 0.0425
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9834, MAE: 63.6655
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.8744
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9167, MAE: 0.0271
+Target Descriptor Name: IC1            , R2: 0.9819, MAE: 0.0272
+Target Descriptor Name: GATS4e         , R2: 0.9890, MAE: 0.2353
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0425
+Target Descriptor Name: GATS3e         , R2: 0.9930, MAE: 0.1257
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1630
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0929
+Target Descriptor Name: GATS5i         , R2: 0.9683, MAE: 0.0425
+################################################################################
+Epoch: 072, LR: 0.000086, Loss: 0.0170,  Validation R2: 0.9826 MAE: 6.5310;  Testing R2: 0.9827 MAE: 6.5296;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9826, MAE: 63.8453
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.8769
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9135, MAE: 0.0272
+Target Descriptor Name: IC1            , R2: 0.9827, MAE: 0.0273
+Target Descriptor Name: GATS4e         , R2: 0.9878, MAE: 0.2359
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0426
+Target Descriptor Name: GATS3e         , R2: 0.9934, MAE: 0.1260
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1635
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0932
+Target Descriptor Name: GATS5i         , R2: 0.9711, MAE: 0.0426
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9834, MAE: 63.8154
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.8765
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9168, MAE: 0.0271
+Target Descriptor Name: IC1            , R2: 0.9818, MAE: 0.0272
+Target Descriptor Name: GATS4e         , R2: 0.9887, MAE: 0.2358
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0426
+Target Descriptor Name: GATS3e         , R2: 0.9931, MAE: 0.1259
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1634
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0931
+Target Descriptor Name: GATS5i         , R2: 0.9682, MAE: 0.0426
+################################################################################
+Epoch: 073, LR: 0.000086, Loss: 0.0170,  Validation R2: 0.9826 MAE: 6.5480;  Testing R2: 0.9827 MAE: 6.5450;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9829, MAE: 63.2246
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8683
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9144, MAE: 0.0269
+Target Descriptor Name: IC1            , R2: 0.9827, MAE: 0.0270
+Target Descriptor Name: GATS4e         , R2: 0.9885, MAE: 0.2336
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0422
+Target Descriptor Name: GATS3e         , R2: 0.9935, MAE: 0.1248
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1619
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0922
+Target Descriptor Name: GATS5i         , R2: 0.9708, MAE: 0.0422
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9836, MAE: 63.3422
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8700
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9157, MAE: 0.0269
+Target Descriptor Name: IC1            , R2: 0.9820, MAE: 0.0270
+Target Descriptor Name: GATS4e         , R2: 0.9891, MAE: 0.2341
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0423
+Target Descriptor Name: GATS3e         , R2: 0.9931, MAE: 0.1250
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1622
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0924
+Target Descriptor Name: GATS5i         , R2: 0.9687, MAE: 0.0423
+################################################################################
+Epoch: 074, LR: 0.000069, Loss: 0.0168,  Validation R2: 0.9828 MAE: 6.4844;  Testing R2: 0.9827 MAE: 6.4964;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9827, MAE: 64.5573
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8866
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9131, MAE: 0.0275
+Target Descriptor Name: IC1            , R2: 0.9826, MAE: 0.0276
+Target Descriptor Name: GATS4e         , R2: 0.9876, MAE: 0.2386
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0431
+Target Descriptor Name: GATS3e         , R2: 0.9929, MAE: 0.1274
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1653
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0942
+Target Descriptor Name: GATS5i         , R2: 0.9702, MAE: 0.0431
+################################################################################
+Epoch: 075, LR: 0.000069, Loss: 0.0168,  Validation R2: 0.9824 MAE: 6.6211;  Testing R2: 0.9827 MAE: 6.4964;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9827, MAE: 63.3757
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8704
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9135, MAE: 0.0270
+Target Descriptor Name: IC1            , R2: 0.9829, MAE: 0.0271
+Target Descriptor Name: GATS4e         , R2: 0.9882, MAE: 0.2342
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0423
+Target Descriptor Name: GATS3e         , R2: 0.9934, MAE: 0.1251
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1623
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0925
+Target Descriptor Name: GATS5i         , R2: 0.9719, MAE: 0.0423
+################################################################################
+Epoch: 076, LR: 0.000069, Loss: 0.0168,  Validation R2: 0.9828 MAE: 6.4999;  Testing R2: 0.9827 MAE: 6.4964;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9826, MAE: 63.3870
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8706
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9137, MAE: 0.0270
+Target Descriptor Name: IC1            , R2: 0.9826, MAE: 0.0271
+Target Descriptor Name: GATS4e         , R2: 0.9883, MAE: 0.2342
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0423
+Target Descriptor Name: GATS3e         , R2: 0.9934, MAE: 0.1251
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1623
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0925
+Target Descriptor Name: GATS5i         , R2: 0.9714, MAE: 0.0423
+################################################################################
+Epoch: 077, LR: 0.000069, Loss: 0.0168,  Validation R2: 0.9827 MAE: 6.5010;  Testing R2: 0.9827 MAE: 6.4964;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9820, MAE: 63.3359
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8699
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9146, MAE: 0.0269
+Target Descriptor Name: IC1            , R2: 0.9827, MAE: 0.0270
+Target Descriptor Name: GATS4e         , R2: 0.9883, MAE: 0.2341
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0423
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1250
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1622
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0924
+Target Descriptor Name: GATS5i         , R2: 0.9719, MAE: 0.0423
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9831, MAE: 63.4276
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8711
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9169, MAE: 0.0270
+Target Descriptor Name: IC1            , R2: 0.9818, MAE: 0.0271
+Target Descriptor Name: GATS4e         , R2: 0.9892, MAE: 0.2344
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0424
+Target Descriptor Name: GATS3e         , R2: 0.9933, MAE: 0.1252
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1624
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0925
+Target Descriptor Name: GATS5i         , R2: 0.9691, MAE: 0.0423
+################################################################################
+Epoch: 078, LR: 0.000069, Loss: 0.0167,  Validation R2: 0.9828 MAE: 6.4958;  Testing R2: 0.9828 MAE: 6.5052;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9831, MAE: 63.2723
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8690
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9142, MAE: 0.0269
+Target Descriptor Name: IC1            , R2: 0.9826, MAE: 0.0270
+Target Descriptor Name: GATS4e         , R2: 0.9884, MAE: 0.2338
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0423
+Target Descriptor Name: GATS3e         , R2: 0.9933, MAE: 0.1249
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1620
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0923
+Target Descriptor Name: GATS5i         , R2: 0.9713, MAE: 0.0422
+################################################################################
+Epoch: 079, LR: 0.000069, Loss: 0.0167,  Validation R2: 0.9828 MAE: 6.4893;  Testing R2: 0.9828 MAE: 6.5052;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9833, MAE: 62.6766
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8608
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9139, MAE: 0.0267
+Target Descriptor Name: IC1            , R2: 0.9830, MAE: 0.0268
+Target Descriptor Name: GATS4e         , R2: 0.9884, MAE: 0.2316
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0419
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1237
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1605
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0914
+Target Descriptor Name: GATS5i         , R2: 0.9715, MAE: 0.0418
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9838, MAE: 62.6884
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8610
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9182, MAE: 0.0267
+Target Descriptor Name: IC1            , R2: 0.9822, MAE: 0.0268
+Target Descriptor Name: GATS4e         , R2: 0.9893, MAE: 0.2317
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0419
+Target Descriptor Name: GATS3e         , R2: 0.9933, MAE: 0.1237
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1605
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0915
+Target Descriptor Name: GATS5i         , R2: 0.9697, MAE: 0.0418
+################################################################################
+Epoch: 080, LR: 0.000055, Loss: 0.0166,  Validation R2: 0.9829 MAE: 6.4282;  Testing R2: 0.9832 MAE: 6.4294;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9828, MAE: 62.5820
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8595
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9150, MAE: 0.0266
+Target Descriptor Name: IC1            , R2: 0.9829, MAE: 0.0267
+Target Descriptor Name: GATS4e         , R2: 0.9885, MAE: 0.2313
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0418
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1235
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1602
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0913
+Target Descriptor Name: GATS5i         , R2: 0.9717, MAE: 0.0418
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9834, MAE: 62.7716
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8621
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9175, MAE: 0.0267
+Target Descriptor Name: IC1            , R2: 0.9822, MAE: 0.0268
+Target Descriptor Name: GATS4e         , R2: 0.9893, MAE: 0.2320
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0419
+Target Descriptor Name: GATS3e         , R2: 0.9932, MAE: 0.1239
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1607
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0916
+Target Descriptor Name: GATS5i         , R2: 0.9697, MAE: 0.0419
+################################################################################
+Epoch: 081, LR: 0.000055, Loss: 0.0166,  Validation R2: 0.9830 MAE: 6.4185;  Testing R2: 0.9830 MAE: 6.4379;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9828, MAE: 62.7348
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8616
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9147, MAE: 0.0267
+Target Descriptor Name: IC1            , R2: 0.9829, MAE: 0.0268
+Target Descriptor Name: GATS4e         , R2: 0.9883, MAE: 0.2318
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0419
+Target Descriptor Name: GATS3e         , R2: 0.9934, MAE: 0.1238
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1606
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0915
+Target Descriptor Name: GATS5i         , R2: 0.9717, MAE: 0.0419
+################################################################################
+Epoch: 082, LR: 0.000055, Loss: 0.0166,  Validation R2: 0.9829 MAE: 6.4342;  Testing R2: 0.9830 MAE: 6.4379;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9832, MAE: 62.4671
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8579
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9148, MAE: 0.0266
+Target Descriptor Name: IC1            , R2: 0.9829, MAE: 0.0267
+Target Descriptor Name: GATS4e         , R2: 0.9884, MAE: 0.2308
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0417
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1233
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1600
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0911
+Target Descriptor Name: GATS5i         , R2: 0.9714, MAE: 0.0417
+################################################################################
+Epoch: 083, LR: 0.000055, Loss: 0.0165,  Validation R2: 0.9830 MAE: 6.4067;  Testing R2: 0.9830 MAE: 6.4379;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9828, MAE: 62.5777
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8595
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9143, MAE: 0.0266
+Target Descriptor Name: IC1            , R2: 0.9828, MAE: 0.0267
+Target Descriptor Name: GATS4e         , R2: 0.9885, MAE: 0.2313
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0418
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1235
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1602
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0913
+Target Descriptor Name: GATS5i         , R2: 0.9720, MAE: 0.0418
+################################################################################
+Epoch: 084, LR: 0.000055, Loss: 0.0165,  Validation R2: 0.9829 MAE: 6.4180;  Testing R2: 0.9830 MAE: 6.4379;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9832, MAE: 62.4148
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8572
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9143, MAE: 0.0265
+Target Descriptor Name: IC1            , R2: 0.9830, MAE: 0.0266
+Target Descriptor Name: GATS4e         , R2: 0.9886, MAE: 0.2307
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0417
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1232
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1598
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0911
+Target Descriptor Name: GATS5i         , R2: 0.9716, MAE: 0.0417
+################################################################################
+Epoch: 085, LR: 0.000055, Loss: 0.0165,  Validation R2: 0.9830 MAE: 6.4013;  Testing R2: 0.9830 MAE: 6.4379;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9834, MAE: 62.7479
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.8618
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9142, MAE: 0.0267
+Target Descriptor Name: IC1            , R2: 0.9830, MAE: 0.0268
+Target Descriptor Name: GATS4e         , R2: 0.9886, MAE: 0.2319
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0419
+Target Descriptor Name: GATS3e         , R2: 0.9937, MAE: 0.1238
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1607
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0916
+Target Descriptor Name: GATS5i         , R2: 0.9717, MAE: 0.0419
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9835, MAE: 62.9843
+Target Descriptor Name: AMW            , R2: 0.9993, MAE: 0.8650
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9165, MAE: 0.0268
+Target Descriptor Name: IC1            , R2: 0.9822, MAE: 0.0269
+Target Descriptor Name: GATS4e         , R2: 0.9894, MAE: 0.2328
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0421
+Target Descriptor Name: GATS3e         , R2: 0.9934, MAE: 0.1243
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1613
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0919
+Target Descriptor Name: GATS5i         , R2: 0.9690, MAE: 0.0420
+################################################################################
+Epoch: 086, LR: 0.000044, Loss: 0.0164,  Validation R2: 0.9830 MAE: 6.4355;  Testing R2: 0.9829 MAE: 6.4597;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9834, MAE: 62.4455
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8576
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9144, MAE: 0.0266
+Target Descriptor Name: IC1            , R2: 0.9829, MAE: 0.0267
+Target Descriptor Name: GATS4e         , R2: 0.9885, MAE: 0.2308
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0417
+Target Descriptor Name: GATS3e         , R2: 0.9935, MAE: 0.1232
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1599
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0911
+Target Descriptor Name: GATS5i         , R2: 0.9721, MAE: 0.0417
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9839, MAE: 62.5835
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8595
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9178, MAE: 0.0266
+Target Descriptor Name: IC1            , R2: 0.9821, MAE: 0.0267
+Target Descriptor Name: GATS4e         , R2: 0.9893, MAE: 0.2313
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0418
+Target Descriptor Name: GATS3e         , R2: 0.9933, MAE: 0.1235
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1603
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0913
+Target Descriptor Name: GATS5i         , R2: 0.9695, MAE: 0.0418
+################################################################################
+Epoch: 087, LR: 0.000044, Loss: 0.0164,  Validation R2: 0.9830 MAE: 6.4045;  Testing R2: 0.9831 MAE: 6.4186;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9833, MAE: 62.9128
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8641
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9127, MAE: 0.0268
+Target Descriptor Name: IC1            , R2: 0.9830, MAE: 0.0269
+Target Descriptor Name: GATS4e         , R2: 0.9886, MAE: 0.2325
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0420
+Target Descriptor Name: GATS3e         , R2: 0.9935, MAE: 0.1242
+Target Descriptor Name: Eta_sh_y       , R2: 0.9986, MAE: 0.1611
+Target Descriptor Name: Mp             , R2: 0.9990, MAE: 0.0918
+Target Descriptor Name: GATS5i         , R2: 0.9713, MAE: 0.0420
+################################################################################
+Epoch: 088, LR: 0.000044, Loss: 0.0164,  Validation R2: 0.9828 MAE: 6.4524;  Testing R2: 0.9831 MAE: 6.4186;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9833, MAE: 62.2654
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8552
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9147, MAE: 0.0265
+Target Descriptor Name: IC1            , R2: 0.9831, MAE: 0.0266
+Target Descriptor Name: GATS4e         , R2: 0.9885, MAE: 0.2301
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0416
+Target Descriptor Name: GATS3e         , R2: 0.9937, MAE: 0.1229
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1594
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0908
+Target Descriptor Name: GATS5i         , R2: 0.9721, MAE: 0.0416
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9841, MAE: 62.3151
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8559
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9174, MAE: 0.0265
+Target Descriptor Name: IC1            , R2: 0.9823, MAE: 0.0266
+Target Descriptor Name: GATS4e         , R2: 0.9894, MAE: 0.2303
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0416
+Target Descriptor Name: GATS3e         , R2: 0.9934, MAE: 0.1230
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1596
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0909
+Target Descriptor Name: GATS5i         , R2: 0.9696, MAE: 0.0416
+################################################################################
+Epoch: 089, LR: 0.000044, Loss: 0.0164,  Validation R2: 0.9831 MAE: 6.3860;  Testing R2: 0.9832 MAE: 6.3911;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9833, MAE: 62.2893
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8555
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9146, MAE: 0.0265
+Target Descriptor Name: IC1            , R2: 0.9830, MAE: 0.0266
+Target Descriptor Name: GATS4e         , R2: 0.9885, MAE: 0.2302
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0416
+Target Descriptor Name: GATS3e         , R2: 0.9937, MAE: 0.1229
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1595
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0909
+Target Descriptor Name: GATS5i         , R2: 0.9721, MAE: 0.0416
+################################################################################
+Epoch: 090, LR: 0.000044, Loss: 0.0164,  Validation R2: 0.9830 MAE: 6.3885;  Testing R2: 0.9832 MAE: 6.3911;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9832, MAE: 62.4870
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8582
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9134, MAE: 0.0266
+Target Descriptor Name: IC1            , R2: 0.9829, MAE: 0.0267
+Target Descriptor Name: GATS4e         , R2: 0.9885, MAE: 0.2309
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0417
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1233
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1600
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0912
+Target Descriptor Name: GATS5i         , R2: 0.9719, MAE: 0.0417
+################################################################################
+Epoch: 091, LR: 0.000044, Loss: 0.0164,  Validation R2: 0.9829 MAE: 6.4087;  Testing R2: 0.9832 MAE: 6.3911;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9833, MAE: 62.1950
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8542
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9145, MAE: 0.0265
+Target Descriptor Name: IC1            , R2: 0.9832, MAE: 0.0266
+Target Descriptor Name: GATS4e         , R2: 0.9886, MAE: 0.2298
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0415
+Target Descriptor Name: GATS3e         , R2: 0.9937, MAE: 0.1227
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1593
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0907
+Target Descriptor Name: GATS5i         , R2: 0.9722, MAE: 0.0415
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9839, MAE: 62.2845
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8554
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9179, MAE: 0.0265
+Target Descriptor Name: IC1            , R2: 0.9824, MAE: 0.0266
+Target Descriptor Name: GATS4e         , R2: 0.9894, MAE: 0.2302
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0416
+Target Descriptor Name: GATS3e         , R2: 0.9934, MAE: 0.1229
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1595
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0909
+Target Descriptor Name: GATS5i         , R2: 0.9702, MAE: 0.0416
+################################################################################
+Epoch: 092, LR: 0.000035, Loss: 0.0163,  Validation R2: 0.9831 MAE: 6.3788;  Testing R2: 0.9833 MAE: 6.3880;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9834, MAE: 62.0332
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8520
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9151, MAE: 0.0264
+Target Descriptor Name: IC1            , R2: 0.9832, MAE: 0.0265
+Target Descriptor Name: GATS4e         , R2: 0.9886, MAE: 0.2292
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0414
+Target Descriptor Name: GATS3e         , R2: 0.9937, MAE: 0.1224
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1588
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0905
+Target Descriptor Name: GATS5i         , R2: 0.9725, MAE: 0.0414
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9842, MAE: 62.1827
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8540
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9175, MAE: 0.0264
+Target Descriptor Name: IC1            , R2: 0.9824, MAE: 0.0265
+Target Descriptor Name: GATS4e         , R2: 0.9895, MAE: 0.2298
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0415
+Target Descriptor Name: GATS3e         , R2: 0.9934, MAE: 0.1227
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1592
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0907
+Target Descriptor Name: GATS5i         , R2: 0.9694, MAE: 0.0415
+################################################################################
+Epoch: 093, LR: 0.000035, Loss: 0.0163,  Validation R2: 0.9832 MAE: 6.3622;  Testing R2: 0.9832 MAE: 6.3775;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9834, MAE: 61.9556
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8509
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9155, MAE: 0.0264
+Target Descriptor Name: IC1            , R2: 0.9832, MAE: 0.0265
+Target Descriptor Name: GATS4e         , R2: 0.9887, MAE: 0.2290
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0414
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1223
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1586
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0904
+Target Descriptor Name: GATS5i         , R2: 0.9720, MAE: 0.0414
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9838, MAE: 62.0090
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8516
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9176, MAE: 0.0264
+Target Descriptor Name: IC1            , R2: 0.9824, MAE: 0.0265
+Target Descriptor Name: GATS4e         , R2: 0.9895, MAE: 0.2292
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0414
+Target Descriptor Name: GATS3e         , R2: 0.9935, MAE: 0.1224
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1588
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0905
+Target Descriptor Name: GATS5i         , R2: 0.9696, MAE: 0.0414
+################################################################################
+Epoch: 094, LR: 0.000035, Loss: 0.0163,  Validation R2: 0.9832 MAE: 6.3542;  Testing R2: 0.9832 MAE: 6.3597;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9835, MAE: 61.9520
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8509
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9151, MAE: 0.0264
+Target Descriptor Name: IC1            , R2: 0.9831, MAE: 0.0264
+Target Descriptor Name: GATS4e         , R2: 0.9885, MAE: 0.2289
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0414
+Target Descriptor Name: GATS3e         , R2: 0.9937, MAE: 0.1223
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1586
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0904
+Target Descriptor Name: GATS5i         , R2: 0.9718, MAE: 0.0414
+################################################################################
+Epoch: 095, LR: 0.000035, Loss: 0.0163,  Validation R2: 0.9831 MAE: 6.3539;  Testing R2: 0.9832 MAE: 6.3597;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9834, MAE: 61.9975
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8515
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9153, MAE: 0.0264
+Target Descriptor Name: IC1            , R2: 0.9832, MAE: 0.0265
+Target Descriptor Name: GATS4e         , R2: 0.9886, MAE: 0.2291
+Target Descriptor Name: RBF            , R2: 0.9980, MAE: 0.0414
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1224
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1588
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0905
+Target Descriptor Name: GATS5i         , R2: 0.9724, MAE: 0.0414
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9841, MAE: 62.0968
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8529
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9178, MAE: 0.0264
+Target Descriptor Name: IC1            , R2: 0.9824, MAE: 0.0265
+Target Descriptor Name: GATS4e         , R2: 0.9895, MAE: 0.2295
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0415
+Target Descriptor Name: GATS3e         , R2: 0.9934, MAE: 0.1226
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1590
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0906
+Target Descriptor Name: GATS5i         , R2: 0.9691, MAE: 0.0414
+################################################################################
+Epoch: 096, LR: 0.000035, Loss: 0.0162,  Validation R2: 0.9832 MAE: 6.3585;  Testing R2: 0.9832 MAE: 6.3687;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9835, MAE: 61.9405
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8507
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9157, MAE: 0.0263
+Target Descriptor Name: IC1            , R2: 0.9831, MAE: 0.0264
+Target Descriptor Name: GATS4e         , R2: 0.9887, MAE: 0.2289
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0414
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1222
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1586
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0904
+Target Descriptor Name: GATS5i         , R2: 0.9723, MAE: 0.0413
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9841, MAE: 62.1585
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8537
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9183, MAE: 0.0264
+Target Descriptor Name: IC1            , R2: 0.9824, MAE: 0.0265
+Target Descriptor Name: GATS4e         , R2: 0.9895, MAE: 0.2297
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0415
+Target Descriptor Name: GATS3e         , R2: 0.9933, MAE: 0.1227
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1592
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0907
+Target Descriptor Name: GATS5i         , R2: 0.9693, MAE: 0.0415
+################################################################################
+Epoch: 097, LR: 0.000035, Loss: 0.0162,  Validation R2: 0.9832 MAE: 6.3527;  Testing R2: 0.9832 MAE: 6.3750;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9837, MAE: 61.7065
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8475
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9154, MAE: 0.0262
+Target Descriptor Name: IC1            , R2: 0.9832, MAE: 0.0263
+Target Descriptor Name: GATS4e         , R2: 0.9888, MAE: 0.2280
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0412
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1218
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1580
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0900
+Target Descriptor Name: GATS5i         , R2: 0.9724, MAE: 0.0412
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9841, MAE: 61.8683
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8497
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9185, MAE: 0.0263
+Target Descriptor Name: IC1            , R2: 0.9824, MAE: 0.0264
+Target Descriptor Name: GATS4e         , R2: 0.9895, MAE: 0.2286
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0413
+Target Descriptor Name: GATS3e         , R2: 0.9934, MAE: 0.1221
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1584
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0903
+Target Descriptor Name: GATS5i         , R2: 0.9701, MAE: 0.0413
+################################################################################
+Epoch: 098, LR: 0.000028, Loss: 0.0162,  Validation R2: 0.9833 MAE: 6.3287;  Testing R2: 0.9833 MAE: 6.3453;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9836, MAE: 61.5384
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8452
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9157, MAE: 0.0262
+Target Descriptor Name: IC1            , R2: 0.9832, MAE: 0.0263
+Target Descriptor Name: GATS4e         , R2: 0.9887, MAE: 0.2274
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0411
+Target Descriptor Name: GATS3e         , R2: 0.9937, MAE: 0.1215
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1576
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0898
+Target Descriptor Name: GATS5i         , R2: 0.9728, MAE: 0.0411
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9840, MAE: 61.7276
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8478
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9189, MAE: 0.0263
+Target Descriptor Name: IC1            , R2: 0.9824, MAE: 0.0264
+Target Descriptor Name: GATS4e         , R2: 0.9895, MAE: 0.2281
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0412
+Target Descriptor Name: GATS3e         , R2: 0.9935, MAE: 0.1218
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1581
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0901
+Target Descriptor Name: GATS5i         , R2: 0.9694, MAE: 0.0412
+################################################################################
+Epoch: 099, LR: 0.000028, Loss: 0.0162,  Validation R2: 0.9833 MAE: 6.3114;  Testing R2: 0.9833 MAE: 6.3309;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9835, MAE: 61.6632
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8469
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9153, MAE: 0.0262
+Target Descriptor Name: IC1            , R2: 0.9832, MAE: 0.0263
+Target Descriptor Name: GATS4e         , R2: 0.9888, MAE: 0.2279
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0412
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1217
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1579
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0900
+Target Descriptor Name: GATS5i         , R2: 0.9725, MAE: 0.0412
+################################################################################
+Epoch: 100, LR: 0.000028, Loss: 0.0162,  Validation R2: 0.9833 MAE: 6.3242;  Testing R2: 0.9833 MAE: 6.3309;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9836, MAE: 61.5964
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8460
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9151, MAE: 0.0262
+Target Descriptor Name: IC1            , R2: 0.9832, MAE: 0.0263
+Target Descriptor Name: GATS4e         , R2: 0.9888, MAE: 0.2276
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0411
+Target Descriptor Name: GATS3e         , R2: 0.9937, MAE: 0.1216
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1577
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0899
+Target Descriptor Name: GATS5i         , R2: 0.9725, MAE: 0.0411
+################################################################################
+Epoch: 101, LR: 0.000028, Loss: 0.0161,  Validation R2: 0.9832 MAE: 6.3174;  Testing R2: 0.9833 MAE: 6.3309;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9836, MAE: 61.6324
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8465
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9155, MAE: 0.0262
+Target Descriptor Name: IC1            , R2: 0.9831, MAE: 0.0263
+Target Descriptor Name: GATS4e         , R2: 0.9887, MAE: 0.2278
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0412
+Target Descriptor Name: GATS3e         , R2: 0.9937, MAE: 0.1216
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1578
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0899
+Target Descriptor Name: GATS5i         , R2: 0.9724, MAE: 0.0411
+################################################################################
+Epoch: 102, LR: 0.000028, Loss: 0.0161,  Validation R2: 0.9833 MAE: 6.3211;  Testing R2: 0.9833 MAE: 6.3309;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9837, MAE: 61.4909
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8445
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9159, MAE: 0.0262
+Target Descriptor Name: IC1            , R2: 0.9832, MAE: 0.0263
+Target Descriptor Name: GATS4e         , R2: 0.9888, MAE: 0.2272
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0411
+Target Descriptor Name: GATS3e         , R2: 0.9937, MAE: 0.1214
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1575
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0897
+Target Descriptor Name: GATS5i         , R2: 0.9726, MAE: 0.0410
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9842, MAE: 61.6891
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8473
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9180, MAE: 0.0262
+Target Descriptor Name: IC1            , R2: 0.9825, MAE: 0.0263
+Target Descriptor Name: GATS4e         , R2: 0.9896, MAE: 0.2280
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0412
+Target Descriptor Name: GATS3e         , R2: 0.9935, MAE: 0.1218
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1580
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0900
+Target Descriptor Name: GATS5i         , R2: 0.9699, MAE: 0.0412
+################################################################################
+Epoch: 103, LR: 0.000028, Loss: 0.0161,  Validation R2: 0.9833 MAE: 6.3066;  Testing R2: 0.9833 MAE: 6.3269;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9837, MAE: 61.4437
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8439
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9154, MAE: 0.0261
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0262
+Target Descriptor Name: GATS4e         , R2: 0.9888, MAE: 0.2271
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0410
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1213
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1573
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0896
+Target Descriptor Name: GATS5i         , R2: 0.9725, MAE: 0.0410
+################################################################################
+Epoch: 104, LR: 0.000023, Loss: 0.0161,  Validation R2: 0.9833 MAE: 6.3017;  Testing R2: 0.9833 MAE: 6.3269;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9836, MAE: 61.6073
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8461
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9159, MAE: 0.0262
+Target Descriptor Name: IC1            , R2: 0.9832, MAE: 0.0263
+Target Descriptor Name: GATS4e         , R2: 0.9888, MAE: 0.2277
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0411
+Target Descriptor Name: GATS3e         , R2: 0.9937, MAE: 0.1216
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1578
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0899
+Target Descriptor Name: GATS5i         , R2: 0.9724, MAE: 0.0411
+################################################################################
+Epoch: 105, LR: 0.000023, Loss: 0.0161,  Validation R2: 0.9833 MAE: 6.3185;  Testing R2: 0.9833 MAE: 6.3269;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9837, MAE: 61.5691
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8456
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9155, MAE: 0.0262
+Target Descriptor Name: IC1            , R2: 0.9832, MAE: 0.0263
+Target Descriptor Name: GATS4e         , R2: 0.9887, MAE: 0.2275
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0411
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1215
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1577
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0898
+Target Descriptor Name: GATS5i         , R2: 0.9726, MAE: 0.0411
+################################################################################
+Epoch: 106, LR: 0.000023, Loss: 0.0161,  Validation R2: 0.9833 MAE: 6.3146;  Testing R2: 0.9833 MAE: 6.3269;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9836, MAE: 61.4694
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8442
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9153, MAE: 0.0261
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0262
+Target Descriptor Name: GATS4e         , R2: 0.9888, MAE: 0.2272
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0410
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1213
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1574
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0897
+Target Descriptor Name: GATS5i         , R2: 0.9726, MAE: 0.0410
+################################################################################
+Epoch: 107, LR: 0.000023, Loss: 0.0161,  Validation R2: 0.9833 MAE: 6.3044;  Testing R2: 0.9833 MAE: 6.3269;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9838, MAE: 61.6962
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8474
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9153, MAE: 0.0262
+Target Descriptor Name: IC1            , R2: 0.9831, MAE: 0.0263
+Target Descriptor Name: GATS4e         , R2: 0.9888, MAE: 0.2280
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0412
+Target Descriptor Name: GATS3e         , R2: 0.9937, MAE: 0.1218
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1580
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0900
+Target Descriptor Name: GATS5i         , R2: 0.9728, MAE: 0.0412
+################################################################################
+Epoch: 108, LR: 0.000023, Loss: 0.0161,  Validation R2: 0.9833 MAE: 6.3276;  Testing R2: 0.9833 MAE: 6.3269;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9837, MAE: 61.5806
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8458
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9153, MAE: 0.0262
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0263
+Target Descriptor Name: GATS4e         , R2: 0.9888, MAE: 0.2276
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0411
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1215
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1577
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0898
+Target Descriptor Name: GATS5i         , R2: 0.9724, MAE: 0.0411
+################################################################################
+Epoch: 109, LR: 0.000023, Loss: 0.0161,  Validation R2: 0.9833 MAE: 6.3158;  Testing R2: 0.9833 MAE: 6.3269;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9836, MAE: 61.3772
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8430
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9158, MAE: 0.0261
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0262
+Target Descriptor Name: GATS4e         , R2: 0.9888, MAE: 0.2268
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0410
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1211
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1572
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0896
+Target Descriptor Name: GATS5i         , R2: 0.9727, MAE: 0.0410
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9842, MAE: 61.5040
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8447
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9185, MAE: 0.0262
+Target Descriptor Name: IC1            , R2: 0.9825, MAE: 0.0263
+Target Descriptor Name: GATS4e         , R2: 0.9897, MAE: 0.2273
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0411
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1214
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1575
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0897
+Target Descriptor Name: GATS5i         , R2: 0.9698, MAE: 0.0411
+################################################################################
+Epoch: 110, LR: 0.000018, Loss: 0.0160,  Validation R2: 0.9833 MAE: 6.2949;  Testing R2: 0.9834 MAE: 6.3079;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9835, MAE: 61.4324
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8437
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9158, MAE: 0.0261
+Target Descriptor Name: IC1            , R2: 0.9832, MAE: 0.0262
+Target Descriptor Name: GATS4e         , R2: 0.9888, MAE: 0.2270
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0410
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1212
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1573
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0896
+Target Descriptor Name: GATS5i         , R2: 0.9728, MAE: 0.0410
+################################################################################
+Epoch: 111, LR: 0.000018, Loss: 0.0160,  Validation R2: 0.9833 MAE: 6.3006;  Testing R2: 0.9834 MAE: 6.3079;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9836, MAE: 61.3386
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8424
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9158, MAE: 0.0261
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0262
+Target Descriptor Name: GATS4e         , R2: 0.9888, MAE: 0.2267
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0410
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1211
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1571
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0895
+Target Descriptor Name: GATS5i         , R2: 0.9729, MAE: 0.0409
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9842, MAE: 61.5190
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8449
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9188, MAE: 0.0262
+Target Descriptor Name: IC1            , R2: 0.9826, MAE: 0.0263
+Target Descriptor Name: GATS4e         , R2: 0.9897, MAE: 0.2273
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0411
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1214
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1575
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0898
+Target Descriptor Name: GATS5i         , R2: 0.9703, MAE: 0.0411
+################################################################################
+Epoch: 112, LR: 0.000018, Loss: 0.0160,  Validation R2: 0.9834 MAE: 6.2909;  Testing R2: 0.9835 MAE: 6.3095;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9837, MAE: 61.5922
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8459
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9160, MAE: 0.0262
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0263
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2276
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0411
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1216
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1577
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0899
+Target Descriptor Name: GATS5i         , R2: 0.9724, MAE: 0.0411
+################################################################################
+Epoch: 113, LR: 0.000018, Loss: 0.0160,  Validation R2: 0.9833 MAE: 6.3170;  Testing R2: 0.9835 MAE: 6.3095;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9839, MAE: 61.3763
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8430
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9158, MAE: 0.0261
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0262
+Target Descriptor Name: GATS4e         , R2: 0.9887, MAE: 0.2268
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0410
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1211
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1572
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0896
+Target Descriptor Name: GATS5i         , R2: 0.9728, MAE: 0.0410
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9843, MAE: 61.4654
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8442
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9186, MAE: 0.0261
+Target Descriptor Name: IC1            , R2: 0.9824, MAE: 0.0262
+Target Descriptor Name: GATS4e         , R2: 0.9895, MAE: 0.2271
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0410
+Target Descriptor Name: GATS3e         , R2: 0.9935, MAE: 0.1213
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1574
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0897
+Target Descriptor Name: GATS5i         , R2: 0.9703, MAE: 0.0410
+################################################################################
+Epoch: 114, LR: 0.000018, Loss: 0.0160,  Validation R2: 0.9834 MAE: 6.2948;  Testing R2: 0.9834 MAE: 6.3040;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9836, MAE: 61.3562
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8427
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9157, MAE: 0.0261
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0262
+Target Descriptor Name: GATS4e         , R2: 0.9888, MAE: 0.2267
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0410
+Target Descriptor Name: GATS3e         , R2: 0.9937, MAE: 0.1211
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1571
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0895
+Target Descriptor Name: GATS5i         , R2: 0.9727, MAE: 0.0410
+################################################################################
+Epoch: 115, LR: 0.000018, Loss: 0.0160,  Validation R2: 0.9833 MAE: 6.2928;  Testing R2: 0.9834 MAE: 6.3040;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9839, MAE: 61.1329
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8396
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9157, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9888, MAE: 0.2259
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0408
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1207
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1565
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0892
+Target Descriptor Name: GATS5i         , R2: 0.9732, MAE: 0.0408
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9844, MAE: 61.1924
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8404
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9191, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9826, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9898, MAE: 0.2261
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0409
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1208
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1567
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0893
+Target Descriptor Name: GATS5i         , R2: 0.9702, MAE: 0.0408
+################################################################################
+Epoch: 116, LR: 0.000014, Loss: 0.0159,  Validation R2: 0.9834 MAE: 6.2699;  Testing R2: 0.9835 MAE: 6.2760;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9839, MAE: 61.2552
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8413
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9153, MAE: 0.0261
+Target Descriptor Name: IC1            , R2: 0.9834, MAE: 0.0262
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2264
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0409
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1209
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1569
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0894
+Target Descriptor Name: GATS5i         , R2: 0.9731, MAE: 0.0409
+################################################################################
+Epoch: 117, LR: 0.000014, Loss: 0.0159,  Validation R2: 0.9834 MAE: 6.2824;  Testing R2: 0.9835 MAE: 6.2760;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9838, MAE: 61.2229
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8409
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9155, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9888, MAE: 0.2262
+Target Descriptor Name: RBF            , R2: 0.9981, MAE: 0.0409
+Target Descriptor Name: GATS3e         , R2: 0.9939, MAE: 0.1208
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1568
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0893
+Target Descriptor Name: GATS5i         , R2: 0.9730, MAE: 0.0409
+################################################################################
+Epoch: 118, LR: 0.000014, Loss: 0.0159,  Validation R2: 0.9834 MAE: 6.2791;  Testing R2: 0.9835 MAE: 6.2760;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9839, MAE: 61.1165
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8394
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9160, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2259
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0408
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1206
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1565
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0892
+Target Descriptor Name: GATS5i         , R2: 0.9729, MAE: 0.0408
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9844, MAE: 61.3064
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8420
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9187, MAE: 0.0261
+Target Descriptor Name: IC1            , R2: 0.9825, MAE: 0.0262
+Target Descriptor Name: GATS4e         , R2: 0.9897, MAE: 0.2266
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0409
+Target Descriptor Name: GATS3e         , R2: 0.9935, MAE: 0.1210
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1570
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0894
+Target Descriptor Name: GATS5i         , R2: 0.9701, MAE: 0.0409
+################################################################################
+Epoch: 119, LR: 0.000014, Loss: 0.0159,  Validation R2: 0.9834 MAE: 6.2682;  Testing R2: 0.9834 MAE: 6.2876;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9837, MAE: 61.1644
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8400
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9159, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9888, MAE: 0.2260
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0408
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1207
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1566
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0892
+Target Descriptor Name: GATS5i         , R2: 0.9730, MAE: 0.0408
+################################################################################
+Epoch: 120, LR: 0.000014, Loss: 0.0159,  Validation R2: 0.9834 MAE: 6.2731;  Testing R2: 0.9834 MAE: 6.2876;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9836, MAE: 61.2675
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8415
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9159, MAE: 0.0261
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0262
+Target Descriptor Name: GATS4e         , R2: 0.9888, MAE: 0.2264
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0409
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1209
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1569
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0894
+Target Descriptor Name: GATS5i         , R2: 0.9727, MAE: 0.0409
+################################################################################
+Epoch: 121, LR: 0.000014, Loss: 0.0159,  Validation R2: 0.9834 MAE: 6.2837;  Testing R2: 0.9834 MAE: 6.2876;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9838, MAE: 61.2712
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8415
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9148, MAE: 0.0261
+Target Descriptor Name: IC1            , R2: 0.9834, MAE: 0.0262
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2264
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0409
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1209
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1569
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0894
+Target Descriptor Name: GATS5i         , R2: 0.9729, MAE: 0.0409
+################################################################################
+Epoch: 122, LR: 0.000012, Loss: 0.0159,  Validation R2: 0.9833 MAE: 6.2840;  Testing R2: 0.9834 MAE: 6.2876;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9838, MAE: 61.0145
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8380
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9161, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0260
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2255
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0407
+Target Descriptor Name: GATS3e         , R2: 0.9939, MAE: 0.1204
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1562
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0890
+Target Descriptor Name: GATS5i         , R2: 0.9731, MAE: 0.0407
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9843, MAE: 61.1620
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8400
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9192, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9826, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9898, MAE: 0.2260
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0408
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1207
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1566
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0892
+Target Descriptor Name: GATS5i         , R2: 0.9700, MAE: 0.0408
+################################################################################
+Epoch: 123, LR: 0.000012, Loss: 0.0159,  Validation R2: 0.9835 MAE: 6.2577;  Testing R2: 0.9835 MAE: 6.2728;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9838, MAE: 61.0673
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8387
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9163, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2257
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0408
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1205
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1564
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0891
+Target Descriptor Name: GATS5i         , R2: 0.9729, MAE: 0.0408
+################################################################################
+Epoch: 124, LR: 0.000012, Loss: 0.0159,  Validation R2: 0.9835 MAE: 6.2631;  Testing R2: 0.9835 MAE: 6.2728;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9839, MAE: 61.0725
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8388
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9162, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9834, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2257
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0408
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1205
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1564
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0891
+Target Descriptor Name: GATS5i         , R2: 0.9729, MAE: 0.0408
+################################################################################
+Epoch: 125, LR: 0.000012, Loss: 0.0159,  Validation R2: 0.9835 MAE: 6.2637;  Testing R2: 0.9835 MAE: 6.2728;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9838, MAE: 60.9964
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8377
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9163, MAE: 0.0259
+Target Descriptor Name: IC1            , R2: 0.9834, MAE: 0.0260
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2254
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0407
+Target Descriptor Name: GATS3e         , R2: 0.9939, MAE: 0.1204
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1562
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0890
+Target Descriptor Name: GATS5i         , R2: 0.9729, MAE: 0.0407
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9844, MAE: 61.1412
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8397
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9190, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9826, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9898, MAE: 0.2259
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0408
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1207
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1566
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0892
+Target Descriptor Name: GATS5i         , R2: 0.9706, MAE: 0.0408
+################################################################################
+Epoch: 126, LR: 0.000012, Loss: 0.0159,  Validation R2: 0.9835 MAE: 6.2559;  Testing R2: 0.9835 MAE: 6.2707;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9839, MAE: 60.9967
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8377
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9161, MAE: 0.0259
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0260
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2254
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0407
+Target Descriptor Name: GATS3e         , R2: 0.9939, MAE: 0.1204
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1562
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0890
+Target Descriptor Name: GATS5i         , R2: 0.9730, MAE: 0.0407
+################################################################################
+Epoch: 127, LR: 0.000012, Loss: 0.0159,  Validation R2: 0.9834 MAE: 6.2559;  Testing R2: 0.9835 MAE: 6.2707;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9840, MAE: 60.9652
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8373
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9164, MAE: 0.0259
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0260
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2253
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0407
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1203
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1561
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0890
+Target Descriptor Name: GATS5i         , R2: 0.9729, MAE: 0.0407
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9846, MAE: 61.0565
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8386
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9190, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9826, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9898, MAE: 0.2256
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0408
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1205
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1563
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0891
+Target Descriptor Name: GATS5i         , R2: 0.9704, MAE: 0.0408
+################################################################################
+Epoch: 128, LR: 0.000010, Loss: 0.0159,  Validation R2: 0.9835 MAE: 6.2527;  Testing R2: 0.9835 MAE: 6.2620;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9839, MAE: 61.1081
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8393
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9155, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2258
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0408
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1206
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1565
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0892
+Target Descriptor Name: GATS5i         , R2: 0.9730, MAE: 0.0408
+################################################################################
+Epoch: 129, LR: 0.000010, Loss: 0.0159,  Validation R2: 0.9834 MAE: 6.2673;  Testing R2: 0.9835 MAE: 6.2620;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9839, MAE: 60.9782
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8375
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9162, MAE: 0.0259
+Target Descriptor Name: IC1            , R2: 0.9834, MAE: 0.0260
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2253
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0407
+Target Descriptor Name: GATS3e         , R2: 0.9939, MAE: 0.1203
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1561
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0890
+Target Descriptor Name: GATS5i         , R2: 0.9731, MAE: 0.0407
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9844, MAE: 61.0657
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8387
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9189, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9826, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9898, MAE: 0.2257
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0408
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1205
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1564
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0891
+Target Descriptor Name: GATS5i         , R2: 0.9704, MAE: 0.0408
+################################################################################
+Epoch: 130, LR: 0.000010, Loss: 0.0159,  Validation R2: 0.9835 MAE: 6.2540;  Testing R2: 0.9835 MAE: 6.2630;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9839, MAE: 61.0460
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8384
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9162, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9834, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2256
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0408
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1205
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1563
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0891
+Target Descriptor Name: GATS5i         , R2: 0.9730, MAE: 0.0407
+################################################################################
+Epoch: 131, LR: 0.000010, Loss: 0.0159,  Validation R2: 0.9835 MAE: 6.2609;  Testing R2: 0.9835 MAE: 6.2630;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9839, MAE: 60.9543
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8372
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9164, MAE: 0.0259
+Target Descriptor Name: IC1            , R2: 0.9834, MAE: 0.0260
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2253
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0407
+Target Descriptor Name: GATS3e         , R2: 0.9939, MAE: 0.1203
+Target Descriptor Name: Eta_sh_y       , R2: 0.9987, MAE: 0.1561
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0889
+Target Descriptor Name: GATS5i         , R2: 0.9730, MAE: 0.0407
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9845, MAE: 61.0491
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8385
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9191, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9826, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9898, MAE: 0.2256
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0408
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1205
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1563
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0891
+Target Descriptor Name: GATS5i         , R2: 0.9705, MAE: 0.0407
+################################################################################
+Epoch: 132, LR: 0.000010, Loss: 0.0159,  Validation R2: 0.9835 MAE: 6.2515;  Testing R2: 0.9836 MAE: 6.2613;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9838, MAE: 60.9056
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8365
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9165, MAE: 0.0259
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0260
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2251
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0407
+Target Descriptor Name: GATS3e         , R2: 0.9939, MAE: 0.1202
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1560
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0889
+Target Descriptor Name: GATS5i         , R2: 0.9730, MAE: 0.0407
+################################################################################
+Epoch: 133, LR: 0.000010, Loss: 0.0159,  Validation R2: 0.9835 MAE: 6.2465;  Testing R2: 0.9836 MAE: 6.2613;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9839, MAE: 61.0407
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8383
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9158, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2256
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0408
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1205
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1563
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0891
+Target Descriptor Name: GATS5i         , R2: 0.9729, MAE: 0.0407
+################################################################################
+Epoch: 134, LR: 0.000010, Loss: 0.0159,  Validation R2: 0.9834 MAE: 6.2604;  Testing R2: 0.9836 MAE: 6.2613;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9839, MAE: 60.8837
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8362
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9164, MAE: 0.0259
+Target Descriptor Name: IC1            , R2: 0.9834, MAE: 0.0260
+Target Descriptor Name: GATS4e         , R2: 0.9890, MAE: 0.2250
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0407
+Target Descriptor Name: GATS3e         , R2: 0.9939, MAE: 0.1202
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1559
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0888
+Target Descriptor Name: GATS5i         , R2: 0.9730, MAE: 0.0406
+################################################################################
+Testing ################################################################################
+Target Descriptor Name: MW             , R2: 0.9845, MAE: 61.0615
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8386
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9193, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9827, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9898, MAE: 0.2256
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0408
+Target Descriptor Name: GATS3e         , R2: 0.9936, MAE: 0.1205
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1564
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0891
+Target Descriptor Name: GATS5i         , R2: 0.9705, MAE: 0.0408
+################################################################################
+Epoch: 135, LR: 0.000010, Loss: 0.0159,  Validation R2: 0.9835 MAE: 6.2443;  Testing R2: 0.9836 MAE: 6.2625;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9838, MAE: 61.0911
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8390
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9161, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9834, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9890, MAE: 0.2258
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0408
+Target Descriptor Name: GATS3e         , R2: 0.9939, MAE: 0.1206
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1564
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0891
+Target Descriptor Name: GATS5i         , R2: 0.9729, MAE: 0.0408
+################################################################################
+Epoch: 136, LR: 0.000010, Loss: 0.0158,  Validation R2: 0.9835 MAE: 6.2656;  Testing R2: 0.9836 MAE: 6.2625;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9839, MAE: 60.9649
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8373
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9163, MAE: 0.0259
+Target Descriptor Name: IC1            , R2: 0.9834, MAE: 0.0260
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2253
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0407
+Target Descriptor Name: GATS3e         , R2: 0.9938, MAE: 0.1203
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1561
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0890
+Target Descriptor Name: GATS5i         , R2: 0.9731, MAE: 0.0407
+################################################################################
+Epoch: 137, LR: 0.000010, Loss: 0.0158,  Validation R2: 0.9835 MAE: 6.2526;  Testing R2: 0.9836 MAE: 6.2625;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9840, MAE: 61.0524
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8385
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9160, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9834, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9890, MAE: 0.2256
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0408
+Target Descriptor Name: GATS3e         , R2: 0.9939, MAE: 0.1205
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1563
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0891
+Target Descriptor Name: GATS5i         , R2: 0.9729, MAE: 0.0408
+################################################################################
+Epoch: 138, LR: 0.000010, Loss: 0.0158,  Validation R2: 0.9835 MAE: 6.2616;  Testing R2: 0.9836 MAE: 6.2625;
+Validation ################################################################################
+Target Descriptor Name: MW             , R2: 0.9839, MAE: 61.0199
+Target Descriptor Name: AMW            , R2: 0.9994, MAE: 0.8381
+Target Descriptor Name: VE1sign_B(s)   , R2: 0.9159, MAE: 0.0260
+Target Descriptor Name: IC1            , R2: 0.9833, MAE: 0.0261
+Target Descriptor Name: GATS4e         , R2: 0.9889, MAE: 0.2255
+Target Descriptor Name: RBF            , R2: 0.9982, MAE: 0.0407
+Target Descriptor Name: GATS3e         , R2: 0.9939, MAE: 0.1204
+Target Descriptor Name: Eta_sh_y       , R2: 0.9988, MAE: 0.1563
+Target Descriptor Name: Mp             , R2: 0.9991, MAE: 0.0890
+Target Descriptor Name: GATS5i         , R2: 0.9731, MAE: 0.0407
+################################################################################
+Epoch: 139, LR: 0.000010, Loss: 0.0158,  Validation R2: 0.9835 MAE: 6.2583;  Testing R2: 0.9836 MAE: 6.2625;
+Traceback (most recent call last):
+  File "/home/xduan7/Projects/MoReL/task/graph_to_dscrptr.py", line 179, in <module>
+    for epoch in range(1, 301):
+  File "/home/xduan7/Projects/MoReL/task/graph_to_dscrptr.py", line 138, in train
+    optimizer.zero_grad()
+  File "/home/xduan7/anaconda3/envs/pytorch/lib/python3.7/site-packages/torch/tensor.py", line 102, in backward
+    torch.autograd.backward(self, gradient, retain_graph, create_graph)
+  File "/home/xduan7/anaconda3/envs/pytorch/lib/python3.7/site-packages/torch/autograd/__init__.py", line 90, in backward
+    allow_unreachable=True)  # allow_unreachable flag
+KeyboardInterrupt
