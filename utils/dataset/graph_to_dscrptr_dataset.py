@@ -34,7 +34,8 @@ class GraphToDscrptrDataset(Dataset):
                  atom_feat_list: list = None,
                  bond_feat_list: list = None,
                  cid_smiles_dict: dict = None,
-                 cid_dscrptr_dict: dict = None):
+                 cid_dscrptr_dict: dict = None,
+                 multi_edge_indices: bool = False):
 
         super().__init__()
         self.__target_list = target_list
@@ -43,6 +44,7 @@ class GraphToDscrptrDataset(Dataset):
         self.__max_num_atoms = max_num_atoms
         self.__atom_feat_list = atom_feat_list
         self.__bond_feat_list = bond_feat_list
+        self.__multi_edge_indices = multi_edge_indices
 
         # First load the csv files into dict if not given #####################
         if cid_smiles_dict is None:
@@ -143,6 +145,11 @@ class GraphToDscrptrDataset(Dataset):
         # Or, using literally anything but HDF5
         cid = self.get_cid(index)
 
+        # Target descriptors
+        # target = np.array([self.__cid_dscrptr_dict[t][cid] for t in
+        #                    self.__target_list], dtype=np.float32)
+        target = self.__cid_dscrptr_dict[cid]
+
         # Graph features, including nodes and edges features and adj matrix
         smiles = self.__cid_smiles_dict[cid]
         mol = Chem.MolFromSmiles(smiles)
@@ -151,13 +158,13 @@ class GraphToDscrptrDataset(Dataset):
                                  master_bond=self.__master_bond,
                                  max_num_atoms=self.__max_num_atoms,
                                  atom_feat_list=self.__atom_feat_list,
-                                 bond_feat_list=self.__bond_feat_list)
+                                 bond_feat_list=self.__bond_feat_list,
+                                 multi_edge_indices=self.__multi_edge_indices)
 
-        # Target descriptors
-        # target = np.array([self.__cid_dscrptr_dict[t][cid] for t in
-        #                    self.__target_list], dtype=np.float32)
-        target = self.__cid_dscrptr_dict[cid]
-
+        # This part is extremely tricky
+        # Seems that we cannot directly transform a graph with edge_attr to
+        # a single Data with one-hot encoded edge_index
+        # This is an inherent restriction of PyG
         return Data(x=torch.from_numpy(n),
                     edge_index=torch.from_numpy(adj),
                     edge_attr=torch.from_numpy(e),

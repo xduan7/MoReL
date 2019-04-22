@@ -30,9 +30,11 @@ from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 
 import utils.data_prep.config as c
+from network.gat.gat import EdgeGATEncoder
 from network.gnn.gcn.gcn import EdgeGCNEncoder
 from network.gnn.mpnn.mpnn import MPNN
 from utils.misc.random_seeding import seed_random_state
+from utils.misc.parameter_counting import count_parameters
 from utils.dataset.graph_to_dscrptr_dataset import GraphToDscrptrDataset
 
 
@@ -46,6 +48,7 @@ RAND_STATE = 0
 TEST_SIZE = 10000
 VALIDATION_SIZE = 10000
 TARGET_LIST = c.TARGET_D7_DSCRPTR_NAMES
+MODEL_TYPE = 'GCN'
 
 use_cuda = torch.cuda.is_available() and USE_CUDA
 seed_random_state(RAND_STATE)
@@ -133,7 +136,10 @@ trn_cid_list, val_cid_list = train_test_split(trn_cid_list,
 dataset_kwargs = {
     'target_list': TARGET_LIST,
     'cid_smiles_dict': cid_smiles_dict,
-    'cid_dscrptr_dict': cid_dscrptr_dict}
+    'cid_dscrptr_dict': cid_dscrptr_dict,
+    # 'multi_edge_indices': (MODEL_TYPE.upper() == 'GCN') or
+    #                       (MODEL_TYPE.upper() == 'GAT')
+}
 trn_dataset = GraphToDscrptrDataset(cid_list=trn_cid_list, **dataset_kwargs)
 val_dataset = GraphToDscrptrDataset(cid_list=val_cid_list, **dataset_kwargs)
 tst_dataset = GraphToDscrptrDataset(cid_list=tst_cid_list, **dataset_kwargs)
@@ -153,18 +159,27 @@ tst_loader = pyg_data.DataLoader(tst_dataset,
 
 
 # Model, optimizer, and scheduler #############################################
-model = MPNN(node_attr_dim=trn_dataset.node_attr_dim,
-             edge_attr_dim=trn_dataset.edge_attr_dim,
-             state_dim=256,
-             num_conv=3,
-             out_dim=len(TARGET_LIST)).to(device)
-# model = EdgeGCNEncoder(node_attr_dim=trn_dataset.node_attr_dim,
-#                        edge_attr_dim=trn_dataset.edge_attr_dim,
-#                        state_dim=32,
-#                        num_conv=3,
-#                        out_dim=len(TARGET_LIST),
-#                        attention_pooling=False).to(device)
-print(model)
+if MODEL_TYPE.upper() == 'GCN':
+    model = EdgeGCNEncoder(node_attr_dim=trn_dataset.node_attr_dim,
+                           edge_attr_dim=trn_dataset.edge_attr_dim,
+                           state_dim=256,
+                           num_conv=3,
+                           out_dim=len(TARGET_LIST),
+                           attention_pooling=True).to(device)
+elif MODEL_TYPE.upper() == 'GAT':
+    model = EdgeGATEncoder(node_attr_dim=trn_dataset.node_attr_dim,
+                           edge_attr_dim=trn_dataset.edge_attr_dim,
+                           state_dim=32,
+                           num_conv=3,
+                           out_dim=len(TARGET_LIST),
+                           attention_pooling=False).to(device)
+else:
+    model = MPNN(node_attr_dim=trn_dataset.node_attr_dim,
+                 edge_attr_dim=trn_dataset.edge_attr_dim,
+                 state_dim=256,
+                 num_conv=3,
+                 out_dim=len(TARGET_LIST)).to(device)
+print(f'Model Summary (# of Parameters: {count_parameters(model)})\n{model}')
 
 optimizer = torch.optim.Adam(model.parameters(), lr=5e-4)
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(

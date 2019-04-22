@@ -299,7 +299,8 @@ def mol_to_graph(mol: Chem.Mol,
                  master_bond: bool,
                  max_num_atoms: int,
                  atom_feat_list: list = None,
-                 bond_feat_list: list = None) -> tuple:
+                 bond_feat_list: list = None,
+                 multi_edge_indices: bool = False) -> tuple:
 
     """
     This implementation is based on:
@@ -379,7 +380,17 @@ def mol_to_graph(mol: Chem.Mol,
     node_attr = np.array(node_attr, dtype=np.float32)
     edge_index = np.transpose(np.array(edge_index, dtype=np.int64))
     edge_attr = np.array(edge_attr, dtype=np.float32)
-    return node_attr, edge_index, edge_attr
+
+    # Compute a series of edge indices that corresponding to the one-hot
+    # edge attributes. This is for GCN, GAT, and other graph model that does
+    # not take in edge attributes/features directly
+    if multi_edge_indices:
+        edge_indices = [
+            edge_index[:, np.array(edge_attr[:, i], dtype=np.bool8)]
+            for i in range(edge_attr.shape[1])]
+        return node_attr, edge_indices, np.array([], dtype=np.float32)
+    else:
+        return node_attr, edge_index, edge_attr
 
 
 if __name__ == '__main__':
