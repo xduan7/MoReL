@@ -9,6 +9,7 @@
 """
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch_geometric.nn as pyg_nn
 import torch_geometric.data as pyg_data
 
@@ -21,29 +22,34 @@ class GAT(nn.Module):
                  num_heads: int = 8,
                  num_conv: int = 2,
                  out_dim: int = 1,
-                 dropout_rate: float = 0.2):
+                 dropout: float = 0.2):
 
         super(GAT, self).__init__()
+        self.__dropout = dropout
 
-        __conv_layers = nn.ModuleList(
-            [pyg_nn.GATConv(node_attr_dim, state_dim,
-                            heads=num_heads, dropout=dropout_rate)])
-
-        for i in range(num_conv - 1):
-            __conv_layers.extend(
-                [nn.ReLU(),
-                 nn.Dropout(dropout_rate),
-                 pyg_nn.GATConv(state_dim,
-                                out_dim if (i == num_conv - 2) else state_dim,
-                                heads=num_heads, dropout=dropout_rate)])
+        # Convolution layers
+        # Note that there is a difference between dropout in GAT layers and
+        # the dropout in-between. The former indicates the dropout of graph
+        # model propagation; and the latter is between layers.
+        self.__conv_layers = nn.ModuleList([pyg_nn.GATConv(
+            node_attr_dim if (i == 0) else state_dim,
+            out_dim if (i == (num_conv - 1)) else state_dim,
+            heads=num_heads, dropout=dropout) for i in range(num_conv)])
 
     def forward(self, data: pyg_data.Data):
-        return self.__conv_layers(data.x, data.edge_index)
+        out = data.x
+        for i, layer in enumerate(self.__conv_layers):
+            out = layer(out, data.edge_index)
+            if i != (len(self.__conv_layers) - 1):
+                out = F.dropout(F.relu(out),
+                                p=self.__dropout,
+                                training=self.training)
+        return out
 
 
 class EdgeGAT(nn.Module):
     """
-    Version of GCN that takes one-hot encoded edge attribute
+    Version of GAT that takes one-hot encoded edge attribute
     """
 
     def __init__(self,
@@ -53,7 +59,7 @@ class EdgeGAT(nn.Module):
                  num_heads: int = 8,
                  num_conv: int = 2,
                  out_dim: int = 1,
-                 dropout_rate: float = 0.2):
+                 dropout: float = 0.2):
 
         super(EdgeGAT, self).__init__()
 
@@ -64,7 +70,7 @@ class EdgeGAT(nn.Module):
             'num_heads': num_heads,
             'num_conv': num_conv,
             'out_dim': out_dim,
-            'dropout_rate': dropout_rate}
+            'dropout': dropout}
 
         self.__gat_nets = nn.ModuleList(
             [GAT(**__gat_kwargs) for _ in range(edge_attr_dim)])
@@ -74,15 +80,62 @@ class EdgeGAT(nn.Module):
         out = []
         for i in range(self.__edge_attr_dim):
             # New graph that corresponds to the edge attributes
+            _mask = data.edge_attr[:, i].byte()
             _edge_index = torch.masked_select(
-                data.edge_index, mask=data.edge_attr[:, i].byte()).view(2, -1)
+                data.edge_index, mask=_mask).view(2, -1)
             _data = pyg_data.Data(x=data.x, edge_index=_edge_index)
+
             out.append(self.__gat_nets[i](_data))
 
         return torch.cat(tuple(out), dim=1)
 
 
-# Testing segment for GCN with edge attributes and pooling layer
+class EdgeGATEncoder(nn.Module):
+
+    def __init__(self,
+                 node_attr_dim: int,
+                 edge_attr_dim: int,
+                 state_dim: int = 8,
+                 num_heads: int = 8,
+                 num_conv: int = 2,
+                 out_dim: int = 1,
+                 dropout: float = 0.2,
+                 attention_pooling: bool = True):
+
+        super(EdgeGATEncoder, self).__init__()
+
+        self.__edge_gat = EdgeGAT(node_attr_dim=node_attr_dim,
+                                  edge_attr_dim=edge_attr_dim,
+                                  state_dim=state_dim,
+                                  num_heads=num_heads,
+                                  num_conv=num_conv,
+                                  out_dim=state_dim,
+                                  dropout=dropout)
+
+        # Pooling layer is supposed to perform the following shape-shifting:
+        #   From [num_nodes, node_attr_dim * edge_attr_dim]
+        #   To [num_graphs, 2 * state_dim * edge_attr_dim]
+        if attention_pooling:
+            self.__pooling = pyg_nn.GlobalAttention(
+                nn.Linear(state_dim * edge_attr_dim, 1),
+                nn.Linear(state_dim * edge_attr_dim,
+                          2 * state_dim * edge_attr_dim))
+        else:
+            self.__pooling = pyg_nn.Set2Set(state_dim * edge_attr_dim,
+                                            processing_steps=3)
+
+        self.__out_linear = nn.Sequential(
+            nn.Linear(2 * state_dim * edge_attr_dim, state_dim),
+            nn.ReLU(),
+            nn.Linear(state_dim, out_dim))
+
+    def forward(self, data: pyg_data.Data):
+        out = self.__edge_gat(data)
+        out = self.__pooling(out, data.batch)
+        return self.__out_linear(out)
+
+
+# Testing segment for GAT with edge attributes and pooling layer
 if __name__ == '__main__':
 
     import torch
@@ -154,7 +207,7 @@ if __name__ == '__main__':
                                      shuffle=True,
                                      **dataloader_kwargs)
 
-    model = EdgeGCNEncoder(node_attr_dim=dataset.node_attr_dim,
+    model = EdgeGATEncoder(node_attr_dim=dataset.node_attr_dim,
                            edge_attr_dim=dataset.edge_attr_dim,
                            out_dim=len(TARGET_LIST)).to(device)
 
@@ -164,4 +217,3 @@ if __name__ == '__main__':
     print(f'The input batch data is {data}')
     data = data.to(device)
     print(f'The output shape is {model(data).shape}')
-
