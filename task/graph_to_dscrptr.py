@@ -124,7 +124,7 @@ trn_cid_list, val_cid_list = train_test_split(trn_cid_list,
                                               test_size=VALIDATION_SIZE,
                                               random_state=RAND_STATE)
 
-# Downsizing training set for the purpose of testing
+# # Downsizing training set for the purpose of testing
 # _, trn_cid_list = train_test_split(trn_cid_list,
 #                                    test_size=VALIDATION_SIZE * 10,
 #                                    random_state=RAND_STATE)
@@ -139,10 +139,10 @@ val_dataset = GraphToDscrptrDataset(cid_list=val_cid_list, **dataset_kwargs)
 tst_dataset = GraphToDscrptrDataset(cid_list=tst_cid_list, **dataset_kwargs)
 
 dataloader_kwargs = {
-    'batch_size': 64,
+    'batch_size': 32,
     'timeout': 1,
     'pin_memory': True if use_cuda else False,
-    'num_workers': 8 if use_cuda else 0}
+    'num_workers': 4 if use_cuda else 0}
 trn_loader = pyg_data.DataLoader(trn_dataset,
                                  shuffle=True,
                                  **dataloader_kwargs)
@@ -153,21 +153,22 @@ tst_loader = pyg_data.DataLoader(tst_dataset,
 
 
 # Model, optimizer, and scheduler #############################################
-# model = MPNN(node_attr_dim=trn_dataset.node_attr_dim,
-#              edge_attr_dim=trn_dataset.edge_attr_dim,
-#              state_dim=128,
-#              num_conv=3,
-#              out_dim=len(TARGET_LIST)).to(device)
-model = EdgeGCNEncoder(node_attr_dim=trn_dataset.node_attr_dim,
-                       edge_attr_dim=trn_dataset.edge_attr_dim,
-                       state_dim=16,
-                       num_conv=3,
-                       out_dim=len(TARGET_LIST),
-                       attention_pooling=True).to(device)
+model = MPNN(node_attr_dim=trn_dataset.node_attr_dim,
+             edge_attr_dim=trn_dataset.edge_attr_dim,
+             state_dim=256,
+             num_conv=3,
+             out_dim=len(TARGET_LIST)).to(device)
+# model = EdgeGCNEncoder(node_attr_dim=trn_dataset.node_attr_dim,
+#                        edge_attr_dim=trn_dataset.edge_attr_dim,
+#                        state_dim=32,
+#                        num_conv=3,
+#                        out_dim=len(TARGET_LIST),
+#                        attention_pooling=False).to(device)
+print(model)
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+optimizer = torch.optim.Adam(model.parameters(), lr=5e-4)
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-    optimizer, mode='min', factor=0.8, patience=5, min_lr=0.00001)
+    optimizer, mode='min', factor=0.8, patience=5, min_lr=1e-6)
 # optimizer = torch.optim.SGD(model.parameters(),
 #                             lr=1e-3,
 #                             momentum=0.9,
