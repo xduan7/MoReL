@@ -20,13 +20,14 @@
         https://github.com/rusty1s/pytorch_geometric/issues/147
         https://github.com/rusty1s/pytorch_geometric/issues/175
 """
-
+import json
 import torch
 import argparse
 import numpy as np
 import pandas as pd
 import torch.nn.functional as F
 import torch_geometric.data as pyg_data
+from apex import amp
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 
@@ -80,11 +81,15 @@ def main():
                         help='random state of numpy/sklearn/pytorch')
 
     args = parser.parse_args()
+    print('Training Arguments:\n' + json.dumps(vars(args), indent=4))
 
     # Constants and initializations ###########################################
     use_cuda = torch.cuda.is_available() and (not args.no_cuda)
     device = torch.device(f'cuda: {args.cuda_device}' if use_cuda else 'cpu')
     print(f'Training on device {device}')
+
+    # It seems that NVidia Apex is not compatible with PyG
+    amp_handle = amp.init(enabled=False)
 
     seed_random_state(args.rand_state)
 
@@ -162,10 +167,10 @@ def main():
                          test_size=args.val_size,
                          random_state=args.rand_state)
 
-    # Downsizing training set for the purpose of testing
-    _, trn_cid_list = train_test_split(trn_cid_list,
-                                       test_size=args.val_size * 10,
-                                       random_state=args.rand_state)
+    # # Downsizing training set for the purpose of testing
+    # _, trn_cid_list = train_test_split(trn_cid_list,
+    #                                    test_size=args.val_size * 10,
+    #                                    random_state=args.rand_state)
 
     # Datasets and dataloaders
     dataset_kwargs = {
@@ -234,7 +239,8 @@ def main():
             data = data.to(device)
             optimizer.zero_grad()
             loss = F.mse_loss(model(data), data.y.view(-1, len(target_list)))
-            loss.backward()
+            with amp_handle.scale_loss(loss, optimizer) as scaled_loss:
+                scaled_loss.backward()
             loss_all += loss.item() * data.num_graphs
             optimizer.step()
         return loss_all / len(trn_loader.dataset)
