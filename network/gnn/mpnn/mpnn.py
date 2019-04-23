@@ -30,7 +30,8 @@ class MPNN(nn.Module):
                  edge_attr_dim: int,
                  state_dim: int = 64,
                  num_conv: int = 3,
-                 out_dim: int = 1):
+                 out_dim: int = 1,
+                 attention_pooling: bool = False):
 
         super(MPNN, self).__init__()
 
@@ -48,7 +49,14 @@ class MPNN(nn.Module):
             aggr='mean', root_weight=False)
         self.__gru = nn.GRU(state_dim, state_dim)
 
-        self.__set2set = pyg_nn.Set2Set(state_dim, processing_steps=3)
+        # self.__set2set = pyg_nn.Set2Set(state_dim, processing_steps=3)
+        if attention_pooling:
+            self.__pooling = pyg_nn.GlobalAttention(
+                nn.Linear(state_dim, 1),
+                nn.Linear(state_dim, 2 * state_dim))
+        else:
+            self.__pooling = pyg_nn.Set2Set(state_dim, processing_steps=3)
+
         self.__out_linear = nn.Sequential(
             nn.Linear(2 * state_dim, state_dim),
             nn.ReLU(),
@@ -69,7 +77,7 @@ class MPNN(nn.Module):
 
         # Note that data.bach has the shape of [num_nodes]
         # which specifies the node's graph id in a batch
-        out = self.__set2set(out, data.batch)
+        out = self.__pooling(out, data.batch)
 
         # Now out is of size [batch_size, 2 * state_dim]
         return self.__out_linear(out)

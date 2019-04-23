@@ -32,9 +32,10 @@ class GAT(nn.Module):
         # the dropout in-between. The former indicates the dropout of graph
         # model propagation; and the latter is between layers.
         self.__conv_layers = nn.ModuleList([pyg_nn.GATConv(
-            node_attr_dim if (i == 0) else state_dim,
+            node_attr_dim if (i == 0) else state_dim * num_heads,
             out_dim if (i == (num_conv - 1)) else state_dim,
-            heads=num_heads, dropout=dropout) for i in range(num_conv)])
+            heads=(1 if (i == (num_conv - 1)) else num_heads),
+            dropout=dropout) for i in range(num_conv)])
 
     def forward(self, data: pyg_data.Data):
         out = data.x
