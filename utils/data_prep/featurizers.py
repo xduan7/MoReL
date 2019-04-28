@@ -316,7 +316,7 @@ def mol_to_graph(mol: Chem.Mol,
 
     # Sanity check for graph size
     num_atoms = mol.GetNumAtoms() + master_atom
-    if num_atoms > max_num_atoms:
+    if (num_atoms > max_num_atoms) and (max_num_atoms >=0):
         logger.warning(f'Number of atoms for {Chem.MolToSmiles(mol)} '
                        f'exceeds the maximum number of atoms {max_num_atoms}')
         return None, None, None

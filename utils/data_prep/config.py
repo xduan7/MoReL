@@ -57,11 +57,15 @@ PROCESSED_DATA_DIR = join(DATA_DIR, 'processed/')
 
 
 # Drug response data ##########################################################
+DRUG_RESP_SOURCES  = ['CCLE', 'CTRP', 'GDSC', 'NCI60', 'gCSI']
+
 DRUG_INFO_FILE_NAME = 'drug_info'
+DRUG_SMILES_FILE_NAME = 'pan_drugs_combined.smiles'
 RNA_SEQ_FILE_NAME = 'combined_rnaseq_data_lincs1000'
 DRUG_RESP_FILE_NAME = 'combined_single_response_agg'
 
 DRUG_INFO_FILE_PATH = join(RAW_DATA_DIR, DRUG_INFO_FILE_NAME)
+DRUG_SMILES_FILE_PATH = join(RAW_DATA_DIR, DRUG_SMILES_FILE_NAME)
 RNA_SEQ_FILE_PATH = join(RAW_DATA_DIR, RNA_SEQ_FILE_NAME)
 DRUG_RESP_FILE_PATH = join(RAW_DATA_DIR, DRUG_RESP_FILE_NAME)
 
