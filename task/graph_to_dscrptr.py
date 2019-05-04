@@ -35,7 +35,7 @@ import sys
 sys.path.extend(['/home/xduan7/Projects/MoReL'])
 sys.path.extend(['/home/xduan7/Work/Projects/MoReL'])
 
-import utils.data_prep.config as c
+import utils.dataset.config as c
 from network.gnn.gat.gat import EdgeGATEncoder
 from network.gnn.gcn.gcn import EdgeGCNEncoder
 from network.gnn.mpnn.mpnn import MPNN

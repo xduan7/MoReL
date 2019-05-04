@@ -7,12 +7,14 @@
     File Description:
 """
 import re
+import torch
 import logging
 import numpy as np
 
 from typing import Optional
 from rdkit import Chem, RDLogger
 from rdkit.Chem import AllChem, Descriptors
+from torch_geometric.data import Data
 
 # Suppress unnecessary RDkit warnings and errors
 RDLogger.logger().setLevel(RDLogger.CRITICAL)
@@ -199,9 +201,9 @@ def mol_to_smiles(mol: Chem.Mol,
 
 
 def mol_to_tokens(mol: Chem.Mol,
-                  len_tokens: int,
+                  len_tokens: int = 128,
                   token_dict: dict = None,
-                  smiles_kwargs: dict = None) -> Optional[np.array]:
+                  smiles_kwargs: dict = None) -> Optional[torch.Tensor]:
 
     smiles = mol_to_smiles(mol, smiles_kwargs)
     token_dict = DEFAULT_TOKEN_DICT if token_dict is None else token_dict
@@ -245,12 +247,13 @@ def mol_to_tokens(mol: Chem.Mol,
                 symbol = 'UNK'
 
         elif ci.isdigit():
-            # Take care of the rare cases where there are double digits
-            if ((i + 1) < len(smiles)) and smiles[i + 1].isdigit():
-                symbol = smiles[i: i + 2]
-                skip_next = True
-            else:
-                symbol = ci
+            # # Take care of the rare cases where there are double digits
+            # if ((i + 1) < len(smiles)) and smiles[i + 1].isdigit():
+            #     symbol = smiles[i: i + 2]
+            #     skip_next = True
+            # else:
+            #     symbol = ci
+            symbol = ci
 
         elif not ci.isalnum():
             # Bonds, rings, etc.
@@ -271,36 +274,35 @@ def mol_to_tokens(mol: Chem.Mol,
         logger.warning(f'Tokens for {smiles} '
                        f'exceeds the given length {len_tokens}')
         return None
-    return np.array(tokens, dtype=np.float32)
+    return torch.from_numpy(np.array(tokens, dtype=np.float32))
 
 
 def mol_to_fingerprints(mol: Chem.Mol,
-                        fp_kwargs: dict = None) -> Optional[np.array]:
+                        fp_kwargs: dict = None) -> Optional[torch.Tensor]:
 
     # TODO: Note that there are a lot of different fingerprint to try,
     #  but here we are only using ECFP, which is consistent with MoleculeNet
     # For more fingerprint, check outDIY Drug Discovery by Daniel C. Elton
     fp_kwargs = DEFAULT_FP_KWARGS if fp_kwargs is None else fp_kwargs
     fingerprints = AllChem.GetMorganFingerprintAsBitVect(mol=mol, **fp_kwargs)
-    return np.array(fingerprints, dtype=np.float32)
+    return torch.from_numpy(np.array(fingerprints, dtype=np.float32))
 
 
 def mol_to_descriptors(mol: Chem.Mol,
-                       dscrptr_names: iter = None) -> Optional[np.array]:
+                       dscrptr_names: iter = None) -> Optional[torch.Tensor]:
     # Note that this function only converts molecules to 202 descriptors
     # implemented in RDkit
     descriptors = [func(mol) for name, func in Descriptors.descList
                    if (dscrptr_names is None) or (name in dscrptr_names)]
-    return np.array(descriptors, dtype=np.float32)
+    return torch.from_numpy(np.array(descriptors, dtype=np.float32))
 
 
 def mol_to_graph(mol: Chem.Mol,
-                 master_atom: bool,
-                 master_bond: bool,
-                 max_num_atoms: int,
+                 master_atom: bool = True,
+                 master_bond: bool = True,
+                 max_num_atoms: int = -1,
                  atom_feat_list: list = None,
-                 bond_feat_list: list = None,
-                 multi_edge_indices: bool = False) -> tuple:
+                 bond_feat_list: list = None) -> Optional[Data]:
 
     """
     This implementation is based on:
@@ -319,7 +321,7 @@ def mol_to_graph(mol: Chem.Mol,
     if (num_atoms > max_num_atoms) and (max_num_atoms >=0):
         logger.warning(f'Number of atoms for {Chem.MolToSmiles(mol)} '
                        f'exceeds the maximum number of atoms {max_num_atoms}')
-        return None, None, None
+        return None
 
     if atom_feat_list is None:
         atom_feat_list = DEFAULT_ATOM_FEAT_LIST
@@ -381,16 +383,18 @@ def mol_to_graph(mol: Chem.Mol,
     edge_index = np.transpose(np.array(edge_index, dtype=np.int64))
     edge_attr = np.array(edge_attr, dtype=np.float32)
 
-    # Compute a series of edge indices that corresponding to the one-hot
-    # edge attributes. This is for GCN, GAT, and other graph model that does
-    # not take in edge attributes/features directly
-    if multi_edge_indices:
-        edge_indices = [
-            edge_index[:, np.array(edge_attr[:, i], dtype=np.bool8)]
-            for i in range(edge_attr.shape[1])]
-        return node_attr, edge_indices, np.array([], dtype=np.float32)
-    else:
-        return node_attr, edge_index, edge_attr
+    return Data(x=torch.from_numpy(node_attr),
+                edge_index=torch.from_numpy(edge_index),
+                edge_attr=torch.from_numpy(edge_attr))
+
+
+# TODO: mol_to_image, mol_to_jtnn
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
@@ -428,9 +432,10 @@ if __name__ == '__main__':
         fp = mol_to_fingerprints(m)
         d = mol_to_descriptors(m)
 
-        n, adj, e = mol_to_graph(m, True, True, 128)
-        assert n.shape[0] == m.GetNumAtoms()
-        assert adj.shape[1] == e.shape[0]
+        g = mol_to_graph(m, True, True, 128)
+        print(g)
+        # assert n.shape[0] == m.GetNumAtoms()
+        # assert adj.shape[1] == e.shape[0]
 
         # Convert edge attributes to adjacency matrix
         # tmp = torch.masked_select(adj, mask=e[:, 2].byte()).view(2, -1)

@@ -7,16 +7,11 @@
     File Description:   
 
 """
-import torch
 import argparse
-import numpy as np
-import pandas as pd
 
 import sys
 sys.path.extend(['/home/xduan7/Projects/MoReL'])
 sys.path.extend(['/home/xduan7/Work/Projects/MoReL'])
-
-import utils.data_prep.config as c
 
 
 def main():

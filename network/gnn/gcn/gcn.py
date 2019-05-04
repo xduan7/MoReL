@@ -7,7 +7,6 @@
     File Description:   
 
 """
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch_geometric.nn as pyg_nn
@@ -137,7 +136,7 @@ if __name__ == '__main__':
     import torch
     import numpy as np
     import pandas as pd
-    import utils.data_prep.config as c
+    import utils.dataset.config as c
     from utils.dataset.graph_to_dscrptr_dataset import GraphToDscrptrDataset
 
     PCBA_ONLY = True

@@ -8,7 +8,7 @@
 
 """
 import os
-import utils.data_prep.config as c
+import utils.dataset.config as c
 
 
 def create_dir():

@@ -16,8 +16,8 @@ from torch.utils.data import Dataset
 from torch_geometric.data import Data
 from typing import Optional
 
-import utils.data_prep.config as c
-from utils.data_prep.featurizers import mol_to_graph
+import utils.dataset.config as c
+from utils.dataset.featurizers import mol_to_graph
 
 logger = logging.getLogger(__name__)
 
