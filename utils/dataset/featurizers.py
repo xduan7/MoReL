@@ -10,10 +10,21 @@ import re
 import torch
 import logging
 import numpy as np
+from typing import Optional, List, Dict
+from itertools import combinations_with_replacement
 
-from typing import Optional
-from rdkit import Chem, RDLogger
+from rdkit import Chem, RDLogger, DataStructs
 from rdkit.Chem import AllChem, Descriptors
+from rdkit.Chem.Fingerprints.FingerprintMols import FingerprintMol
+from rdkit.Chem.rdMolDescriptors import GetAtomPairFingerprint, \
+    GetMACCSKeysFingerprint, GetMorganFingerprint, \
+    GetTopologicalTorsionFingerprint
+from rdkit.DataStructs.cDataStructs import TanimotoSimilarity, DiceSimilarity, \
+    CosineSimilarity, SokalSimilarity, RusselSimilarity, \
+    RogotGoldbergSimilarity, AllBitSimilarity, KulczynskiSimilarity, \
+    McConnaugheySimilarity, AsymmetricSimilarity, BraunBlanquetSimilarity, \
+    TverskySimilarity
+
 from torch_geometric.data import Data
 
 # Suppress unnecessary RDkit warnings and errors
@@ -161,9 +172,74 @@ DEFAULT_FEAT_VALUE_DICT = {
 }
 
 
+# Molecular distance features #################################################
+FP_FUNC_DICT = {
+    # https://www.rdkit.org/docs/GettingStartedInPython.html
+    # https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html
+    # Explicit fingerprint vector
+    'MACCSKeys':        GetMACCSKeysFingerprint,
+    'Topological':      FingerprintMol,
+
+    # Sparse/implicit fingerprint vector
+    'AtomPair':         GetAtomPairFingerprint,
+    'Morgan':           GetMorganFingerprint,
+    'Torsion':          GetTopologicalTorsionFingerprint,
+}
+
+DEFAULT_FP_FUNC_LIST = [
+    'AtomPair',
+    'Morgan',
+    'Torsion',
+]
+
+DEFAULT_FP_FUNC_PARAM = {
+    'MACCSKeys': [
+        {}
+    ],
+    'Topological': [
+        {}
+    ],
+    'AtomPair':[
+        {'maxLength': 30},
+        {'maxLength': 30, 'includeChirality': True},
+    ],
+    'Morgan': [
+        {'radius': 2},
+        {'radius': 3},
+        {'radius': 2, 'useChirality': True, 'useFeatures': True},
+        {'radius': 3, 'useChirality': True, 'useFeatures': True},
+    ],
+    'Torsion': [
+        {'targetSize': 4},
+        {'targetSize': 4, 'includeChirality': True},
+    ],
+}
+
+SIM_FUNC_DICT = {
+    # https://www.rdkit.org/docs/source/rdkit.DataStructs.cDataStructs.html
+    'Tanimoto':             TanimotoSimilarity,
+    'Dice':                 DiceSimilarity,
+    'Cosine':               CosineSimilarity,
+    'Sokal':                SokalSimilarity,
+    'Russel':               RusselSimilarity,
+    'RogotGoldberg':        RogotGoldbergSimilarity,
+    'AllBit':               AllBitSimilarity,
+    'Kulczynski':           KulczynskiSimilarity,
+    'McConnaughey':         McConnaugheySimilarity,
+    'Asymmetric':           AsymmetricSimilarity,
+    'BraunBlanquet':        BraunBlanquetSimilarity,
+    'TverskySimilarity':    TverskySimilarity,
+}
+
+DEFAULT_SIM_FUNC_LIST = [
+    'Tanimoto',
+    'Dice',
+]
+
+
 # Helper functions ############################################################
 def one_hot_encode(value,
-                   possible_values: list = None) -> list:
+                   possible_values: List = None) -> List:
     """
     This function will one-hot encode a single value.
     Note that if possible values are not given, it will assume that the
@@ -301,8 +377,8 @@ def mol_to_graph(mol: Chem.Mol,
                  master_atom: bool = True,
                  master_bond: bool = True,
                  max_num_atoms: int = -1,
-                 atom_feat_list: list = None,
-                 bond_feat_list: list = None) -> Optional[Data]:
+                 atom_feat_list: List[str] = None,
+                 bond_feat_list: List[str] = None) -> Optional[Data]:
 
     """
     This implementation is based on:
@@ -389,12 +465,71 @@ def mol_to_graph(mol: Chem.Mol,
 
 
 # TODO: mol_to_image, mol_to_jtnn
+# Note that MolToImage is already implemented in RDkit
 
 
+def mols_to_simmat(mol_list: List[Chem.Mol],
+                   fp_func_list: List[str] = None,
+                   fp_func_param_dict: Dict[str, List] = None,
+                   sim_func_list: List[str] = None) -> np.array:
 
+    if fp_func_list is None:
+        fp_func_list = DEFAULT_FP_FUNC_LIST
 
+    if fp_func_param_dict is None:
+        fp_func_param_dict = DEFAULT_FP_FUNC_PARAM
+    else:
+        fp_func_param_dict = {**DEFAULT_FP_FUNC_PARAM, **fp_func_param_dict}
 
+    if sim_func_list is None:
+        sim_func_list = DEFAULT_SIM_FUNC_LIST
 
+    # Calculate all the fingerprints for all the molecules
+    mol_fp_list = []
+    for mol in mol_list:
+
+        __mol_fp = []
+        for fp_func in fp_func_list:
+
+            __fp_func: callable = FP_FUNC_DICT[fp_func]
+            for fp_func_param in fp_func_param_dict[fp_func]:
+                __mol_func_param_fp = __fp_func(mol, **fp_func_param)
+                __mol_fp.append(__mol_func_param_fp)
+
+        mol_fp_list.append(__mol_fp)
+
+    # Similarity matrix
+    simmat = np.zeros(shape=(len(mol_list), len(mol_list),
+                             len(mol_fp_list[0]) * len(sim_func_list)),
+                      dtype=np.float32)
+
+    # Keep a list of boolean that keeps track of which similarity is of valid
+    sim_index_indicator = [True] * (len(mol_fp_list[0]) * len(sim_func_list))
+
+    for i, j in combinations_with_replacement(range(len(mol_list)), 2):
+
+        __fp_i, __fp_j = mol_fp_list[i], mol_fp_list[j]
+
+        for k, (__fp_i_k, __fp_j_k) in enumerate(zip(__fp_i, __fp_j)):
+
+            for l, sim_func_l in enumerate(sim_func_list):
+
+                __sim_func_l = SIM_FUNC_DICT[sim_func_l]
+                __sim_index = k * len(sim_func_list) + l
+
+                try:
+                    assert sim_index_indicator[__sim_index]
+                    __sim_i_j_k_l = __sim_func_l(__fp_i_k, __fp_j_k)
+                except:
+                    simmat[i, j, __sim_index] = np.nan
+                    simmat[j, i, __sim_index] = np.nan
+                    sim_index_indicator[__sim_index] = False
+                    continue
+
+                simmat[i, j, __sim_index] = __sim_i_j_k_l
+                simmat[j, i, __sim_index] = __sim_i_j_k_l
+
+    return simmat[:, :, sim_index_indicator]
 
 
 if __name__ == '__main__':
@@ -436,6 +571,12 @@ if __name__ == '__main__':
         print(g)
         # assert n.shape[0] == m.GetNumAtoms()
         # assert adj.shape[1] == e.shape[0]
-
         # Convert edge attributes to adjacency matrix
         # tmp = torch.masked_select(adj, mask=e[:, 2].byte()).view(2, -1)
+
+    # Test molecular similarity matrix generation
+    mol_list = [Chem.MolFromSmiles(s) for s in example_smiles_list]
+    simmat = mols_to_simmat(mol_list,
+                            fp_func_list=list(FP_FUNC_DICT.keys()),
+                            sim_func_list=list(SIM_FUNC_DICT.keys()))
+
