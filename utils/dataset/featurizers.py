@@ -11,9 +11,9 @@ import torch
 import logging
 import numpy as np
 from typing import Optional, List, Dict
-from itertools import combinations_with_replacement
+from itertools import product, combinations_with_replacement
 
-from rdkit import Chem, RDLogger, DataStructs
+from rdkit import Chem, RDLogger
 from rdkit.Chem import AllChem, Descriptors
 from rdkit.Chem.Fingerprints.FingerprintMols import FingerprintMol
 from rdkit.Chem.rdMolDescriptors import GetAtomPairFingerprint, \
@@ -261,6 +261,26 @@ def one_hot_encode(value,
     return enc_feat
 
 
+def mols_to_fp_list(mol_list: List[Chem.Mol],
+                    fp_func_list: List[str] = None,
+                    fp_func_param_dict: Dict[str, List] = None) -> List:
+
+    mol_fp_list = []
+    for mol in mol_list:
+
+        __mol_fp = []
+        for fp_func in fp_func_list:
+
+            __fp_func: callable = FP_FUNC_DICT[fp_func]
+            for fp_func_param in fp_func_param_dict[fp_func]:
+                __mol_func_param_fp = __fp_func(mol, **fp_func_param)
+                __mol_fp.append(__mol_func_param_fp)
+
+        mol_fp_list.append(__mol_fp)
+
+    return mol_fp_list
+
+
 # Featurization functions #####################################################
 def inchi_to_mol(inchi: str) -> Optional[Chem.Mol]:
     mol: Chem.Mol = Chem.MolFromInchi(inchi)
@@ -469,9 +489,16 @@ def mol_to_graph(mol: Chem.Mol,
 
 
 def mols_to_simmat(mol_list: List[Chem.Mol],
+                   ref_mol_list: List[Chem.Mol] = None,
                    fp_func_list: List[str] = None,
                    fp_func_param_dict: Dict[str, List] = None,
                    sim_func_list: List[str] = None) -> np.array:
+
+    if ref_mol_list is None:
+        ref_mol_list = mol_list
+        __self_ref = True
+    else:
+        __self_ref = False
 
     if fp_func_list is None:
         fp_func_list = DEFAULT_FP_FUNC_LIST
@@ -498,17 +525,32 @@ def mols_to_simmat(mol_list: List[Chem.Mol],
 
         mol_fp_list.append(__mol_fp)
 
+    mol_fp_list = mols_to_fp_list(mol_list,
+                                  fp_func_list,
+                                  fp_func_param_dict)
+
+    if __self_ref:
+        ref_mol_fp_list = mol_fp_list
+    else:
+        ref_mol_fp_list = mols_to_fp_list(ref_mol_list,
+                                          fp_func_list,
+                                          fp_func_param_dict)
+
     # Similarity matrix
-    simmat = np.zeros(shape=(len(mol_list), len(mol_list),
+    simmat = np.zeros(shape=(len(mol_list), len(ref_mol_list),
                              len(mol_fp_list[0]) * len(sim_func_list)),
                       dtype=np.float32)
 
     # Keep a list of boolean that keeps track of which similarity is of valid
     sim_index_indicator = [True] * (len(mol_fp_list[0]) * len(sim_func_list))
 
-    for i, j in combinations_with_replacement(range(len(mol_list)), 2):
+    iterations = combinations_with_replacement(range(len(mol_list)), 2) \
+        if __self_ref else \
+        product(range(len(mol_list)), range(len(ref_mol_list)))
 
-        __fp_i, __fp_j = mol_fp_list[i], mol_fp_list[j]
+    for i, j in iterations:
+
+        __fp_i, __fp_j = mol_fp_list[i], ref_mol_fp_list[j]
 
         for k, (__fp_i_k, __fp_j_k) in enumerate(zip(__fp_i, __fp_j)):
 
@@ -522,12 +564,14 @@ def mols_to_simmat(mol_list: List[Chem.Mol],
                     __sim_i_j_k_l = __sim_func_l(__fp_i_k, __fp_j_k)
                 except:
                     simmat[i, j, __sim_index] = np.nan
-                    simmat[j, i, __sim_index] = np.nan
+                    if __self_ref:
+                        simmat[j, i, __sim_index] = np.nan
                     sim_index_indicator[__sim_index] = False
                     continue
 
                 simmat[i, j, __sim_index] = __sim_i_j_k_l
-                simmat[j, i, __sim_index] = __sim_i_j_k_l
+                if __self_ref:
+                    simmat[j, i, __sim_index] = __sim_i_j_k_l
 
     return simmat[:, :, sim_index_indicator]
 
