@@ -15,12 +15,20 @@ from itertools import product, combinations_with_replacement
 
 from rdkit import Chem, RDLogger
 from rdkit.Chem import AllChem, Descriptors
-from rdkit.Chem.Fingerprints.FingerprintMols import FingerprintMol
+
+# All available FP in RDKit
+# www.rdkit.org/docs/GettingStartedInPython.html#list-of-available-fingerprints
+from rdkit.Chem import RDKFingerprint, PatternFingerprint
 from rdkit.Chem.rdMolDescriptors import GetAtomPairFingerprint, \
     GetMACCSKeysFingerprint, GetMorganFingerprint, \
     GetTopologicalTorsionFingerprint
-from rdkit.DataStructs.cDataStructs import TanimotoSimilarity, DiceSimilarity, \
-    CosineSimilarity, SokalSimilarity, RusselSimilarity, \
+from rdkit.Chem.Pharm2D import Gobbi_Pharm2D
+from rdkit.Chem.Pharm2D.Generate import Gen2DFingerprint
+from rdkit.Chem.rdReducedGraphs import GetErGFingerprint
+
+# All available similarities in RDKit
+from rdkit.DataStructs.cDataStructs import TanimotoSimilarity, \
+    DiceSimilarity, CosineSimilarity, SokalSimilarity, RusselSimilarity, \
     RogotGoldbergSimilarity, AllBitSimilarity, KulczynskiSimilarity, \
     McConnaugheySimilarity, AsymmetricSimilarity, BraunBlanquetSimilarity, \
     TverskySimilarity
@@ -177,29 +185,39 @@ FP_FUNC_DICT = {
     # https://www.rdkit.org/docs/GettingStartedInPython.html
     # https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html
     # Explicit fingerprint vector
+    'RDKit':            RDKFingerprint,
+    'Pattern':          PatternFingerprint,
     'MACCSKeys':        GetMACCSKeysFingerprint,
-    'Topological':      FingerprintMol,
 
     # Sparse/implicit fingerprint vector
     'AtomPair':         GetAtomPairFingerprint,
     'Morgan':           GetMorganFingerprint,
     'Torsion':          GetTopologicalTorsionFingerprint,
+    '2D_Pharm':         Gen2DFingerprint,
+
+    # Extended reduced graph fingerprint returns np.array, which cannot be
+    # input arguments of similarity functions
+    # 'ERG':              GetErGFingerprint,
 }
 
 DEFAULT_FP_FUNC_LIST = [
-    'AtomPair',
+    'RDKit',
     'Morgan',
-    'Torsion',
 ]
 
 DEFAULT_FP_FUNC_PARAM = {
+    'RDKit': [
+        {'minPath': 1, 'maxPath': 2, 'fpSize': 4096},
+        {'minPath': 1, 'maxPath': 3, 'fpSize': 8192}
+    ],
+    'Pattern': [
+        {'fpSize': 4096},
+    ],
     'MACCSKeys': [
         {}
     ],
-    'Topological': [
-        {}
-    ],
-    'AtomPair':[
+
+    'AtomPair': [
         {'maxLength': 30},
         {'maxLength': 30, 'includeChirality': True},
     ],
@@ -213,6 +231,9 @@ DEFAULT_FP_FUNC_PARAM = {
         {'targetSize': 4},
         {'targetSize': 4, 'includeChirality': True},
     ],
+    '2D_Pharm': [
+        {'sigFactory': Gobbi_Pharm2D.factory}
+    ]
 }
 
 SIM_FUNC_DICT = {
@@ -491,7 +512,7 @@ def mol_to_graph(mol: Chem.Mol,
 def mols_to_simmat(mol_list: List[Chem.Mol],
                    ref_mol_list: List[Chem.Mol] = None,
                    fp_func_list: List[str] = None,
-                   fp_func_param_dict: Dict[str, List] = None,
+                   fp_func_param_dict: Dict[str, List[Dict]] = None,
                    sim_func_list: List[str] = None) -> np.array:
 
     if ref_mol_list is None:
