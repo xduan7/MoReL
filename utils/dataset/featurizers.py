@@ -504,16 +504,29 @@ def mol_to_graph(mol: Chem.Mol,
                 edge_index=torch.from_numpy(edge_index),
                 edge_attr=torch.from_numpy(edge_attr))
 
-
 # TODO: mol_to_image, mol_to_jtnn
-# Note that MolToImage is already implemented in RDkit
+# Note that MolToImage is already implemented in RDKit
 
 
-def mols_to_simmat(mol_list: List[Chem.Mol],
-                   ref_mol_list: List[Chem.Mol] = None,
-                   fp_func_list: List[str] = None,
-                   fp_func_param_dict: Dict[str, List[Dict]] = None,
-                   sim_func_list: List[str] = None) -> np.array:
+def mols_to_sim_mat(mol_list: List[Chem.Mol],
+                    ref_mol_list: List[Chem.Mol] = None,
+                    fp_func_list: List[str] = None,
+                    fp_func_param_dict: Dict[str, List[Dict]] = None,
+                    sim_func_list: List[str] = None) -> np.array:
+    """
+    Similarity Matrix
+    This function will take two lists of molecules, one as input list of
+    N molecules, and the other one as reference list of M molecules (same as
+    input if not given), and generates a matrix of size N * M * L, where L
+    is the number of similarity measurements.
+
+    :param mol_list:
+    :param ref_mol_list:
+    :param fp_func_list:
+    :param fp_func_param_dict:
+    :param sim_func_list:
+    :return:
+    """
 
     if ref_mol_list is None:
         ref_mol_list = mol_list
@@ -558,9 +571,9 @@ def mols_to_simmat(mol_list: List[Chem.Mol],
                                           fp_func_param_dict)
 
     # Similarity matrix
-    simmat = np.zeros(shape=(len(mol_list), len(ref_mol_list),
-                             len(mol_fp_list[0]) * len(sim_func_list)),
-                      dtype=np.float32)
+    sim_mat = np.zeros(shape=(len(mol_list), len(ref_mol_list),
+                              len(mol_fp_list[0]) * len(sim_func_list)),
+                       dtype=np.float32)
 
     # Keep a list of boolean that keeps track of which similarity is of valid
     sim_index_indicator = [True] * (len(mol_fp_list[0]) * len(sim_func_list))
@@ -584,17 +597,49 @@ def mols_to_simmat(mol_list: List[Chem.Mol],
                     assert sim_index_indicator[__sim_index]
                     __sim_i_j_k_l = __sim_func_l(__fp_i_k, __fp_j_k)
                 except:
-                    simmat[i, j, __sim_index] = np.nan
+                    sim_mat[i, j, __sim_index] = np.nan
                     if __self_ref:
-                        simmat[j, i, __sim_index] = np.nan
+                        sim_mat[j, i, __sim_index] = np.nan
                     sim_index_indicator[__sim_index] = False
                     continue
 
-                simmat[i, j, __sim_index] = __sim_i_j_k_l
+                sim_mat[i, j, __sim_index] = __sim_i_j_k_l
                 if __self_ref:
-                    simmat[j, i, __sim_index] = __sim_i_j_k_l
+                    sim_mat[j, i, __sim_index] = __sim_i_j_k_l
 
-    return simmat[:, :, sim_index_indicator]
+    return sim_mat[:, :, sim_index_indicator]
+
+
+def mols_to_ssm_mat(mol_list: List[Chem.Mol],
+                    ref_mol_list: List[Chem.Mol] = None) -> np.array:
+    """
+    Substructure Matching Matrix
+
+    :return:
+    """
+
+    if ref_mol_list is None:
+        ref_mol_list = mol_list
+        __self_ref = True
+    else:
+        __self_ref = False
+
+    ssm_mat = np.zeros(shape=(len(mol_list), len(ref_mol_list)),
+                       dtype=np.uint8)
+
+    iterations = combinations_with_replacement(range(len(mol_list)), 2) \
+        if __self_ref else \
+        product(range(len(mol_list)), range(len(ref_mol_list)))
+
+    for i, j in iterations:
+
+        __ssm_mat_i_j = mol_list[i].HasSubstructMatch(ref_mol_list[j])
+
+        ssm_mat[i, j] = __ssm_mat_i_j
+        if __self_ref:
+            ssm_mat[j, i] = __ssm_mat_i_j
+
+    return ssm_mat
 
 
 if __name__ == '__main__':
@@ -640,8 +685,21 @@ if __name__ == '__main__':
         # tmp = torch.masked_select(adj, mask=e[:, 2].byte()).view(2, -1)
 
     # Test molecular similarity matrix generation
-    mol_list = [Chem.MolFromSmiles(s) for s in example_smiles_list]
-    simmat = mols_to_simmat(mol_list,
-                            fp_func_list=list(FP_FUNC_DICT.keys()),
-                            sim_func_list=list(SIM_FUNC_DICT.keys()))
+    m_list = [Chem.MolFromSmiles(s) for s in example_smiles_list]
+    sim_mat = mols_to_sim_mat(m_list,
+                              fp_func_list=list(FP_FUNC_DICT.keys()),
+                              sim_func_list=list(SIM_FUNC_DICT.keys()))
 
+    # Test substructure feature
+    # benzene = Chem.MolFromSmiles('c1ccccc1')
+    # xylene = Chem.MolFromSmiles('Cc1c(C)cccc1')
+    # glucose = Chem.MolFromSmiles('OC[C@H]1OC(O)[C@H](O)[C@@H](O)[C@@H]1O')
+    # sucrose = Chem.MolFromSmiles('O1[C@H](CO)[C@@H](O)[C@H](O)[C@@H](O)[C@H]'
+    #                              '1O[C@@]2(O[C@@H]([C@@H](O)[C@@H]2O)CO)CO')
+    # lactose = Chem.MolFromSmiles('C([C@@H]1[C@@H]([C@@H]([C@H]([C@@H](O1)O'
+    #                              '[C@@H]2[C@H](O[C@H]([C@@H]([C@H]2O)O)O)CO)'
+    #                              'O)O)O)O')
+    #
+    # print(sucrose.GetSubstructMatch(benzene))
+    # print(lactose.HasSubstructMatch(glucose))
+    ssm_mat = mols_to_ssm_mat(m_list)
