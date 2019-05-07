@@ -9,22 +9,31 @@
 """
 import os
 import torch
+import logging
 import numpy as np
 import pandas as pd
 
 from enum import Enum, auto
+from typing import Union, Optional
+
 from rdkit import Chem, RDLogger
 from torch.utils.data import Dataset
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, \
+    MaxAbsScaler, RobustScaler
 
 from featurizers import mol_to_tokens, mol_to_graph
 # from featurizers import mol_to_image, mol_to_jtnn
 
 # Suppress unnecessary RDkit warnings and errors
 RDLogger.logger().setLevel(RDLogger.CRITICAL)
+logger = logging.getLogger(__name__)
 
 # Valid data sources. Used for one-hot-encoding
 DATA_SOURCES = ['CCLE', 'CTRP', 'GDSC', 'NCI60', 'gCSI']
+
+# Scaler type union
+Scaler = Union[MaxAbsScaler, MinMaxScaler, StandardScaler, RobustScaler]
 
 # Data loading process for drug response ######################################
 # 1. Load drug data (dict), cell data(dict), and response data (array)
@@ -37,10 +46,9 @@ DATA_SOURCES = ['CCLE', 'CTRP', 'GDSC', 'NCI60', 'gCSI']
 # 4. Create training and testing Datasets
 
 
-# Helper functions ############################################################
+# Helper functions and ###################################################
 def dataframe_to_dict(dataframe: pd.DataFrame,
-                      dtype: type = None,
-                      to_tensor: bool = True) -> dict:
+                      dtype: type = None) -> dict:
     ret = {}
     for index, row in dataframe.iterrows():
         if len(row) == 1:
@@ -51,12 +59,38 @@ def dataframe_to_dict(dataframe: pd.DataFrame,
             value: np.array = row.values
             if dtype:
                 value: np.array = value.astype(dtype=dtype)
-
-            if to_tensor:
-                value = torch.from_numpy(value)
-
         ret[index] = value
     return ret
+
+
+def scale_dict(data_dict: dict,
+               scaler: Optional[Scaler],
+               base_keys: np.array or iter = None):
+
+    if scaler is None:
+        return data_dict
+
+    __fit_data = [data_dict[k] for k in
+                  (data_dict.keys() if (base_keys is None) else base_keys)]
+
+    try:
+        scaler.fit(__fit_data)
+        __new_values = scaler.transform(list(data_dict.values()))
+    except ValueError as e:
+        logger.warning(f'Scaling function has encountered ValueError {e}. '
+                       f'Using unscaled data.')
+        return data_dict
+
+    __ret_dict = {k: np.array(v, dtype=np.float32)
+                  for k, v in zip(data_dict.keys(), __new_values)}
+
+    return __ret_dict
+
+
+def tensorize_dict(data_dict: dict):
+    t = type(list(data_dict.values())[0])
+    return {k: torch.from_numpy(v) for k, v in data_dict.items()} \
+        if (t is np.array) or (t is np.ndarray) else data_dict
 
 
 # Cell line data ##############################################################
@@ -72,7 +106,7 @@ class CellSubsetType(Enum):
     MICRO_ARRAY = 'micro_array'
 
 
-class CellScalingMethod(Enum):
+class CellProcessingMethod(Enum):
     ORIGINAL = ''
     COMBAT = 'combat'
     SOURCE_SCALE = 'source_scale'
@@ -81,17 +115,17 @@ class CellScalingMethod(Enum):
 def load_cell_data(data_dir: str,
                    data_type: CellDataType or str,
                    subset_type: CellSubsetType or str,
-                   scaling_method: CellScalingMethod or str):
+                   processing_method: CellProcessingMethod or str):
 
     data_type = CellDataType(data_type)
     subset_type = CellSubsetType(subset_type)
-    scaling_method = CellScalingMethod(scaling_method)
+    processing_method = CellProcessingMethod(processing_method)
 
     file_name_list = ['combined', data_type.value]
     if subset_type != CellSubsetType.COMPLETE:
         file_name_list.append(subset_type.value)
-    if scaling_method != CellScalingMethod.ORIGINAL:
-        file_name_list.append(scaling_method.value)
+    if processing_method != CellProcessingMethod.ORIGINAL:
+        file_name_list.append(processing_method.value)
 
     file_name = '_'.join(file_name_list) + '.csv'
     file_path = os.path.join(data_dir, file_name)
@@ -117,6 +151,7 @@ class DrugFeatureType(Enum):
     # Features that takes SMILES strings and perform transformation
     GRAPH = (DrugDataType.SMILES, mol_to_graph)
     TOKENIZED_SMILES = (DrugDataType.SMILES, mol_to_tokens)
+    # TODO: images, JTNN features
 
     # Features that can be directly loaded
     DRAGON7_PFP = (DrugDataType.DRAGON7_PFP, None)
@@ -124,10 +159,9 @@ class DrugFeatureType(Enum):
     DRAGON7_DESCRIPTOR = (DrugDataType.DRAGON7_DESCRIPTOR, None)
     MORDRED_DESCRIPTOR = (DrugDataType.MORDRED_DESCRIPTOR, None)
 
-    # TODO: images, JTNN features
-
 
 class NanProcessing(Enum):
+    NONE = auto()
     FILL_ZERO = auto()
     DELETE_ROW = auto()
     DELETE_COL = auto()
@@ -148,12 +182,18 @@ def load_drug_data(data_dir: str,
         dataframe = pd.read_csv(file_path, header=0, index_col=0)
 
         if nan_processing == NanProcessing.FILL_ZERO:
-            dataframe.fillna(0, inplace=True)
+            dataframe.fillna(0., inplace=True)
         elif nan_processing == NanProcessing.DELETE_ROW:
+            logger.warning('Deleting rows with NaN values for drug features '
+                           'might remove all features!')
             dataframe.dropna(inplace=True)
         elif nan_processing == NanProcessing.DELETE_COL:
             dataframe.dropna(axis='columns', inplace=True)
+        elif nan_processing == NanProcessing.FILL_COLUMN_AVERAGE:
+            dataframe.dropna(axis='columns', how='all', inplace=True)
             dataframe.fillna(dataframe.mean(), inplace=True)
+        else:
+            pass
 
         return dataframe
     else:
@@ -278,6 +318,38 @@ def trn_tst_split(resp_array: np.array,
     return __trn_resp_array, __tst_resp_array
 
 
+class ScalingMethod(Enum):
+    NONE = None
+    MINMAX_1 = MinMaxScaler(feature_range=(0, 1))
+    MINMAX_2 = MinMaxScaler(feature_range=(-1, 1))
+    STANDARD = StandardScaler()
+
+
+def scale_feature(trn_resp_array: np.array,
+                  cell_dict: dict,
+                  drug_dict: dict,
+                  cell_scaler: ScalingMethod or Scaler,
+                  drug_scaler: ScalingMethod or Scaler):
+
+    if type(cell_scaler) is ScalingMethod:
+        cell_scaler: Optional[Scaler] = cell_scaler.value
+
+    new_cell_dict = cell_dict if cell_scaler is None \
+        else scale_dict(data_dict=cell_dict,
+                        scaler=cell_scaler,
+                        base_keys=np.unique(trn_resp_array[:, 1]))
+
+    if type(drug_scaler) is ScalingMethod:
+        drug_scaler: Optional[Scaler] = drug_scaler.value
+
+    new_drug_dict = drug_dict if drug_scaler is None \
+        else scale_dict(data_dict=drug_dict,
+                        scaler=drug_scaler,
+                        base_keys=np.unique(trn_resp_array[:, 2]))
+
+    return new_cell_dict, new_drug_dict
+
+
 class DrugRespDataset(Dataset):
 
     def __init__(self,
@@ -293,6 +365,15 @@ class DrugRespDataset(Dataset):
 
         self.__sources = DATA_SOURCES.copy()
         self.__len = len(self.__resp_array)
+
+        self.__info = f'This drug response dataset contains:\n'\
+            f'\t{len(self.__resp_array)} response records from '\
+            f'{len(np.unique(self.__resp_array[:,0]))} different sources;\n'\
+            f'\t{len(np.unique(self.__resp_array[:,1]))} unique cell lines;\n'\
+            f'\t{len(np.unique(self.__resp_array[:,2]))} unique drugs.'
+
+    def print_info(self):
+        print(self.__info)
 
     def __len__(self):
         return self.__len
@@ -323,11 +404,13 @@ def get_datasets(
         cell_data_dir: str,
         cell_data_type: CellDataType or str,
         cell_subset_type: CellSubsetType or str,
-        cell_scaling_method: CellScalingMethod or str,
+        cell_processing_method: CellProcessingMethod or str,
+        cell_scaling_method: ScalingMethod or Scaler,
 
         drug_data_dir: str,
         drug_feature_type: DrugFeatureType or tuple,
         drug_nan_processing: NanProcessing or str,
+        drug_scaling_method: ScalingMethod or Scaler,
         drug_featurizer_kwargs: dict = None,
 
         rand_state: int = 0,
@@ -343,8 +426,8 @@ def get_datasets(
         load_cell_data(data_dir=cell_data_dir,
                        data_type=cell_data_type,
                        subset_type=cell_subset_type,
-                       scaling_method=cell_scaling_method),
-        dtype=np.float32, to_tensor=True)
+                       processing_method=cell_processing_method),
+        dtype=np.float32)
 
     drug_data_type: DrugDataType = drug_feature_type.value[0]
     drug_featurizer: callable = drug_feature_type.value[1]
@@ -357,8 +440,7 @@ def get_datasets(
         load_drug_data(data_dir=drug_data_dir,
                        data_type=drug_data_type,
                        nan_processing=drug_nan_processing),
-        dtype=(str if drug_featurizer else np.float32),
-        to_tensor=(not drug_featurizer))
+        dtype=(str if drug_featurizer else np.float32))
 
     drug_dict = featurize_drug_dict(drug_dict=tmp_drug_dict,
                                     featurizer=drug_featurizer,
@@ -372,13 +454,32 @@ def get_datasets(
                                  cells=cell_dict.keys(),
                                  drugs=drug_dict.keys())
 
-    # 4. Create training and testing Datasets
     trn_resp_array, tst_resp_array = \
         trn_tst_split(resp_array=resp_array,
                       rand_state=rand_state,
                       test_ratio=test_ratio,
                       disjoint_cells=disjoint_cells,
                       disjoint_drugs=disjoint_drugs)
+
+    # 4. Feature scaling for drugs and cells
+    if (drug_featurizer is not None) and \
+        ((drug_scaling_method is not ScalingMethod.NONE) or
+         (drug_scaling_method is not None)):
+        logger.warning(f'Cannot perform scaling on drug of featurizer '
+                       f'function {drug_featurizer}. '
+                       f'Changing the scaling to None ...')
+        drug_scaling_method = ScalingMethod.NONE
+
+    cell_dict, drug_dict = \
+        scale_feature(trn_resp_array=trn_resp_array,
+                      cell_dict=cell_dict,
+                      drug_dict=drug_dict,
+                      cell_scaler=cell_scaling_method,
+                      drug_scaler=drug_scaling_method)
+
+    # 5. Create training and testing Datasets
+    cell_dict = tensorize_dict(cell_dict)
+    drug_dict = tensorize_dict(drug_dict)
 
     trn_dataset = DrugRespDataset(cell_dict=cell_dict,
                                   drug_dict=drug_dict,
@@ -398,6 +499,37 @@ def get_datasets(
 # Testing segment
 if __name__ == '__main__':
 
+    # trn_dset, tst_dset = get_datasets(
+    #     resp_data_path='../../data/raw/combined_single_response_agg',
+    #     resp_target='AUC',
+    #
+    #     cell_data_dir='../../data/cell/',
+    #     cell_data_type=CellDataType.RNASEQ,
+    #     cell_subset_type=CellSubsetType.LINCS1000,
+    #     cell_processing_method=CellProcessingMethod.SOURCE_SCALE,
+    #     cell_scaling_method=ScalingMethod.NONE,
+    #
+    #     drug_data_dir='../../data/drug/',
+    #     drug_feature_type=DrugFeatureType.TOKENIZED_SMILES,
+    #     drug_nan_processing=NanProcessing.FILL_COLUMN_AVERAGE,
+    #     drug_scaling_method=ScalingMethod.STANDARD,
+    #     drug_featurizer_kwargs={'len_tokens': 256})
+
+    # trn_dset, tst_dset = get_datasets(
+    #     resp_data_path='../../data/raw/combined_single_response_agg',
+    #     resp_target='AUC',
+    #
+    #     cell_data_dir='../../data/cell/',
+    #     cell_data_type=CellDataType.RNASEQ,
+    #     cell_subset_type=CellSubsetType.LINCS1000,
+    #     cell_processing_method=CellProcessingMethod.SOURCE_SCALE,
+    #     cell_scaling_method=ScalingMethod.NONE,
+    #
+    #     drug_data_dir='../../data/drug/',
+    #     drug_feature_type=DrugFeatureType.GRAPH,
+    #     drug_nan_processing=NanProcessing.NONE,
+    #     drug_scaling_method=ScalingMethod.STANDARD)
+
     trn_dset, tst_dset = get_datasets(
         resp_data_path='../../data/raw/combined_single_response_agg',
         resp_target='AUC',
@@ -405,9 +537,16 @@ if __name__ == '__main__':
         cell_data_dir='../../data/cell/',
         cell_data_type=CellDataType.RNASEQ,
         cell_subset_type=CellSubsetType.LINCS1000,
-        cell_scaling_method=CellScalingMethod.SOURCE_SCALE,
+        cell_processing_method=CellProcessingMethod.ORIGINAL,
+        cell_scaling_method=ScalingMethod.MINMAX_1,
 
         drug_data_dir='../../data/drug/',
-        drug_feature_type=DrugFeatureType.TOKENIZED_SMILES,
-        drug_nan_processing=NanProcessing.FILL_COLUMN_AVERAGE,
-        drug_featurizer_kwargs={'len_tokens': 256})
+        drug_feature_type=DrugFeatureType.DRAGON7_DESCRIPTOR,
+        drug_nan_processing=NanProcessing.DELETE_COL,
+        drug_scaling_method=ScalingMethod.STANDARD,
+
+        disjoint_drugs=True,
+        disjoint_cells=True)
+
+    trn_dset.print_info()
+    tst_dset.print_info()

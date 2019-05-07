@@ -9,8 +9,10 @@
         how-do-i-ensure-parameter-is-correct-type-in-python
 """
 from typing import get_type_hints
+from deprecated import deprecated
 
 
+@deprecated(reason='This type checking does not perform base class checking.')
 def strict_typing(f):
     def type_checker(*args, **kwargs):
 
@@ -21,8 +23,9 @@ def strict_typing(f):
 
         for key in all_args:
             if key in hints:
+                __hint = hints[key]
                 if type(all_args[key]) != hints[key]:
-                    raise Exception(f'Type of {key} is {type(all_args[key])} '
+                    raise TypeError(f'Type of {key} is {type(all_args[key])} '
                                     f'and not {hints[key]}')
 
         return f(*args, **kwargs)
