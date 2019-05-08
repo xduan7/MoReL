@@ -13,6 +13,7 @@ import numpy as np
 from typing import Optional, List, Dict
 from itertools import product, combinations_with_replacement
 
+from joblib import Parallel, delayed
 from rdkit import Chem, RDLogger
 from rdkit.Chem import AllChem, Descriptors
 
@@ -611,7 +612,8 @@ def mols_to_sim_mat(mol_list: List[Chem.Mol],
 
 
 def mols_to_ssm_mat(mol_list: List[Chem.Mol],
-                    ref_mol_list: List[Chem.Mol] = None) -> np.array:
+                    ref_mol_list: List[Chem.Mol] = None,
+                    n_jobs: int = -1) -> np.array:
     """
     Substructure Matching Matrix
 
@@ -631,13 +633,23 @@ def mols_to_ssm_mat(mol_list: List[Chem.Mol],
         if __self_ref else \
         product(range(len(mol_list)), range(len(ref_mol_list)))
 
-    for i, j in iterations:
+    # Private function for parallelized substructure matching
+    def __ssm(__i, __j):
+        __ssm_mat_i_j = mol_list[__i].HasSubstructMatch(ref_mol_list[__j])
+        ssm_mat[__i, __j] = __ssm_mat_i_j
+        if mol_list == ref_mol_list:
+            ssm_mat[__j, __i] = __ssm_mat_i_j
 
-        __ssm_mat_i_j = mol_list[i].HasSubstructMatch(ref_mol_list[j])
+    # Joblib parallelization. Thread-based
+    Parallel(n_jobs=n_jobs, require='sharedmem')(
+        delayed(__ssm)(i, j) for i,  j in iterations)
 
-        ssm_mat[i, j] = __ssm_mat_i_j
-        if __self_ref:
-            ssm_mat[j, i] = __ssm_mat_i_j
+    # Old serial for-loop substructure matching
+    # for i, j in iterations:
+    #     __ssm_mat_i_j = mol_list[i].HasSubstructMatch(ref_mol_list[j])
+    #     ssm_mat[i, j] = __ssm_mat_i_j
+    #     if __self_ref:
+    #         ssm_mat[j, i] = __ssm_mat_i_j
 
     return ssm_mat
 
