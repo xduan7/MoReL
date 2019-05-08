@@ -12,7 +12,7 @@ import torch
 import logging
 import numpy as np
 import pandas as pd
-
+from copy import deepcopy
 from enum import Enum, auto
 from typing import Union, Optional
 
@@ -332,7 +332,11 @@ def scale_feature(trn_resp_array: np.array,
                   drug_scaler: ScalingMethod or Scaler):
 
     if type(cell_scaler) is ScalingMethod:
-        cell_scaler: Optional[Scaler] = cell_scaler.value
+        # Using deep copy here will make sure that different feature will
+        # use a fresh scaler every time this function is called. Although
+        # the results are the same because of the sklearn implementation,
+        # but still it is conceptually correct to use deepcopy here.
+        cell_scaler: Optional[Scaler] = deepcopy(cell_scaler.value)
 
     new_cell_dict = cell_dict if cell_scaler is None \
         else scale_dict(data_dict=cell_dict,
@@ -538,7 +542,7 @@ if __name__ == '__main__':
         cell_data_type=CellDataType.RNASEQ,
         cell_subset_type=CellSubsetType.LINCS1000,
         cell_processing_method=CellProcessingMethod.ORIGINAL,
-        cell_scaling_method=ScalingMethod.MINMAX_1,
+        cell_scaling_method=ScalingMethod.STANDARD,
 
         drug_data_dir='../../data/drug/',
         drug_feature_type=DrugFeatureType.DRAGON7_DESCRIPTOR,
