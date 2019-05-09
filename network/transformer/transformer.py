@@ -15,7 +15,7 @@ from network.transformer.encoder import Encoder
 
 
 class Transformer(nn.Module):
-    # TODO: testing transfomrer (encoder has been tested)
+    # TODO: testing transformrer (encoder has been tested)
 
     def __init__(self,
                  src_dict_size: int,

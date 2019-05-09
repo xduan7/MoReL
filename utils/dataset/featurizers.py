@@ -283,6 +283,21 @@ def one_hot_encode(value,
     return enc_feat
 
 
+# Parallelized SMILES strings to Chem.Mol transformation
+def smiles_to_mols(smiles_list: List[str],
+                   n_jobs: int = -1):
+
+    def __smiles_to_mol(__smiles):
+        try:
+            __mol = Chem.MolFromSmiles(__smiles)
+        except:
+            return None
+        return __mol
+
+    return Parallel(n_jobs=n_jobs)(
+        delayed(__smiles_to_mol)(smiles) for smiles in smiles_list)
+
+
 # Featurization functions #####################################################
 def inchi_to_mol(inchi: str) -> Optional[Chem.Mol]:
     mol: Chem.Mol = Chem.MolFromInchi(inchi)
@@ -711,6 +726,11 @@ if __name__ == '__main__':
         'Cn1cnc2n(C)c(=O)n(C)c(=O)c12',
         'C/C(=C\\CO)/C=C/C=C(/C)\\C=C\\C1=C(C)CCCC1(C)C',
     ]
+
+
+
+
+
 
     for s in example_smiles_list:
 
