@@ -283,26 +283,6 @@ def one_hot_encode(value,
     return enc_feat
 
 
-def mols_to_fp_list(mol_list: List[Chem.Mol],
-                    fp_func_list: List[str] = None,
-                    fp_func_param_dict: Dict[str, List] = None) -> List:
-
-    mol_fp_list = []
-    for mol in mol_list:
-
-        __mol_fp = []
-        for fp_func in fp_func_list:
-
-            __fp_func: callable = FP_FUNC_DICT[fp_func]
-            for fp_func_param in fp_func_param_dict[fp_func]:
-                __mol_func_param_fp = __fp_func(mol, **fp_func_param)
-                __mol_fp.append(__mol_func_param_fp)
-
-        mol_fp_list.append(__mol_fp)
-
-    return mol_fp_list
-
-
 # Featurization functions #####################################################
 def inchi_to_mol(inchi: str) -> Optional[Chem.Mol]:
     mol: Chem.Mol = Chem.MolFromInchi(inchi)
@@ -513,7 +493,8 @@ def mols_to_sim_mat(mol_list: List[Chem.Mol],
                     ref_mol_list: List[Chem.Mol] = None,
                     fp_func_list: List[str] = None,
                     fp_func_param_dict: Dict[str, List[Dict]] = None,
-                    sim_func_list: List[str] = None) -> np.array:
+                    sim_func_list: List[str] = None,
+                    n_jobs: int = -1) -> np.array:
     """
     Similarity Matrix
     This function will take two lists of molecules, one as input list of
@@ -526,6 +507,7 @@ def mols_to_sim_mat(mol_list: List[Chem.Mol],
     :param fp_func_list:
     :param fp_func_param_dict:
     :param sim_func_list:
+    :param n_jobs:
     :return:
     """
 
@@ -547,29 +529,42 @@ def mols_to_sim_mat(mol_list: List[Chem.Mol],
         sim_func_list = DEFAULT_SIM_FUNC_LIST
 
     # Calculate all the fingerprints for all the molecules
-    mol_fp_list = []
-    for mol in mol_list:
+    # Parallelized version of generating fingerprint list
+    def __fp(__mol):
 
         __mol_fp = []
         for fp_func in fp_func_list:
 
             __fp_func: callable = FP_FUNC_DICT[fp_func]
             for fp_func_param in fp_func_param_dict[fp_func]:
-                __mol_func_param_fp = __fp_func(mol, **fp_func_param)
+                __mol_func_param_fp = __fp_func(__mol, **fp_func_param)
                 __mol_fp.append(__mol_func_param_fp)
 
-        mol_fp_list.append(__mol_fp)
+        # mol_fp_list.append(__mol_fp)
+        return __mol_fp
 
-    mol_fp_list = mols_to_fp_list(mol_list,
-                                  fp_func_list,
-                                  fp_func_param_dict)
+    mol_fp_list = Parallel(n_jobs=n_jobs, require='sharedmem')(
+        delayed(__fp)(mol) for mol in mol_list)
+
+    # Serial version of generating fingerprint list
+    # mol_fp_list = []
+    # for mol in mol_list:
+    #
+    #     __mol_fp = []
+    #     for fp_func in fp_func_list:
+    #
+    #         __fp_func: callable = FP_FUNC_DICT[fp_func]
+    #         for fp_func_param in fp_func_param_dict[fp_func]:
+    #             __mol_func_param_fp = __fp_func(mol, **fp_func_param)
+    #             __mol_fp.append(__mol_func_param_fp)
+    #
+    #     mol_fp_list.append(__mol_fp)
 
     if __self_ref:
         ref_mol_fp_list = mol_fp_list
     else:
-        ref_mol_fp_list = mols_to_fp_list(ref_mol_list,
-                                          fp_func_list,
-                                          fp_func_param_dict)
+        ref_mol_fp_list = Parallel(n_jobs=n_jobs, require='sharedmem')(
+            delayed(__fp)(mol) for mol in ref_mol_list)
 
     # Similarity matrix
     sim_mat = np.zeros(shape=(len(mol_list), len(ref_mol_list),
@@ -583,9 +578,10 @@ def mols_to_sim_mat(mol_list: List[Chem.Mol],
         if __self_ref else \
         product(range(len(mol_list)), range(len(ref_mol_list)))
 
-    for i, j in iterations:
+    # Parallelized version of similarity matrix generation
+    def __sim(__i, __j):
 
-        __fp_i, __fp_j = mol_fp_list[i], ref_mol_fp_list[j]
+        __fp_i, __fp_j = mol_fp_list[__i], ref_mol_fp_list[__j]
 
         for k, (__fp_i_k, __fp_j_k) in enumerate(zip(__fp_i, __fp_j)):
 
@@ -598,17 +594,52 @@ def mols_to_sim_mat(mol_list: List[Chem.Mol],
                     assert sim_index_indicator[__sim_index]
                     __sim_i_j_k_l = __sim_func_l(__fp_i_k, __fp_j_k)
                 except:
-                    sim_mat[i, j, __sim_index] = np.nan
+                    sim_mat[__i, __j, __sim_index] = np.nan
                     if __self_ref:
-                        sim_mat[j, i, __sim_index] = np.nan
+                        sim_mat[__j, __i, __sim_index] = np.nan
                     sim_index_indicator[__sim_index] = False
                     continue
 
-                sim_mat[i, j, __sim_index] = __sim_i_j_k_l
+                sim_mat[__i, __j, __sim_index] = __sim_i_j_k_l
                 if __self_ref:
-                    sim_mat[j, i, __sim_index] = __sim_i_j_k_l
+                    sim_mat[__j, __i, __sim_index] = __sim_i_j_k_l
 
-    return sim_mat[:, :, sim_index_indicator]
+    Parallel(n_jobs=n_jobs, require='sharedmem')(
+        delayed(__sim)(i, j) for i, j in iterations)
+
+    ret_sim_mat = sim_mat[:, :, sim_index_indicator]
+
+    # Serialized version of similarity matrix generation
+    # for i, j in iterations:
+    #     print(f'iterating {i} {j} ....')
+    #
+    #     __fp_i, __fp_j = mol_fp_list[i], ref_mol_fp_list[j]
+    #
+    #     for k, (__fp_i_k, __fp_j_k) in enumerate(zip(__fp_i, __fp_j)):
+    #
+    #         for l, sim_func_l in enumerate(sim_func_list):
+    #
+    #             __sim_func_l = SIM_FUNC_DICT[sim_func_l]
+    #             __sim_index = k * len(sim_func_list) + l
+    #
+    #             try:
+    #                 assert sim_index_indicator[__sim_index]
+    #                 __sim_i_j_k_l = __sim_func_l(__fp_i_k, __fp_j_k)
+    #             except:
+    #                 print('indicator fails')
+    #                 sim_mat[i, j, __sim_index] = np.nan
+    #                 if __self_ref:
+    #                     sim_mat[j, i, __sim_index] = np.nan
+    #                 sim_index_indicator[__sim_index] = False
+    #                 continue
+    #             print('writing values ...')
+    #             sim_mat[i, j, __sim_index] = __sim_i_j_k_l
+    #             if __self_ref:
+    #                 sim_mat[j, i, __sim_index] = __sim_i_j_k_l
+    #
+    # sim_mat = sim_mat[:, :, sim_index_indicator]
+
+    return ret_sim_mat
 
 
 def mols_to_ssm_mat(mol_list: List[Chem.Mol],
