@@ -47,10 +47,12 @@ print(f'Computing substructure matching matrix '
       f'of {subset_size} molecules ... ')
 ssm_mat = mols_to_ssm_mat(mol_list)
 
-ssm_mat_pca = PCA(n_components=ssm_mat.shape[1] * ssm_mat.shape[2])
+ssm_mat_pca = PCA(n_components=ssm_mat.shape[1])
 ssm_mat_pca.fit(ssm_mat.reshape(subset_size, -1))
 print(ssm_mat_pca.explained_variance_ratio_)
 
-sim_mat_pca = PCA(n_components=sim_mat.shape[1])
+sim_mat_pca = PCA(n_components=sim_mat.shape[1] * sim_mat.shape[2])
 sim_mat_pca.fit(sim_mat.reshape(subset_size, -1))
 print(sim_mat_pca.explained_variance_ratio_)
+
+# TODO: try ICA

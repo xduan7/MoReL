@@ -158,8 +158,7 @@ class GraphToDscrptrDataset(Dataset):
                                  master_bond=self.__master_bond,
                                  max_num_atoms=self.__max_num_atoms,
                                  atom_feat_list=self.__atom_feat_list,
-                                 bond_feat_list=self.__bond_feat_list,
-                                 multi_edge_indices=self.__multi_edge_indices)
+                                 bond_feat_list=self.__bond_feat_list)
 
         # This part is extremely tricky
         # Seems that we cannot directly transform a graph with edge_attr to
