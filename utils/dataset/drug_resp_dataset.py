@@ -246,6 +246,9 @@ def get_resp_array(data_path: str,
     # Change the dtype of prediction target
     resp_array[:, 3] = np.array(resp_array[:, 3], dtype=np.float32)
 
+    # Get rid of the NaN values in drug response
+    resp_array = resp_array[~np.isnan(np.float32(resp_array[:, 3]))]
+
     return resp_array
 
 

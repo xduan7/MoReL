@@ -594,6 +594,8 @@ def mols_to_sim_mat(mol_list: List[Chem.Mol],
         product(range(len(mol_list)), range(len(ref_mol_list)))
 
     # Parallelized version of similarity matrix generation
+    # TODO: this part is still significantly under-optimized
+    # Partially because of the shared memory approach
     def __sim(__i, __j):
 
         __fp_i, __fp_j = mol_fp_list[__i], ref_mol_fp_list[__j]
@@ -726,11 +728,6 @@ if __name__ == '__main__':
         'Cn1cnc2n(C)c(=O)n(C)c(=O)c12',
         'C/C(=C\\CO)/C=C/C=C(/C)\\C=C\\C1=C(C)CCCC1(C)C',
     ]
-
-
-
-
-
 
     for s in example_smiles_list:
 
