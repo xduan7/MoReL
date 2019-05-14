@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 from copy import deepcopy
 from enum import Enum, auto
-from typing import Union, Optional
+from typing import Union, Optional, List
 
 from rdkit import Chem, RDLogger
 from torch.utils.data import Dataset
@@ -118,7 +118,7 @@ def load_cell_data(data_dir: str,
                    data_type: CellDataType or str,
                    subset_type: CellSubsetType or str,
                    processing_method: CellProcessingMethod or str,
-                   cell_type_subset: Optional[list] or int):
+                   cell_type_subset: Optional[List[str]] or int):
 
     data_type = CellDataType(data_type)
     subset_type = CellSubsetType(subset_type)
@@ -287,7 +287,7 @@ def featurize_drug_dict(drug_dict: dict,
 # Drug response data ##########################################################
 def get_resp_array(data_path: str,
                    target: str = 'AUC',
-                   data_sources: Optional[list] = None) -> np.array:
+                   data_sources: Optional[List[str]] = None) -> np.array:
 
     resp_df = pd.read_csv(data_path,
                           sep='\t',
@@ -309,8 +309,11 @@ def get_resp_array(data_path: str,
     resp_array[:, 3] = np.array(resp_array[:, 3], dtype=np.float32)
 
     nan_indices = np.isnan(np.float32(resp_array[:, 3]))
-    logger.warning(f'The following lines from \'{data_path}\' contains NaN in'
-                   f' the \'{target}\' column:\n\t{resp_array[nan_indices]}')
+
+    if any(nan_indices):
+        logger.warning(
+            f'The following lines from \'{data_path}\' contains NaN in the '
+            f'\'{target}\' column:\n\t{resp_array[nan_indices]}')
 
     # Get rid of the NaN values in drug response
     resp_array = resp_array[~nan_indices]
@@ -478,14 +481,14 @@ class DrugRespDataset(Dataset):
 def get_datasets(
         resp_data_path: str,
         resp_target: str,
-        resp_data_sources: Optional[list],
+        resp_data_sources: Optional[List[str]],
 
         cell_data_dir: str,
         cell_data_type: CellDataType or str,
         cell_subset_type: CellSubsetType or str,
         cell_processing_method: CellProcessingMethod or str,
         cell_scaling_method: ScalingMethod or Scaler,
-        cell_type_subset: Optional[list] or int,
+        cell_type_subset: Optional[List[str]] or int,
 
         drug_data_dir: str,
         drug_feature_type: DrugFeatureType or tuple,
@@ -621,9 +624,9 @@ if __name__ == '__main__':
         resp_data_sources=None,
 
         cell_data_dir='../../data/cell/',
-        cell_data_type=CellDataType.TYPE,
+        cell_data_type=CellDataType.RNASEQ,
         cell_subset_type=CellSubsetType.COMPLETE,
-        cell_processing_method=CellProcessingMethod.ORIGINAL,
+        cell_processing_method=CellProcessingMethod.AUTOENCODER,
         cell_scaling_method=ScalingMethod.NONE,
         cell_type_subset=None,
 
