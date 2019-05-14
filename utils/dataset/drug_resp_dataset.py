@@ -110,6 +110,7 @@ class CellSubsetType(Enum):
 class CellProcessingMethod(Enum):
     ORIGINAL = ''
     COMBAT = 'combat'
+    AUTOENCODER = 'autoencoder'
     SOURCE_SCALE = 'source_scale'
 
 
@@ -152,8 +153,8 @@ def load_cell_data(data_dir: str,
             if len(cell_type_list) > cell_type_subset:
                 logger.warning(
                     f'Top {cell_type_subset} cell line types are ambiguous '
-                    f'because of tie. Using top {len(cell_type_list)} types '
-                    f'instead ... ')
+                    f'because of tied occurence counts. '
+                    f'Using top {len(cell_type_list)} types instead.')
 
         cell_set = set(
             cell_type_df.loc[cell_type_df['Type'].isin(cell_type_list)].index)
@@ -285,13 +286,24 @@ def featurize_drug_dict(drug_dict: dict,
 
 # Drug response data ##########################################################
 def get_resp_array(data_path: str,
-                   target: str = 'AUC') -> np.array:
+                   target: str = 'AUC',
+                   data_sources: Optional[list] = None) -> np.array:
 
-    resp_array = pd.read_csv(data_path,
-                             sep='\t',
-                             header=0,
-                             index_col=None,
-                             usecols=['SOURCE', 'CELL', 'DRUG', target]).values
+    resp_df = pd.read_csv(data_path,
+                          sep='\t',
+                          header=0,
+                          index_col=None,
+                          usecols=['SOURCE', 'CELL', 'DRUG', target])
+
+    print(len(resp_df))
+
+    # Down select the data sources if given
+    if data_sources:
+        resp_df = resp_df.loc[resp_df['SOURCE'].isin(data_sources)]
+
+    print(len(resp_df))
+
+    resp_array = resp_df.values
 
     # Change the dtype of prediction target
     resp_array[:, 3] = np.array(resp_array[:, 3], dtype=np.float32)
@@ -329,17 +341,22 @@ def trim_resp_array(resp_array,
 def trn_tst_split(resp_array: np.array,
                   rand_state: int = 0,
                   test_ratio: float = 0.2,
+                  auc_threshold: float = 0.5,
                   disjoint_cells: bool = True,
                   disjoint_drugs: bool = False):
 
     # If drugs and cells are not specified to be disjoint in the training
-    # and testing dataset, then random split stratified on data sources
+    # and testing dataset, then random split stratified on data sources and AUC
     if (not disjoint_cells) and (not disjoint_drugs):
-        __source_array = resp_array[:, 0]
+
+        __source_array = resp_array[:, 0].reshape(-1, 1)
+        __auc_bins = (resp_array[:, 3] > auc_threshold).reshape(-1, 1)
+        __stratify = np.concatenate((__source_array, __auc_bins),  axis=1)
+
         return train_test_split(resp_array,
                                 test_size=test_ratio,
                                 random_state=rand_state,
-                                stratify=__source_array)
+                                stratify=__stratify)
 
     # Note: make sure that the cell and drug column are 1 and 2 separately
     __cell_array = np.unique(resp_array[:, 1])
@@ -461,6 +478,7 @@ class DrugRespDataset(Dataset):
 def get_datasets(
         resp_data_path: str,
         resp_target: str,
+        resp_data_sources: Optional[list],
 
         cell_data_dir: str,
         cell_data_type: CellDataType or str,
@@ -510,7 +528,8 @@ def get_datasets(
                                     featurizer_kwargs=drug_featurizer_kwargs)
 
     resp_array = get_resp_array(data_path=resp_data_path,
-                                target=resp_target)
+                                target=resp_target,
+                                data_sources=resp_data_sources)
 
     # 3. Extract common drugs and cells, and down-sizing all three data
     resp_array = trim_resp_array(resp_array=resp_array,
@@ -593,24 +612,30 @@ if __name__ == '__main__':
     #     drug_nan_processing=NanProcessing.NONE,
     #     drug_scaling_method=ScalingMethod.STANDARD)
 
+    import time
+    start_time = time.time()
+
     trn_dset, tst_dset = get_datasets(
         resp_data_path='../../data/raw/combined_single_response_agg',
         resp_target='AUC',
+        resp_data_sources=None,
 
         cell_data_dir='../../data/cell/',
         cell_data_type=CellDataType.TYPE,
         cell_subset_type=CellSubsetType.COMPLETE,
         cell_processing_method=CellProcessingMethod.ORIGINAL,
-        cell_scaling_method=ScalingMethod.STANDARD,
-        cell_type_subset=66,
+        cell_scaling_method=ScalingMethod.NONE,
+        cell_type_subset=None,
 
         drug_data_dir='../../data/drug/',
         drug_feature_type=DrugFeatureType.DRAGON7_DESCRIPTOR,
         drug_nan_processing=NanProcessing.DELETE_COL,
         drug_scaling_method=ScalingMethod.STANDARD,
 
-        disjoint_drugs=True,
-        disjoint_cells=True)
+        disjoint_drugs=False,
+        disjoint_cells=False)
 
     trn_dset.print_info()
     tst_dset.print_info()
+
+    print(f'Created datasets in {time.time() - start_time: .2f} seconds.')
