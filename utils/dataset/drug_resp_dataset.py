@@ -96,6 +96,7 @@ def tensorize_dict(data_dict: dict):
 # Cell line data ##############################################################
 class CellDataType(Enum):
     SNP = 'snp'
+    TYPE = 'type'
     RNASEQ = 'rnaseq'
 
 
@@ -103,7 +104,7 @@ class CellSubsetType(Enum):
     COMPLETE = ''
     LINCS1000 = 'lincs1000'
     ONCOGENES = 'oncogenes'
-    MICRO_ARRAY = 'micro_array'
+    MICRO_ARRAY = 'microarray'
 
 
 class CellProcessingMethod(Enum):
@@ -115,11 +116,49 @@ class CellProcessingMethod(Enum):
 def load_cell_data(data_dir: str,
                    data_type: CellDataType or str,
                    subset_type: CellSubsetType or str,
-                   processing_method: CellProcessingMethod or str):
+                   processing_method: CellProcessingMethod or str,
+                   cell_type_subset: Optional[list] or int):
 
     data_type = CellDataType(data_type)
     subset_type = CellSubsetType(subset_type)
     processing_method = CellProcessingMethod(processing_method)
+
+    # Load the cell line type dataframe if type list is given, which means
+    # that we only need a subset of the cell lines of the given types
+    if cell_type_subset:
+        cell_type_file_path = os.path.join(data_dir, 'combined_type.csv')
+        cell_type_df = pd.read_csv(cell_type_file_path, header=0, index_col=0)
+
+        # If cell type is a list, then use it as a subset,
+        # Otherwise, if a integer N is given, use it to select the top N
+        # cell line types
+
+        if isinstance(cell_type_subset, list):
+            cell_type_list = cell_type_subset
+        else:
+            cell_type_counts = cell_type_df['Type'].value_counts()
+
+            # Make sure that the top N cell line types are within range
+            assert cell_type_subset > 0
+            cell_type_subset = min(cell_type_subset, len(cell_type_counts))
+
+            cell_type_list = list(
+                cell_type_counts[cell_type_counts >=
+                                 cell_type_counts[cell_type_subset - 1]].index)
+
+            # If the top N is ambiguous, which means that the (N)th type has
+            # the same count as the (N+1)th count, then there will be more
+            # than N types in the list
+            if len(cell_type_list) > cell_type_subset:
+                logger.warning(
+                    f'Top {cell_type_subset} cell line types are ambiguous '
+                    f'because of tie. Using top {len(cell_type_list)} types '
+                    f'instead ... ')
+
+        cell_set = set(
+            cell_type_df.loc[cell_type_df['Type'].isin(cell_type_list)].index)
+    else:
+        cell_set = None
 
     file_name_list = ['combined', data_type.value]
     if subset_type != CellSubsetType.COMPLETE:
@@ -131,7 +170,18 @@ def load_cell_data(data_dir: str,
     file_path = os.path.join(data_dir, file_name)
 
     if os.path.exists(file_path):
-        return pd.read_csv(file_path, header=0, index_col=0)
+
+        cell_df = pd.read_csv(file_path, header=0, index_col=0)
+
+        # Down-select cell lines based on given types
+        if cell_set:
+            cell_df = cell_df[cell_df.index.isin(cell_set)]
+
+        # One-hot encoding if the data_type is CellDataType.TYPE
+        if data_type == CellDataType.TYPE:
+            cell_df = pd.get_dummies(cell_df, prefix=['Type'])
+
+        return cell_df
     else:
         raise FileExistsError(
             f'{file_path} does not exist. '
@@ -246,8 +296,12 @@ def get_resp_array(data_path: str,
     # Change the dtype of prediction target
     resp_array[:, 3] = np.array(resp_array[:, 3], dtype=np.float32)
 
+    nan_indices = np.isnan(np.float32(resp_array[:, 3]))
+    logger.warning(f'The following lines from \'{data_path}\' contains NaN in'
+                   f' the \'{target}\' column:\n\t{resp_array[nan_indices]}')
+
     # Get rid of the NaN values in drug response
-    resp_array = resp_array[~np.isnan(np.float32(resp_array[:, 3]))]
+    resp_array = resp_array[~nan_indices]
 
     return resp_array
 
@@ -413,6 +467,7 @@ def get_datasets(
         cell_subset_type: CellSubsetType or str,
         cell_processing_method: CellProcessingMethod or str,
         cell_scaling_method: ScalingMethod or Scaler,
+        cell_type_subset: Optional[list] or int,
 
         drug_data_dir: str,
         drug_feature_type: DrugFeatureType or tuple,
@@ -433,7 +488,8 @@ def get_datasets(
         load_cell_data(data_dir=cell_data_dir,
                        data_type=cell_data_type,
                        subset_type=cell_subset_type,
-                       processing_method=cell_processing_method),
+                       processing_method=cell_processing_method,
+                       cell_type_subset=cell_type_subset),
         dtype=np.float32)
 
     drug_data_type: DrugDataType = drug_feature_type.value[0]
@@ -542,10 +598,11 @@ if __name__ == '__main__':
         resp_target='AUC',
 
         cell_data_dir='../../data/cell/',
-        cell_data_type=CellDataType.RNASEQ,
-        cell_subset_type=CellSubsetType.LINCS1000,
+        cell_data_type=CellDataType.TYPE,
+        cell_subset_type=CellSubsetType.COMPLETE,
         cell_processing_method=CellProcessingMethod.ORIGINAL,
         cell_scaling_method=ScalingMethod.STANDARD,
+        cell_type_subset=66,
 
         drug_data_dir='../../data/drug/',
         drug_feature_type=DrugFeatureType.DRAGON7_DESCRIPTOR,
