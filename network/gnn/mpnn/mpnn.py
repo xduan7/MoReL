@@ -60,9 +60,9 @@ class MPNN(nn.Module):
                                             processing_steps=3)
 
         self.__out_linear = nn.Sequential(
-            nn.Linear(2 * state_dim, 4 * out_dim),
+            nn.Linear(2 * state_dim, 2 * state_dim),
             nn.ReLU(),
-            nn.Linear(4 * out_dim, out_dim))
+            nn.Linear(2 * state_dim, out_dim))
 
     def forward(self, data: pyg_data.Data):
 
