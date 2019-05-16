@@ -153,21 +153,19 @@ class GraphToDscrptrDataset(Dataset):
         # Graph features, including nodes and edges features and adj matrix
         smiles = self.__cid_smiles_dict[cid]
         mol = Chem.MolFromSmiles(smiles)
-        n, adj, e = mol_to_graph(mol=mol,
-                                 master_atom=self.__master_atom,
-                                 master_bond=self.__master_bond,
-                                 max_num_atoms=self.__max_num_atoms,
-                                 atom_feat_list=self.__atom_feat_list,
-                                 bond_feat_list=self.__bond_feat_list)
+        graph = mol_to_graph(mol=mol,
+                             master_atom=self.__master_atom,
+                             master_bond=self.__master_bond,
+                             max_num_atoms=self.__max_num_atoms,
+                             atom_feat_list=self.__atom_feat_list,
+                             bond_feat_list=self.__bond_feat_list)
+        graph.y = torch.from_numpy(target)
 
         # This part is extremely tricky
         # Seems that we cannot directly transform a graph with edge_attr to
         # a single Data with one-hot encoded edge_index
         # This is an inherent restriction of PyG
-        return Data(x=torch.from_numpy(n),
-                    edge_index=torch.from_numpy(adj),
-                    edge_attr=torch.from_numpy(e),
-                    y=torch.from_numpy(target))
+        return graph
 
     def get_cid(self, index: int) -> str:
         return self.__cid_list[index]

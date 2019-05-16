@@ -295,13 +295,9 @@ def get_resp_array(data_path: str,
                           index_col=None,
                           usecols=['SOURCE', 'CELL', 'DRUG', target])
 
-    print(len(resp_df))
-
     # Down select the data sources if given
     if data_sources:
         resp_df = resp_df.loc[resp_df['SOURCE'].isin(data_sources)]
-
-    print(len(resp_df))
 
     resp_array = resp_df.values
 
@@ -502,6 +498,8 @@ def get_datasets(
         disjoint_drugs: bool = False,
 
         summary: bool = True):
+
+    # TODO: multi-feature of arbitrary combination
 
     # 1. Load drug data (dict), cell data(dict), and response data (array)
     # 2. Convert all the data to numeric torch tensor

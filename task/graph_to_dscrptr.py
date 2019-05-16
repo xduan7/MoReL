@@ -27,7 +27,6 @@ import numpy as np
 import pandas as pd
 import torch.nn.functional as F
 import torch_geometric.data as pyg_data
-from apex import amp
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 
@@ -91,7 +90,7 @@ def main():
     print(f'Training on device {device}')
 
     # It seems that NVidia Apex is not compatible with PyG
-    amp_handle = amp.init(enabled=False)
+    # amp_handle = amp.init(enabled=False)
 
     seed_random_state(args.rand_state)
 
@@ -241,8 +240,9 @@ def main():
             data = data.to(device)
             optimizer.zero_grad()
             loss = F.mse_loss(model(data), data.y.view(-1, len(target_list)))
-            with amp_handle.scale_loss(loss, optimizer) as scaled_loss:
-                scaled_loss.backward()
+            # with amp_handle.scale_loss(loss, optimizer) as scaled_loss:
+            #     scaled_loss.backward()
+            loss.backward()
             loss_all += loss.item() * data.num_graphs
             optimizer.step()
         return loss_all / len(trn_loader.dataset)

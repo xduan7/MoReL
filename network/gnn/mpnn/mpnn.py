@@ -55,7 +55,10 @@ class MPNN(nn.Module):
                 nn.Linear(state_dim, 1),
                 nn.Linear(state_dim, 2 * state_dim))
         else:
-            self.__pooling = pyg_nn.Set2Set(state_dim, processing_steps=3)
+            # Setting the num_layers > 1 will take significantly more time
+            self.__pooling = pyg_nn.Set2Set(state_dim,
+                                            processing_steps=3,
+                                            num_layers=3)
 
         self.__out_linear = nn.Sequential(
             nn.Linear(2 * state_dim, state_dim),
