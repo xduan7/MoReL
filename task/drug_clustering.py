@@ -135,7 +135,10 @@ except FileNotFoundError:
 # Label all the drugs based on AUC curves and check the prediction accuracy
 # #############################################################################
 from rdkit import Chem
+from lightgbm import LGBMClassifier
 from torch.utils.data import Dataset
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score
 
 
 RDLogger.logger().setLevel(RDLogger.CRITICAL)
@@ -156,44 +159,107 @@ drug_label_array = np.array(drug_label_array)
 labels, counts = np.unique(drug_label_array[:, 1], return_counts=True)
 
 
-# Load the drug SMILES strings
-drug_smiles_dict = dataframe_to_dict(
+drug_dscrptr_dict = dataframe_to_dict(
         load_drug_data(data_dir='../data/drug/',
-                       data_type=DrugDataType.SMILES,
-                       nan_processing=NanProcessing.NONE), dtype=str)
-
-drug_graph_dict = featurize_drug_dict(drug_dict=drug_smiles_dict,
-                                      featurizer=mol_to_graph,
-                                      featurizer_kwargs=None)
+                       data_type=DrugDataType.MORDRED_DESCRIPTOR,
+                       nan_processing=NanProcessing.DELETE_COL),
+        dtype=np.float32)
 
 
-class GraphToAUCType(Dataset):
+print(len(drug_label_array))
+print(labels, counts)
+drug_label_array_ = []
+drug_feature_array = []
+for __drug_label in drug_label_array:
+    if __drug_label[0] in drug_dscrptr_dict:
+        drug_label_array_.append(__drug_label)
+        drug_feature_array.append(drug_dscrptr_dict[__drug_label[0]])
+    else:
+        # print(__drug_label[0])
+        pass
+drug_label_array = np.array(drug_label_array_)
+drug_feature_array = np.array(drug_feature_array)
 
-    def __int__(self,
-                labels_: np.array,
-                drug_label_array_: np.array,
-                drug_graph_dict_: dict):
-
-        super().__init__()
-
-        self.__labels = labels_
-        self.__drug_label_array = drug_label_array_
-        self.__drug_graph_dict = drug_graph_dict_
-        # TODO: make sure that all durg ids are in the drug graph dict
-
-        self.__len = len(self.__drug_label_array)
-
-    def __len__(self):
-        return self.__len
-
-    def __getitem__(self, index: int):
-
-        __drug_label = self.__drug_label_array[index]
-        __drug_id, __label = __drug_label[0], __drug_label[1]
-
-        __graph = self.__drug_graph_dict[__drug_id]
-        __target = np.where(labels == __label)[0].item()
+print(len(drug_label_array))
+labels, counts = np.unique(drug_label_array[:, 1], return_counts=True)
+print(labels, counts)
 
 
+# trn_drug_label_array, tst_drug_label_array = \
+#     train_test_split(drug_label_array,
+#                      test_size=0.2,
+#                      stratify=drug_label_array[:, 1])
 
 
+###############################################################################
+# Relatively the same results
+# clf = RandomForestClassifier(n_estimators=512,
+#                              max_depth=8)
+# scores = cross_val_score(clf,
+#                          drug_feature_array,
+#                          drug_label_array[:, 1],
+#                          cv=5)
+
+###############################################################################
+clf = LGBMClassifier()
+scores = cross_val_score(clf,
+                         drug_feature_array,
+                         drug_label_array[:, 1],
+                         scoring='balanced_accuracy',
+                         cv=5)
+
+
+# # Load the drug SMILES strings
+# drug_smiles_dict = dataframe_to_dict(
+#         load_drug_data(data_dir='../data/drug/',
+#                        data_type=DrugDataType.SMILES,
+#                        nan_processing=NanProcessing.NONE), dtype=str)
+#
+# drug_graph_dict = featurize_drug_dict(drug_dict=drug_smiles_dict,
+#                                       featurizer=mol_to_graph,
+#                                       featurizer_kwargs=None)
+#
+#
+# class GraphToAUCType(Dataset):
+#
+#     def __int__(self,
+#                 labels_: np.array,
+#                 drug_graph_dict_: dict,
+#                 drug_label_array_: np.array):
+#
+#         super().__init__()
+#
+#         self.__labels = labels_
+#         self.__drug_graph_dict = drug_graph_dict_
+#
+#         self.__drug_label_array = []
+#         for __drug_label in drug_label_array_:
+#             if __drug_label[0] in self.__drug_graph_dict:
+#                 self.__drug_label_array.append(__drug_label)
+#         self.__drug_label_array = np.array(self.__drug_label_array)
+#
+#         self.__len = len(self.__drug_label_array)
+#
+#         single_data = self[0]
+#         self.node_attr_dim = single_data.x.shape[1]
+#         self.edge_attr_dim = single_data.edge_attr.shape[1]
+#
+#     def __len__(self):
+#         return self.__len
+#
+#     def __getitem__(self, index: int):
+#
+#         __drug_label = self.__drug_label_array[index]
+#         __drug_id, __label = __drug_label[0], __drug_label[1]
+#
+#         __graph = self.__drug_graph_dict[__drug_id]
+#         __target = np.where(labels == __label)[0].item()
+#
+#
+#
+# model = MPNN(node_attr_dim=trn_dataset.node_attr_dim,
+#              edge_attr_dim=trn_dataset.edge_attr_dim,
+#              state_dim=args.state_dim,
+#              num_conv=args.num_conv,
+#              out_dim=len(target_list),
+#              attention_pooling=attention_pooling).to(device)
