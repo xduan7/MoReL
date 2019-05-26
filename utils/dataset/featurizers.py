@@ -299,13 +299,6 @@ def smiles_to_mols(smiles_list: List[str],
 
 
 # Featurization functions #####################################################
-def inchi_to_mol(inchi: str) -> Optional[Chem.Mol]:
-    mol: Chem.Mol = Chem.MolFromInchi(inchi)
-    if mol is None:
-        logger.warning(f'Invalid InChI key: {inchi}')
-    return mol
-
-
 def mol_to_smiles(mol: Chem.Mol,
                   smiles_kwargs: dict = None) -> Optional[str]:
 
@@ -700,6 +693,25 @@ def mols_to_ssm_mat(mol_list: List[Chem.Mol],
     #         ssm_mat[j, i] = __ssm_mat_i_j
 
     return ssm_mat
+
+
+# Reconstruction functions ####################################################
+def inchi_to_mol(inchi: str) -> Optional[Chem.Mol]:
+    mol: Chem.Mol = Chem.MolFromInchi(inchi)
+    if mol is None:
+        logger.warning(f'Invalid InChI key: {inchi}')
+    return mol
+
+
+def graph_to_mol(atoms: np.array,
+                 adj_matrix: np.array) -> Optional[Chem.Mol]:
+
+    # https://stackoverflow.com/questions/51195392/smiles-from-graph
+    # It seems that list of atoms with adj matrix is not enough. Some
+    # properties of atom/bond must also be present.
+    # A better example:
+    # https://github.com/dakoner/keras-molecules/convert_rdkit_to_networkx.py
+    pass
 
 
 if __name__ == '__main__':
