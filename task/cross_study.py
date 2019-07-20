@@ -241,6 +241,7 @@ def run_instance(
 
     best_r2 = float('-inf')
     best_mae, best_mse = None, None
+    early_stop_counter = 0
     for epoch in range(1, 501):
 
         lr = scheduler.optimizer.param_groups[0]['lr']
@@ -254,7 +255,12 @@ def run_instance(
               f'\tR2: {tst_r2:.4f} MAE: {tst_mae:.4f} MSE: {tst_mse:.4f}.')
 
         if tst_r2 > best_r2:
+            early_stop_counter = 0
             best_r2, best_mae, best_mse = tst_r2, tst_mae, tst_mse
+        else:
+            early_stop_counter += 1
+            if early_stop_counter >= 10:
+                break
 
     print('#' * 80)
     print(f'Training Sources: {trn_sources} '
