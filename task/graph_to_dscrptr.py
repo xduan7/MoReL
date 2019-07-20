@@ -226,8 +226,10 @@ def main():
     num_params = count_parameters(model)
     print(f'Model Summary (Number of Parameters: {num_params})\n{model}')
 
-    optimizer = torch.optim.Adam(
-        model.parameters(), lr=args.init_lr, amsgrad=True)
+    # optimizer = torch.optim.Adam(
+    #     model.parameters(), lr=args.init_lr, amsgrad=True)
+    optimizer = torch.optim.RMSprop(
+        model.parameters(), lr=args.init_lr)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, factor=args.lr_decay_factor,
         patience=args.lr_decay_patience, min_lr=1e-6)

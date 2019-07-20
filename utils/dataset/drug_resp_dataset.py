@@ -255,7 +255,7 @@ def load_drug_data(data_dir: str,
 
 def featurize_drug_dict(drug_dict: dict,
                         featurizer: callable,
-                        featurizer_kwargs: dict):
+                        featurizer_kwargs: Optional[dict]):
 
     if featurizer is None:
         return drug_dict
