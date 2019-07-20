@@ -22,8 +22,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, \
     MaxAbsScaler, RobustScaler
 
-from featurizers import mol_to_tokens, mol_to_graph
-# from featurizers import mol_to_image, mol_to_jtnn
+from utils.dataset.featurizers import mol_to_tokens, mol_to_graph
+# from utils.dataset.featurizers import mol_to_image, mol_to_jtnn
 
 # Suppress unnecessary RDkit warnings and errors
 RDLogger.logger().setLevel(RDLogger.CRITICAL)
@@ -286,14 +286,38 @@ def featurize_drug_dict(drug_dict: dict,
 
 # Drug response data ##########################################################
 def get_resp_array(data_path: str,
+                   aggregated: bool,
                    target: str = 'AUC',
                    data_sources: Optional[List[str]] = None) -> np.array:
 
-    resp_df = pd.read_csv(data_path,
-                          sep='\t',
-                          header=0,
-                          index_col=None,
-                          usecols=['SOURCE', 'CELL', 'DRUG', target])
+    if aggregated:
+        resp_df = pd.read_csv(data_path,
+                              sep='\t',
+                              header=0,
+                              index_col=None,
+                              usecols=['SOURCE', 'CELL', 'DRUG', target])
+    else:
+        if target != 'GROWTH':
+            raise ValueError(f'The prediction target of does-dependent drug '
+                             f'response must be growth, not {target}.')
+        resp_df = pd.read_csv(data_path,
+                              sep='\t',
+                              header=0,
+                              index_col=None,
+                              usecols=['SOURCE', 'DRUG_ID', 'CELLNAME',
+                                       'LOG_CONCENTRATION', 'GROWTH'])
+
+        # Change the column ordering to align with the aggregated dataframe
+        cols = list(resp_df.columns)
+        c1 = cols.index('SOURCE')
+        c2 = cols.index('DRUG_ID')
+        c3 = cols.index('CELLNAME')
+        c4 = cols.index('LOG_CONCENTRATION')
+        c5 = cols.index('GROWTH')
+
+        cols[c1], cols[c2], cols[c3], cols[c4], cols[c5] = \
+            cols[c1], cols[c3], cols[c2], cols[c5], cols[c4]
+        resp_df = resp_df[cols]
 
     # Down select the data sources if given
     if data_sources:
@@ -301,11 +325,12 @@ def get_resp_array(data_path: str,
 
     resp_array = resp_df.values
 
-    # Change the dtype of prediction target
+    # Change the dtype of prediction target and concentration if exists
     resp_array[:, 3] = np.array(resp_array[:, 3], dtype=np.float32)
+    if not aggregated:
+        resp_array[:, 4] = np.array(resp_array[:, 4], dtype=np.float32)
 
     nan_indices = np.isnan(np.float32(resp_array[:, 3]))
-
     if any(nan_indices):
         logger.warning(
             f'The following lines from \'{data_path}\' contains NaN in the '
@@ -317,22 +342,25 @@ def get_resp_array(data_path: str,
     return resp_array
 
 
-def trim_resp_array(resp_array,
+def trim_resp_array(resp_array: np.array,
                     cells: iter,
-                    drugs: iter) -> np.array:
+                    drugs: iter,
+                    inclusive: bool = True) -> np.array:
 
-    cell_set, drug_set = set(cells), set(drugs)
+    cell_set = set(cells)
+    drug_set = set(drugs)
     resp_list = []
+
     for row in resp_array:
         cell_id, drug_id = row[1], row[2]
 
-        if (cell_set is not None) and (cell_id not in cell_set):
-            continue
+        if inclusive:
+            if (cell_id in cell_set) and (drug_id in drug_set):
+                resp_list.append(row)
+        else:
+            if (cell_id not in cell_set) and (drug_id not in drug_set):
+                resp_list.append(row)
 
-        if (drug_set is not None) and (drug_id not in drug_set):
-            continue
-
-        resp_list.append(row)
     return np.array(resp_list)
 
 
@@ -343,6 +371,12 @@ def trn_tst_split(resp_array: np.array,
                   auc_threshold: float = 0.5,
                   disjoint_cells: bool = True,
                   disjoint_drugs: bool = False):
+
+    # Corner case when test_ratio = 0. or 1., which means that no splitting
+    if (test_ratio == 0.) or (test_ratio == 1.):
+        __empty_resp_array = np.empty((0, resp_array.shape[1]))
+        return (resp_array, __empty_resp_array) if (test_ratio == 0.) \
+            else (__empty_resp_array, resp_array)
 
     # If drugs and cells are not specified to be disjoint in the training
     # and testing dataset, then random split stratified on data sources and AUC
@@ -427,12 +461,19 @@ def scale_feature(trn_resp_array: np.array,
     return new_cell_dict, new_drug_dict
 
 
+class SubsampleType(Enum):
+    ON_RECORD = 'record'
+    ON_CELL = 'cell'
+    ON_DRUG = 'drug'
+
+
 class DrugRespDataset(Dataset):
 
     def __init__(self,
                  cell_dict: dict,
                  drug_dict: dict,
-                 resp_array: np.array):
+                 resp_array: np.array,
+                 aggregated: bool):
 
         super().__init__()
 
@@ -441,21 +482,32 @@ class DrugRespDataset(Dataset):
         self.__resp_array = resp_array
 
         self.__sources = DATA_SOURCES.copy()
+
+        self.__aggregated = (self.__resp_array.shape[1] == 4)
+        assert (self.__aggregated == aggregated)
+
+        self.__dose_info = 'dose-independent' if self.__aggregated \
+            else 'dose-dependent'
+        self.__info = self.__get_info()
         self.__len = len(self.__resp_array)
 
-        self.__info = f'This drug response dataset contains:\n'\
+    def __get_info(self):
+        return \
+            f'This {self.__dose_info} drug response dataset contains:\n'\
             f'\t{len(self.__resp_array)} response records from '\
             f'{len(np.unique(self.__resp_array[:,0]))} different sources;\n'\
             f'\t{len(np.unique(self.__resp_array[:,1]))} unique cell lines;\n'\
             f'\t{len(np.unique(self.__resp_array[:,2]))} unique drugs.'
 
-    def print_info(self):
-        print(self.__info)
+    def __str__(self):
+        if self.__info is None:
+            self.__info = self.__get_info()
+        return self.__info
 
     def __len__(self):
         return self.__len
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int):
 
         resp_data = self.__resp_array[index]
         source, cell_id, drug_id, target = \
@@ -471,11 +523,62 @@ class DrugRespDataset(Dataset):
 
         target_data = torch.from_numpy(np.array([target, ], dtype=np.float32))
 
-        return source_data, cell_data, drug_data, target_data
+        if not self.__aggregated:
+            concentration = resp_data[4]
+            concentration_data = torch.from_numpy(
+                np.array([concentration, ], dtype=np.float32))
+        else:
+            concentration_data = None
+
+        return source_data, cell_data, drug_data, \
+            target_data, concentration_data
+
+    def subsample(self,
+                  subsample_type: SubsampleType,
+                  remaining_percentage: float):
+
+        assert (remaining_percentage > 0.) and (remaining_percentage <= 1.)
+
+        if subsample_type == SubsampleType.ON_RECORD:
+            remaining_num_records = \
+                int(remaining_percentage * len(self.__resp_array))
+            self.__resp_array = \
+                self.__resp_array[np.random.choice(
+                    self.__resp_array.shape[0],
+                    remaining_num_records,
+                    replace=False), :]
+
+        elif subsample_type == SubsampleType.ON_CELL:
+            cells = np.unique(self.__resp_array[:, 1])
+            remaining_num_cells = \
+                int(remaining_percentage * len(cells))
+            remaining_cells = cells[np.random.choice(
+                len(cells), remaining_num_cells, replace=False)]
+
+            self.__resp_array = self.__resp_array[
+                np.in1d(self.__resp_array[:, 1], remaining_cells)]
+
+        elif subsample_type == SubsampleType.ON_DRUG:
+            drugs = np.unique(self.__resp_array[:, 2])
+            remaining_num_drugs = \
+                int(remaining_percentage * len(drugs))
+            remaining_drugs = drugs[np.random.choice(
+                len(drugs), remaining_num_drugs, replace=False)]
+
+            self.__resp_array = self.__resp_array[
+                np.in1d(self.__resp_array[:, 2], remaining_drugs)]
+
+        else:
+            return
+
+        # Change the length and info
+        self.__info = self.__get_info()
+        self.__len = len(self.__resp_array)
 
 
 def get_datasets(
         resp_data_path: str,
+        resp_aggregated: bool,
         resp_target: str,
         resp_data_sources: Optional[List[str]],
 
@@ -497,7 +600,7 @@ def get_datasets(
         disjoint_cells: bool = True,
         disjoint_drugs: bool = False,
 
-        summary: bool = True):
+        summary: bool = False):
 
     # TODO: multi-feature of arbitrary combination
 
@@ -529,13 +632,15 @@ def get_datasets(
                                     featurizer_kwargs=drug_featurizer_kwargs)
 
     resp_array = get_resp_array(data_path=resp_data_path,
+                                aggregated=resp_aggregated,
                                 target=resp_target,
                                 data_sources=resp_data_sources)
 
     # 3. Extract common drugs and cells, and down-sizing all three data
     resp_array = trim_resp_array(resp_array=resp_array,
                                  cells=cell_dict.keys(),
-                                 drugs=drug_dict.keys())
+                                 drugs=drug_dict.keys(),
+                                 inclusive=True)
 
     trn_resp_array, tst_resp_array = \
         trn_tst_split(resp_array=resp_array,
@@ -566,17 +671,19 @@ def get_datasets(
 
     trn_dataset = DrugRespDataset(cell_dict=cell_dict,
                                   drug_dict=drug_dict,
-                                  resp_array=trn_resp_array)
+                                  resp_array=trn_resp_array,
+                                  aggregated=resp_aggregated)
 
     tst_dataset = DrugRespDataset(cell_dict=cell_dict,
                                   drug_dict=drug_dict,
-                                  resp_array=tst_resp_array)
+                                  resp_array=tst_resp_array,
+                                  aggregated=resp_aggregated)
 
     if summary:
         print(f'Training set length {len(trn_dataset)}; '
               f'testing set length {len(tst_dataset)}.')
 
-    return trn_dataset, tst_dataset
+    return trn_dataset, tst_dataset, cell_dict, drug_dict
 
 
 # Testing segment
@@ -616,27 +723,46 @@ if __name__ == '__main__':
     import time
     start_time = time.time()
 
-    trn_dset, tst_dset = get_datasets(
-        resp_data_path='../../data/raw/combined_single_response_agg',
-        resp_target='AUC',
-        resp_data_sources=None,
+    trn_dset, _, trn_cell_dict, trn_drug_dict = get_datasets(
+        resp_data_path='/raid/xduan7/Data/combined_single_drug_growth.txt',
+        resp_aggregated=False,
+        resp_target='GROWTH',
+        resp_data_sources=['CTRP', ],
 
-        cell_data_dir='../../data/cell/',
+        cell_data_dir='/raid/xduan7/Data/cell/',
         cell_data_type=CellDataType.RNASEQ,
-        cell_subset_type=CellSubsetType.COMPLETE,
-        cell_processing_method=CellProcessingMethod.AUTOENCODER,
+        cell_subset_type=CellSubsetType.LINCS1000,
+        cell_processing_method=CellProcessingMethod.SOURCE_SCALE,
         cell_scaling_method=ScalingMethod.NONE,
         cell_type_subset=None,
 
-        drug_data_dir='../../data/drug/',
+        drug_data_dir='/raid/xduan7/Data/drug/',
         drug_feature_type=DrugFeatureType.DRAGON7_DESCRIPTOR,
         drug_nan_processing=NanProcessing.DELETE_COL,
         drug_scaling_method=ScalingMethod.STANDARD,
 
+        rand_state=0,
+        test_ratio=0.,
         disjoint_drugs=False,
         disjoint_cells=False)
 
-    trn_dset.print_info()
-    tst_dset.print_info()
+    tmp_resp_array = get_resp_array(
+        data_path='/raid/xduan7/Data/combined_single_drug_growth.txt',
+        aggregated=False,
+        target='GROWTH',
+        data_sources=['GDSC', ])
+    tmp_resp_array = trim_resp_array(
+        resp_array=tmp_resp_array,
+        cells=trn_cell_dict.keys(),
+        drugs=trn_drug_dict.keys(),
+        inclusive=True)
+    tst_dset = DrugRespDataset(
+        cell_dict=trn_cell_dict,
+        drug_dict=trn_drug_dict,
+        resp_array=tmp_resp_array,
+        aggregated=False)
+
+    print('%' * 8 + ' Training Set Info:\n' + str(trn_dset))
+    print('%' * 8 + ' Testing Set Info:\n' + str(tst_dset))
 
     print(f'Created datasets in {time.time() - start_time: .2f} seconds.')
