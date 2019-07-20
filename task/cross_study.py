@@ -84,8 +84,7 @@ class SimpleUno(nn.Module):
             nn.ReLU(),
             nn.Dropout(dropout),
 
-            nn.Linear(64, 1, bias=True),
-            nn.ReLU())
+            nn.Linear(64, 1, bias=True))
 
     def forward(self, cell_feature, drug_feature, concentration):
 
@@ -106,6 +105,7 @@ def get_cross_study_datasets(
         resp_aggregated=False,
         resp_target='GROWTH',
         resp_data_sources=trn_sources,
+        resp_source_info=False,
 
         cell_data_dir='/raid/xduan7/Data/cell/',
         cell_data_type=CellDataType.RNASEQ,
@@ -138,7 +138,8 @@ def get_cross_study_datasets(
         cell_dict=trn_cell_dict,
         drug_dict=trn_drug_dict,
         resp_array=tmp_resp_array,
-        aggregated=False)
+        aggregated=False,
+        source_info=False)
 
     # Subsample the training set either on drug or cell
     subsample_type = SubsampleType(subsample_on)
@@ -176,10 +177,9 @@ def run_instance(
     cell_dim, drug_dim = _cell.shape[0], _drug.shape[0]
 
     dataloader_kwargs = {
-        'timeout': 1,
         'shuffle': 'True',
         'batch_size': 32,
-        'num_workers': 8,
+        'num_workers': 32,
         'pin_memory': False}
 
     trn_loader = torch.utils.data.DataLoader(

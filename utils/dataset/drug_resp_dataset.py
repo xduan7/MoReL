@@ -473,7 +473,8 @@ class DrugRespDataset(Dataset):
                  cell_dict: dict,
                  drug_dict: dict,
                  resp_array: np.array,
-                 aggregated: bool):
+                 aggregated: bool,
+                 source_info: bool):
 
         super().__init__()
 
@@ -481,6 +482,7 @@ class DrugRespDataset(Dataset):
         self.__drug_dict = drug_dict
         self.__resp_array = resp_array
 
+        self.__source_info = source_info
         self.__sources = DATA_SOURCES.copy()
 
         self.__aggregated = (self.__resp_array.shape[1] == 4)
@@ -513,14 +515,15 @@ class DrugRespDataset(Dataset):
         source, cell_id, drug_id, target = \
             resp_data[0], resp_data[1], resp_data[2], resp_data[3]
 
-        source_data = np.zeros_like(self.__sources, dtype=np.float32)
-        source_data[self.__sources.index(source)] = 1.
-        source_data = torch.from_numpy(source_data)
+        if self.__source_info:
+            source_data = np.zeros_like(self.__sources, dtype=np.float32)
+            source_data[self.__sources.index(source)] = 1.
+            source_data = torch.from_numpy(source_data)
+        else:
+            source_data = torch.empty(size=(5, ))
 
         cell_data = self.__cell_dict[cell_id]
-
         drug_data = self.__drug_dict[drug_id]
-
         target_data = torch.from_numpy(np.array([target, ], dtype=np.float32))
 
         if not self.__aggregated:
@@ -528,7 +531,7 @@ class DrugRespDataset(Dataset):
             concentration_data = torch.from_numpy(
                 np.array([concentration, ], dtype=np.float32))
         else:
-            concentration_data = None
+            concentration_data = torch.empty(size=(1, ))
 
         return source_data, cell_data, drug_data, \
             target_data, concentration_data
@@ -581,6 +584,7 @@ def get_datasets(
         resp_aggregated: bool,
         resp_target: str,
         resp_data_sources: Optional[List[str]],
+        resp_source_info: bool,
 
         cell_data_dir: str,
         cell_data_type: CellDataType or str,
@@ -672,12 +676,14 @@ def get_datasets(
     trn_dataset = DrugRespDataset(cell_dict=cell_dict,
                                   drug_dict=drug_dict,
                                   resp_array=trn_resp_array,
-                                  aggregated=resp_aggregated)
+                                  aggregated=resp_aggregated,
+                                  source_info=resp_source_info)
 
     tst_dataset = DrugRespDataset(cell_dict=cell_dict,
                                   drug_dict=drug_dict,
                                   resp_array=tst_resp_array,
-                                  aggregated=resp_aggregated)
+                                  aggregated=resp_aggregated,
+                                  source_info=resp_source_info)
 
     if summary:
         print(f'Training set length {len(trn_dataset)}; '
@@ -728,6 +734,7 @@ if __name__ == '__main__':
         resp_aggregated=False,
         resp_target='GROWTH',
         resp_data_sources=['CTRP', ],
+        resp_source_info=False,
 
         cell_data_dir='/raid/xduan7/Data/cell/',
         cell_data_type=CellDataType.RNASEQ,
@@ -746,23 +753,40 @@ if __name__ == '__main__':
         disjoint_drugs=False,
         disjoint_cells=False)
 
-    tmp_resp_array = get_resp_array(
-        data_path='/raid/xduan7/Data/combined_single_drug_growth.txt',
-        aggregated=False,
-        target='GROWTH',
-        data_sources=['GDSC', ])
-    tmp_resp_array = trim_resp_array(
-        resp_array=tmp_resp_array,
-        cells=trn_cell_dict.keys(),
-        drugs=trn_drug_dict.keys(),
-        inclusive=True)
-    tst_dset = DrugRespDataset(
-        cell_dict=trn_cell_dict,
-        drug_dict=trn_drug_dict,
-        resp_array=tmp_resp_array,
-        aggregated=False)
 
-    print('%' * 8 + ' Training Set Info:\n' + str(trn_dset))
-    print('%' * 8 + ' Testing Set Info:\n' + str(tst_dset))
+    dataloader_kwargs = {
+        'shuffle': 'True',
+        'batch_size': 32,
+        'num_workers': 8,
+        'pin_memory': True}
+
+    trn_loader = torch.utils.data.DataLoader(
+        trn_dset, **dataloader_kwargs)
+
+
+    loader_counter = 0
+    for _, cell, drug, trgt, concn in trn_loader:
+        loader_counter += 1
+        if loader_counter >= 10:
+            break
+
+    # tmp_resp_array = get_resp_array(
+    #     data_path='/raid/xduan7/Data/combined_single_drug_growth.txt',
+    #     aggregated=False,
+    #     target='GROWTH',
+    #     data_sources=['GDSC', ])
+    # tmp_resp_array = trim_resp_array(
+    #     resp_array=tmp_resp_array,
+    #     cells=trn_cell_dict.keys(),
+    #     drugs=trn_drug_dict.keys(),
+    #     inclusive=True)
+    # tst_dset = DrugRespDataset(
+    #     cell_dict=trn_cell_dict,
+    #     drug_dict=trn_drug_dict,
+    #     resp_array=tmp_resp_array,
+    #     aggregated=False)
+    #
+    # print('%' * 8 + ' Training Set Info:\n' + str(trn_dset))
+    # print('%' * 8 + ' Testing Set Info:\n' + str(tst_dset))
 
     print(f'Created datasets in {time.time() - start_time: .2f} seconds.')
