@@ -95,11 +95,12 @@ def scale_dict(data_dict: dict,
     return __ret_dict
 
 
-def tensorize_dict(data_dict: dict):
+def tensorize_dict(data_dict: dict, dtype: type):
     t = type(list(data_dict.values())[0])
-    return {k: torch.from_numpy(v) for k, v in data_dict.items()} \
-        if (t is np.array) or (t is np.ndarray) else data_dict
-
+    return {k: torch.from_numpy(v).type(dtype)
+            for k, v in data_dict.items()} \
+        if ((t is np.array) or (t is np.ndarray)) \
+        else data_dict
 
 # Cell line data ##############################################################
 class CellDataType(Enum):
@@ -588,8 +589,6 @@ def get_datasets(
 
     # TODO: multi-feature of arbitrary combination
 
-    __dtype = np.float16 if low_memory else np.float32
-
     # 1. Load drug data (dict), cell data(dict), and response data (array)
     # 2. Convert all the data to numeric torch tensor
     cell_dict = dataframe_to_dict(
@@ -598,7 +597,7 @@ def get_datasets(
                        subset_type=cell_subset_type,
                        processing_method=cell_processing_method,
                        cell_type_subset=cell_type_subset),
-        dtype=__dtype)
+        dtype=np.float32)
 
     drug_data_type: DrugDataType = drug_feature_type.value[0]
     drug_featurizer: callable = drug_feature_type.value[1]
@@ -611,7 +610,7 @@ def get_datasets(
         load_drug_data(data_dir=drug_data_dir,
                        data_type=drug_data_type,
                        nan_processing=drug_nan_processing),
-        dtype=(str if drug_featurizer else __dtype))
+        dtype=(str if drug_featurizer else np.float32))
 
     drug_dict = featurize_drug_dict(drug_dict=tmp_drug_dict,
                                     featurizer=drug_featurizer,
@@ -653,8 +652,9 @@ def get_datasets(
                       drug_scaler=drug_scaling_method)
 
     # 5. Create training and testing Datasets
-    cell_dict = tensorize_dict(cell_dict)
-    drug_dict = tensorize_dict(drug_dict)
+    __tensor_dtype = torch.HalfTensor if low_memory else torch.FloatTensor
+    cell_dict = tensorize_dict(cell_dict, dtype=__tensor_dtype)
+    drug_dict = tensorize_dict(drug_dict, dtype=__tensor_dtype)
 
     trn_dataset = DrugRespDataset(cell_dict=cell_dict,
                                   drug_dict=drug_dict,
@@ -733,7 +733,7 @@ if __name__ == '__main__':
         disjoint_drugs=False,
         disjoint_cells=False,
 
-        low_memory=False)
+        low_memory=True)
 
     # tmp_resp_array = get_resp_array(
     #     data_path='/raid/xduan7/Data/combined_single_drug_growth.txt',
@@ -756,21 +756,21 @@ if __name__ == '__main__':
 
     print(f'Created datasets in {time.time() - start_time: .2f} seconds.')
 
-    num_batches = 1000
-    for num_workers in range(17):
-        dataloader_kwargs = {
-            'shuffle': 'True',
-            'batch_size': 32,
-            'num_workers': 8,
-            'pin_memory': True}
-
-        trn_loader = torch.utils.data.DataLoader(
-            trn_dset, **dataloader_kwargs)
-
-        trn_loader_itr = iter(trn_loader)
-
-        _start_time = time.time()
-        for _ in range(num_batches):
-            next(trn_loader_itr)
-        print(f'Fetching {num_batches} batches with {num_workers} workers '
-              f'took {time.time() - _start_time: .2f} seconds')
+    # num_batches = 1000
+    # for num_workers in range(17):
+    #     dataloader_kwargs = {
+    #         'shuffle': 'True',
+    #         'batch_size': 32,
+    #         'num_workers': 8,
+    #         'pin_memory': True}
+    #
+    #     trn_loader = torch.utils.data.DataLoader(
+    #         trn_dset, **dataloader_kwargs)
+    #
+    #     trn_loader_itr = iter(trn_loader)
+    #
+    #     _start_time = time.time()
+    #     for _ in range(num_batches):
+    #         next(trn_loader_itr)
+    #     print(f'Fetching {num_batches} batches with {num_workers} workers '
+    #           f'took {time.time() - _start_time: .2f} seconds')
