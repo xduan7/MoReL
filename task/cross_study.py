@@ -101,11 +101,10 @@ def get_cross_study_datasets(
         subsample_percentage: float):
 
     trn_dset, _, trn_cell_dict, trn_drug_dict = get_datasets(
-        resp_data_path='/raid/xduan7/Data/combined_single_drug_growth.txt',
+        resp_data_path='/raid/xduan7/Data/combined_single_drug_response.csv',
         resp_aggregated=False,
         resp_target='GROWTH',
         resp_data_sources=trn_sources,
-        resp_source_info=False,
 
         cell_data_dir='/raid/xduan7/Data/cell/',
         cell_data_type=CellDataType.RNASEQ,
@@ -125,7 +124,7 @@ def get_cross_study_datasets(
         disjoint_cells=False)
 
     tmp_resp_array = get_resp_array(
-        data_path='/raid/xduan7/Data/combined_single_drug_growth.txt',
+        data_path='/raid/xduan7/Data/combined_single_drug_response.csv',
         aggregated=False,
         target='GROWTH',
         data_sources=tst_sources)
@@ -138,8 +137,7 @@ def get_cross_study_datasets(
         cell_dict=trn_cell_dict,
         drug_dict=trn_drug_dict,
         resp_array=tmp_resp_array,
-        aggregated=False,
-        source_info=False)
+        aggregated=False)
 
     # Subsample the training set either on drug or cell
     subsample_type = SubsampleType(subsample_on)
@@ -179,8 +177,8 @@ def run_instance(
     dataloader_kwargs = {
         'shuffle': 'True',
         'batch_size': 32,
-        'num_workers': 32,
-        'pin_memory': False}
+        'num_workers': 4,
+        'pin_memory': True}
 
     trn_loader = torch.utils.data.DataLoader(
         trn_dset, **dataloader_kwargs)
@@ -199,12 +197,12 @@ def run_instance(
         model.train()
         _trn_loss = 0.
 
-        for _, cell, drug, trgt, concn in trn_loader:
+        for _, cell, drug, trgt, dose in trn_loader:
 
-            cell, drug, trgt, concn = cell.to(device), drug.to(device), \
-                                      trgt.to(device), concn.to(device)
+            cell, drug, trgt, dose = cell.to(device), drug.to(device), \
+                                     trgt.to(device), dose.to(device)
             optimizer.zero_grad()
-            pred = model(cell, drug, concn)
+            pred = model(cell, drug, dose)
             loss = F.mse_loss(pred, trgt)
             loss.backward()
             optimizer.step()
@@ -221,10 +219,10 @@ def run_instance(
         pred_array = np.zeros(shape=(1, ))
 
         with torch.no_grad():
-            for _, cell, drug, trgt, concn in tst_loader:
+            for _, cell, drug, trgt, dose in tst_loader:
 
                 cell, drug, trgt, concn = cell.to(device), drug.to(device), \
-                                          trgt.to(device), concn.to(device)
+                                          trgt.to(device), dose.to(device)
                 pred = model(cell, drug, concn)
 
                 _tst_mse += F.mse_loss(pred, trgt, reduction='sum')
@@ -296,7 +294,7 @@ def main():
     subsample_percentage_array = np.arange(
         start=args.lower_percentage,
         step=args.percentage_increment,
-        stop=args.higher_percentage + .1)
+        stop=args.higher_percentage + .01)
 
     for subsample_percentage in subsample_percentage_array:
         run_instance(trn_sources=['CTRP', ],
