@@ -9,10 +9,8 @@
         how-do-i-ensure-parameter-is-correct-type-in-python
 """
 from typing import get_type_hints
-from deprecated import deprecated
 
 
-@deprecated(reason='This type checking does not perform base class checking.')
 def strict_typing(f):
     def type_checker(*args, **kwargs):
 

@@ -28,33 +28,33 @@ class SimpleUno(nn.Module):
         super(SimpleUno, self).__init__()
 
         self.__cell_tower = nn.Sequential(
-            nn.Linear(cell_dim, state_dim, bias=True),
-            nn.BatchNorm1d(state_dim),
+            nn.Linear(cell_dim, 1024, bias=True),
+            nn.BatchNorm1d(1024),
             nn.ReLU(),
             nn.Dropout(dropout),
 
-            nn.Linear(state_dim, state_dim, bias=True),
-            nn.BatchNorm1d(state_dim),
+            nn.Linear(1024, 1024, bias=True),
+            nn.BatchNorm1d(1024),
             nn.ReLU(),
             nn.Dropout(dropout),
 
-            nn.Linear(state_dim, state_dim, bias=True),
+            nn.Linear(1024, state_dim, bias=True),
             nn.BatchNorm1d(state_dim),
             nn.ReLU(),
             nn.Dropout(dropout))
 
         self.__drug_tower = nn.Sequential(
-            nn.Linear(drug_dim, state_dim, bias=True),
-            nn.BatchNorm1d(state_dim),
+            nn.Linear(drug_dim, 4096, bias=True),
+            nn.BatchNorm1d(4096),
             nn.ReLU(),
             nn.Dropout(dropout),
 
-            nn.Linear(state_dim, state_dim, bias=True),
-            nn.BatchNorm1d(state_dim),
+            nn.Linear(4096, 4096, bias=True),
+            nn.BatchNorm1d(4096),
             nn.ReLU(),
             nn.Dropout(dropout),
 
-            nn.Linear(state_dim, state_dim, bias=True),
+            nn.Linear(4096, state_dim, bias=True),
             nn.BatchNorm1d(state_dim),
             nn.ReLU(),
             nn.Dropout(dropout))
@@ -75,12 +75,17 @@ class SimpleUno(nn.Module):
             nn.ReLU(),
             nn.Dropout(dropout),
 
-            nn.Linear(state_dim, 128, bias=True),
-            nn.BatchNorm1d(128),
+            nn.Linear(state_dim, state_dim, bias=True),
+            nn.BatchNorm1d(state_dim),
             nn.ReLU(),
             nn.Dropout(dropout),
 
-            nn.Linear(128, 64, bias=True),
+            nn.Linear(state_dim, 256, bias=True),
+            nn.BatchNorm1d(256),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+
+            nn.Linear(256, 64, bias=True),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.Dropout(dropout),
@@ -124,27 +129,30 @@ def get_cross_study_datasets(
         disjoint_drugs=False,
         disjoint_cells=False)
 
-    tmp_resp_array = get_resp_array(
-        data_path='/raid/xduan7/Data/combined_single_drug_response.csv',
-        aggregated=False,
-        target='GROWTH',
-        data_sources=tst_sources)
-    tmp_resp_array = trim_resp_array(
-        resp_array=tmp_resp_array,
-        cells=trn_cell_dict.keys(),
-        drugs=trn_drug_dict.keys(),
-        inclusive=True)
-    tst_dset = DrugRespDataset(
-        cell_dict=trn_cell_dict,
-        drug_dict=trn_drug_dict,
-        resp_array=tmp_resp_array,
-        aggregated=False)
+    tst_dsets = []
+    for _tst_src in tst_sources:
+        _tmp_resp_array = get_resp_array(
+            data_path='/raid/xduan7/Data/combined_single_drug_response.csv',
+            aggregated=False,
+            target='GROWTH',
+            data_sources=[_tst_src, ])
+        _tmp_resp_array = trim_resp_array(
+            resp_array=_tmp_resp_array,
+            cells=trn_cell_dict.keys(),
+            drugs=trn_drug_dict.keys(),
+            inclusive=True)
+        _tst_dset = DrugRespDataset(
+            cell_dict=trn_cell_dict,
+            drug_dict=trn_drug_dict,
+            resp_array=_tmp_resp_array,
+            aggregated=False)
+        tst_dsets.append(_tst_dset)
 
     # Subsample the training set either on drug or cell
     subsample_type = SubsampleType(subsample_on)
     trn_dset.subsample(subsample_type, subsample_percentage)
 
-    return trn_dset, tst_dset
+    return trn_dset, tst_dsets
 
 
 def run_instance(
@@ -161,15 +169,24 @@ def run_instance(
     print(f'Training Sources: {trn_sources} '
           f'(using only {subsample_percentage * 100: .0f}%% {subsample_on})')
 
-    trn_dset, tst_dset = \
+    trn_dset, tst_dsets = \
         get_cross_study_datasets(trn_sources=trn_sources,
                                  tst_sources=tst_sources,
                                  subsample_on=subsample_on,
                                  subsample_percentage=subsample_percentage)
 
     print('Datasets Summary:')
+    print('-' * 80)
+    print(f'Training Dataset ({trn_sources}):')
     print(trn_dset)
-    print(tst_dset)
+
+    print('-' * 80)
+    print('Testing Dataset(s):')
+    for _i, _tst_dset in enumerate(tst_dsets):
+        print(f'Data Source [{tst_sources[_i]}]')
+        print(_tst_dset)
+
+    print('-' * 80)
     print('#' * 80)
 
     # Get the dimensions of features in the most awkward way possible
@@ -184,8 +201,8 @@ def run_instance(
 
     trn_loader = torch.utils.data.DataLoader(
         trn_dset, **dataloader_kwargs)
-    tst_loader = torch.utils.data.DataLoader(
-        tst_dset, **dataloader_kwargs)
+    tst_loaders = [torch.utils.data.DataLoader(
+        _tst_dset, **dataloader_kwargs) for _tst_dset in tst_dsets]
 
     model = SimpleUno(cell_dim=cell_dim,
                       drug_dim=drug_dim,
@@ -216,60 +233,83 @@ def run_instance(
 
     def test():
         model.eval()
-        _tst_mse = 0.
-        _tst_mae = 0.
-        trgt_array = np.zeros(shape=(1, ))
-        pred_array = np.zeros(shape=(1, ))
+
+        tst_r2, tst_mae, tst_mse = [], [], []
 
         with torch.no_grad():
-            for _, cell, drug, trgt, dose in tst_loader:
+            for _tst_loader in tst_loaders:
 
-                cell, drug, trgt, concn = cell.to(device), drug.to(device), \
-                                          trgt.to(device), dose.to(device)
-                pred = model(cell, drug, concn)
+                _tst_mse = 0.
+                _tst_mae = 0.
+                trgt_array = np.zeros(shape=(1,))
+                pred_array = np.zeros(shape=(1,))
 
-                _tst_mse += F.mse_loss(pred, trgt, reduction='sum')
-                _tst_mae += F.l1_loss(pred, trgt, reduction='sum')
+                for _, cell, drug, trgt, dose in _tst_loader:
 
-                trgt_array = np.concatenate(
-                    (trgt_array, trgt.cpu().numpy().reshape(-1)))
-                pred_array = np.concatenate(
-                    (pred_array, pred.cpu().numpy().reshape(-1)))
+                    cell, drug, trgt, concn = \
+                        cell.to(device), drug.to(device), \
+                        trgt.to(device), dose.to(device)
 
-        _tst_r2 = r2_score(y_true=trgt_array, y_pred=pred_array)
+                    pred = model(cell, drug, concn)
 
-        return _tst_r2, _tst_mae / len(tst_dset), _tst_mse / len(tst_dset)
+                    _tst_mse += F.mse_loss(pred, trgt, reduction='sum')
+                    _tst_mae += F.l1_loss(pred, trgt, reduction='sum')
 
-    best_r2 = float('-inf')
-    best_mae, best_mse = None, None
-    early_stop_counter = 0
+                    trgt_array = np.concatenate(
+                        (trgt_array, trgt.cpu().numpy().reshape(-1)))
+                    pred_array = np.concatenate(
+                        (pred_array, pred.cpu().numpy().reshape(-1)))
+
+                tst_r2.append(r2_score(y_true=trgt_array, y_pred=pred_array))
+                tst_mae.append(_tst_mae / len(_tst_loader.dataset))
+                tst_mse.append(_tst_mse / len(_tst_loader.dataset))
+
+        return tst_r2, tst_mae, tst_mse
+
+    best_avg_r2 = float('-inf')
+    best_epoch, early_stop_counter = 0, 0
+    tst_history = []
+
     for epoch in range(1, 501):
 
         lr = scheduler.optimizer.param_groups[0]['lr']
         trn_loss = train()
         tst_r2, tst_mae, tst_mse = test()
-        scheduler.step(tst_r2)
+        tst_history.append((tst_r2, tst_mae, tst_mse))
 
-        print(f'Epoch: {epoch:03d}, '
-              f'LR: {lr:6f}, Training Loss: {trn_loss:.4f}.\n',
-              f'Testing Results:\n'
-              f'\tR2: {tst_r2:.4f} MAE: {tst_mae:.4f} MSE: {tst_mse:.4f}.')
+        print(f'Epoch {epoch:03d}, '
+              f'LR = {lr:6f}, Training Loss = {trn_loss:.4f}.')
+        for _i, _tst_source in enumerate(tst_sources):
+            print(f'\tTest Results on {_tst_source}: '
+                  f'R2 = {tst_r2[_i]:.4f}, '
+                  f'MAE = {tst_mae[_i]:.4f}, '
+                  f'MSE = {tst_mse[_i]:.4f}.')
 
-        if tst_r2 > best_r2:
+        # Using average R2 score for learning rate adjustment and early stop
+        scheduler.step(np.mean(tst_r2))
+        if np.mean(tst_r2) > best_avg_r2:
             early_stop_counter = 0
-            best_r2, best_mae, best_mse = tst_r2, tst_mae, tst_mse
+            best_epoch = epoch
         else:
+
             early_stop_counter += 1
             if early_stop_counter >= 8:
-                print('')
+                print('No improvement on testing results. Stopping ... ')
                 break
+        print('-' * 80)
 
     print('#' * 80)
     print(f'Training Sources: {trn_sources} '
           f'(using only {subsample_percentage * 100: .0f}%% {subsample_on})')
-    print(f'Testing Sources: {tst_sources}')
-    print(f'Best R2 {best_r2:.4f} '
-          f'(MAE = {best_mae:.4f}, MSE = {best_mse:.4f})')
+
+    best_r2, best_mae, best_mse = tst_history[best_epoch - 1]
+    print(f'Best Epoch {best_epoch}:')
+
+    for _i, _tst_source in enumerate(tst_sources):
+        print(f'\tTest Results on {_tst_source}: '
+              f'R2 = {best_r2[_i]:.4f}, '
+              f'MAE = {best_mae[_i]:.4f}, '
+              f'MSE = {best_mse[_i]:.4f}.')
 
     print('#' * 80)
     print('#' * 80 + '\n')
@@ -279,9 +319,9 @@ def main():
 
     parser = argparse.ArgumentParser(description='Cross Study')
 
-    parser.add_argument('--trained_on', type=str, required=True,
+    parser.add_argument('--train_on', type=str, required=True, nargs='+',
                         choices=DATA_SOURCES)
-    parser.add_argument('--tested_on', type=str, required=True,
+    parser.add_argument('--test_on', type=str, required=True, nargs='+',
                         choices=DATA_SOURCES)
 
     parser.add_argument('--subsample_on', type=str, required=True,
@@ -307,8 +347,8 @@ def main():
         stop=args.higher_percentage + .01)
 
     for subsample_percentage in subsample_percentage_array:
-        run_instance(trn_sources=[args.trained_on, ],
-                     tst_sources=[args.tested_on, ],
+        run_instance(trn_sources=args.train_on,
+                     tst_sources=args.test_on,
                      state_dim=args.state_dim,
                      subsample_on=args.subsample_on,
                      subsample_percentage=subsample_percentage,

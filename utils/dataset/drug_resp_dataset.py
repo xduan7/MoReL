@@ -496,8 +496,6 @@ class DrugRespDataset(Dataset):
         # Tuple data structure for ultra fast data retrieval
         self.__resp_tuple = tuple(map(tuple, self.__resp_array))
 
-        print(self.__info)
-
     def __str__(self):
         if self.__info is None:
             self.update()
