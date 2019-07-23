@@ -9,10 +9,11 @@ from typing import List
 import sys
 sys.path.extend(['/raid/xduan7/Projects/MoReL'])
 from utils.misc.random_seeding import seed_random_state
-from utils.dataset.drug_resp_dataset import DrugRespDataset, trim_resp_array, \
+from utils.dataset.drug_resp_dataset import DrugRespDataset, \
+    trim_resp_array, \
     get_resp_array, ScalingMethod, NanProcessing, DrugFeatureType, \
     CellProcessingMethod, CellSubsetType, CellDataType, get_datasets, \
-    SubsampleType
+    SubsampleType, DATA_SOURCES
 
 
 # Simple Uno-like model
@@ -278,6 +279,11 @@ def main():
 
     parser = argparse.ArgumentParser(description='Cross Study')
 
+    parser.add_argument('--trained_on', type=str, required=True,
+                        choices=DATA_SOURCES)
+    parser.add_argument('--tested_on', type=str, required=True,
+                        choices=DATA_SOURCES)
+
     parser.add_argument('--subsample_on', type=str, required=True,
                         choices=['cell', 'drug'])
     parser.add_argument('--lower_percentage', type=float, required=True)
@@ -301,8 +307,8 @@ def main():
         stop=args.higher_percentage + .01)
 
     for subsample_percentage in subsample_percentage_array:
-        run_instance(trn_sources=['CTRP', ],
-                     tst_sources=['GDSC', ],
+        run_instance(trn_sources=[args.trained_on, ],
+                     tst_sources=[args.tested_on, ],
                      state_dim=args.state_dim,
                      subsample_on=args.subsample_on,
                      subsample_percentage=subsample_percentage,
