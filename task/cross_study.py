@@ -149,6 +149,7 @@ def get_cross_study_datasets(
 def run_instance(
         trn_sources: List[str],
         tst_sources: List[str],
+        state_dim: int,
         subsample_on: str,
         subsample_percentage: float,
         device: torch.device):
@@ -186,12 +187,13 @@ def run_instance(
         tst_dset, **dataloader_kwargs)
 
     model = SimpleUno(cell_dim=cell_dim,
-                      drug_dim=drug_dim).to(device)
+                      drug_dim=drug_dim,
+                      state_dim=state_dim).to(device)
 
     optimizer = optimizer = torch.optim.Adam(
-        model.parameters(), lr=1e-3, amsgrad=True)
+        model.parameters(), lr=1e-4, amsgrad=True)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, factor=0.8, patience=8, min_lr=1e-5)
+        optimizer, factor=0.8, patience=2, min_lr=1e-6)
 
     def train():
         model.train()
@@ -257,7 +259,8 @@ def run_instance(
             best_r2, best_mae, best_mse = tst_r2, tst_mae, tst_mse
         else:
             early_stop_counter += 1
-            if early_stop_counter >= 10:
+            if early_stop_counter >= 8:
+                print('')
                 break
 
     print('#' * 80)
@@ -280,6 +283,7 @@ def main():
     parser.add_argument('--lower_percentage', type=float, required=True)
     parser.add_argument('--higher_percentage', type=float, required=True)
     parser.add_argument('--percentage_increment', type=float, default=0.05)
+    parser.add_argument('--state_dim', type=int, default=512)
 
     parser.add_argument('--cuda_device', type=int, default=0,
                         help='CUDA device ID')
@@ -299,6 +303,7 @@ def main():
     for subsample_percentage in subsample_percentage_array:
         run_instance(trn_sources=['CTRP', ],
                      tst_sources=['GDSC', ],
+                     state_dim=args.state_dim,
                      subsample_on=args.subsample_on,
                      subsample_percentage=subsample_percentage,
                      device=device)

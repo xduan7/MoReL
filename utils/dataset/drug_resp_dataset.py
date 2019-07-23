@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 from copy import deepcopy
 from enum import Enum, auto
-from typing import Union, Optional, List, Dict
+from typing import Union, Optional, List
 
 from rdkit import Chem, RDLogger
 from torch.utils.data import Dataset
@@ -32,13 +32,9 @@ RDLogger.logger().setLevel(RDLogger.CRITICAL)
 logger = logging.getLogger(__name__)
 
 # Valid data sources. Used for one-hot-encoding
-DATA_SOURCE_DICT = {
-    'CCLE': torch.Tensor([1., 0., 0., 0., 0.]),
-    'CTRP': torch.Tensor([0., 1., 0., 0., 0.]),
-    'GDSC': torch.Tensor([0., 0., 1., 0., 0.]),
-    'NCI60': torch.Tensor([0., 0., 0., 1., 0.]),
-    'gCSI': torch.Tensor([0., 0., 0., 0., 1.]),
-}
+DATA_SOURCES = ['CCLE', 'CTRP', 'GDSC', 'NCI60', 'gCSI']
+__eye_tensor = torch.eye(len(DATA_SOURCES))
+DATA_SOURCE_DICT = {k: __eye_tensor[i] for i, k in enumerate(DATA_SOURCES)}
 
 # Scaler type union
 Scaler = Union[MaxAbsScaler, MinMaxScaler, StandardScaler, RobustScaler]
@@ -101,6 +97,7 @@ def tensorize_dict(data_dict: dict, dtype: type):
             for k, v in data_dict.items()} \
         if ((t is np.array) or (t is np.ndarray)) \
         else data_dict
+
 
 # Cell line data ##############################################################
 class CellDataType(Enum):
@@ -465,8 +462,7 @@ class DrugRespDataset(Dataset):
                  cell_dict: dict,
                  drug_dict: dict,
                  resp_array: np.array,
-                 aggregated: bool,
-                 low_memory: bool = False):
+                 aggregated: bool):
 
         super().__init__()
 
@@ -479,39 +475,53 @@ class DrugRespDataset(Dataset):
         self.__resp_array = resp_array
         self.__source_dict = deepcopy(DATA_SOURCE_DICT)
 
-        self.__aggregated = (self.__resp_array.shape[1] == 4)
-        assert (self.__aggregated == aggregated)
-
+        self.__aggregated = aggregated
         self.__dose_info = 'dose-independent' if self.__aggregated \
             else 'dose-dependent'
-        self.__info = self.__get_info()
-        self.__len = len(self.__resp_array)
 
-    def __get_info(self):
-        return \
+        self.__len = None
+        self.__info = None
+        self.__resp_tuple = None
+
+    def update(self):
+
+        self.__len = len(self.__resp_array)
+        self.__info = \
             f'This {self.__dose_info} drug response dataset contains:\n'\
-            f'\t{len(self.__resp_array)} response records from '\
+            f'\t{self.__len} response records from '\
             f'{len(np.unique(self.__resp_array[:,0]))} data source(s);\n'\
             f'\t{len(np.unique(self.__resp_array[:,1]))} unique cell lines;\n'\
             f'\t{len(np.unique(self.__resp_array[:,2]))} unique drugs.'
 
+        # Tuple data structure for ultra fast data retrieval
+        self.__resp_tuple = tuple(map(tuple, self.__resp_array))
+
+        print(self.__info)
+
     def __str__(self):
         if self.__info is None:
-            self.__info = self.__get_info()
+            self.update()
         return self.__info
 
     def __len__(self):
+        if self.__len is None:
+            self.update()
         return self.__len
 
     def __getitem__(self, index: int):
 
-        resp_data = self.__resp_array[index]
-        source, cell_id, drug_id, target, dose = tuple(resp_data)
+        # if self.__resp_tuple is None:
+        #     self.update()
+
+        # resp_data = self.__resp_array[index]
+        # source, cell_id, drug_id, target, dose = tuple(resp_data)
+        source, cell_id, drug_id, target, dose = self.__resp_tuple[index]
 
         cell_data = self.__cell_dict[cell_id].float()
         drug_data = self.__drug_dict[drug_id].float()
         source_data = self.__source_dict[source]
 
+        # This part could still be optimized but the improvement is marginal
         target_data = torch.Tensor([target, ])
         dose_data = torch.Tensor([dose, ])
 
@@ -555,9 +565,7 @@ class DrugRespDataset(Dataset):
         else:
             return
 
-        # Change the length and info
-        self.__info = self.__get_info()
-        self.__len = len(self.__resp_array)
+        self.__len, self.__info, self.__resp_tuple = None, None, None
 
 
 def get_datasets(
@@ -735,27 +743,38 @@ if __name__ == '__main__':
 
         low_memory=True)
 
-    # tmp_resp_array = get_resp_array(
-    #     data_path='/raid/xduan7/Data/combined_single_drug_growth.txt',
-    #     aggregated=False,
-    #     target='GROWTH',
-    #     data_sources=['GDSC', ])
-    # tmp_resp_array = trim_resp_array(
-    #     resp_array=tmp_resp_array,
-    #     cells=trn_cell_dict.keys(),
-    #     drugs=trn_drug_dict.keys(),
-    #     inclusive=True)
-    # tst_dset = DrugRespDataset(
-    #     cell_dict=trn_cell_dict,
-    #     drug_dict=trn_drug_dict,
-    #     resp_array=tmp_resp_array,
-    #     aggregated=False)
-    #
-    # print('%' * 8 + ' Training Set Info:\n' + str(trn_dset))
-    # print('%' * 8 + ' Testing Set Info:\n' + str(tst_dset))
+    tmp_resp_array = get_resp_array(
+        data_path='/raid/xduan7/Data/combined_single_drug_response.csv',
+        aggregated=False,
+        target='GROWTH',
+        data_sources=['GDSC', ])
+    tmp_resp_array = trim_resp_array(
+        resp_array=tmp_resp_array,
+        cells=trn_cell_dict.keys(),
+        drugs=trn_drug_dict.keys(),
+        inclusive=True)
+    tst_dset = DrugRespDataset(
+        cell_dict=trn_cell_dict,
+        drug_dict=trn_drug_dict,
+        resp_array=tmp_resp_array,
+        aggregated=False)
+
+    print('%' * 8 + ' Training Set Info:\n' + str(trn_dset))
+    print('%' * 8 + ' Testing Set Info:\n' + str(tst_dset))
 
     print(f'Created datasets in {time.time() - start_time: .2f} seconds.')
 
+    # Profiling the dataset data fetching function
+    from line_profiler import LineProfiler
+    lp = LineProfiler()
+    lp_wrapper = lp(trn_dset.__getitem__)
+
+    random_indices = np.random.randint(low=0, high=len(trn_dset), size=65536)
+    for i in random_indices:
+        lp_wrapper(i)
+    lp.print_stats()
+
+    # # Test out the time consumption for batch fetching
     # num_batches = 1000
     # for num_workers in range(17):
     #     dataloader_kwargs = {
