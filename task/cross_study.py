@@ -211,7 +211,7 @@ def run_instance(
     optimizer = optimizer = torch.optim.Adam(
         model.parameters(), lr=1e-4, amsgrad=True)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, factor=0.8, patience=2, min_lr=1e-6)
+        optimizer, factor=0.8, patience=4, min_lr=1e-6)
 
     def train():
         model.train()
@@ -270,7 +270,7 @@ def run_instance(
     best_epoch, early_stop_counter = 0, 0
     tst_history = []
 
-    for epoch in range(1, 501):
+    for epoch in range(1, 101):
 
         lr = scheduler.optimizer.param_groups[0]['lr']
         trn_loss = train()
@@ -288,12 +288,12 @@ def run_instance(
         # Using average R2 score for learning rate adjustment and early stop
         scheduler.step(np.mean(tst_r2))
         if np.mean(tst_r2) > best_avg_r2:
+            print(f'Best Avg R2: {np.mean(tst_r2)}')
             early_stop_counter = 0
             best_epoch = epoch
         else:
-
             early_stop_counter += 1
-            if early_stop_counter >= 8:
+            if early_stop_counter >= 5:
                 print('No improvement on testing results. Stopping ... ')
                 break
         print('-' * 80)
