@@ -289,6 +289,7 @@ def run_instance(
         scheduler.step(np.mean(tst_r2))
         if np.mean(tst_r2) > best_avg_r2:
             print(f'Best Avg R2: {np.mean(tst_r2)}')
+            best_avg_r2 = np.mean(tst_r2)
             early_stop_counter = 0
             best_epoch = epoch
         else:
