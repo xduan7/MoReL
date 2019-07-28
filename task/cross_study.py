@@ -8,96 +8,13 @@ from typing import List
 
 import sys
 sys.path.extend(['/raid/xduan7/Projects/MoReL'])
+from network.simple_uno import SimpleUno
 from utils.misc.random_seeding import seed_random_state
 from utils.dataset.drug_resp_dataset import DrugRespDataset, \
     trim_resp_array, \
     get_resp_array, ScalingMethod, NanProcessing, DrugFeatureType, \
     CellProcessingMethod, CellSubsetType, CellDataType, get_datasets, \
     SubsampleType, DATA_SOURCES
-
-
-# Simple Uno-like model
-class SimpleUno(nn.Module):
-
-    def __init__(self,
-                 cell_dim: int,
-                 drug_dim: int,
-                 state_dim: int = 512,
-                 dropout: float = 0.2):
-
-        super(SimpleUno, self).__init__()
-
-        self.__cell_tower = nn.Sequential(
-            nn.Linear(cell_dim, 1024, bias=True),
-            nn.BatchNorm1d(1024),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-
-            nn.Linear(1024, 1024, bias=True),
-            nn.BatchNorm1d(1024),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-
-            nn.Linear(1024, state_dim, bias=True),
-            nn.BatchNorm1d(state_dim),
-            nn.ReLU(),
-            nn.Dropout(dropout))
-
-        self.__drug_tower = nn.Sequential(
-            nn.Linear(drug_dim, 4096, bias=True),
-            nn.BatchNorm1d(4096),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-
-            nn.Linear(4096, 4096, bias=True),
-            nn.BatchNorm1d(4096),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-
-            nn.Linear(4096, state_dim, bias=True),
-            nn.BatchNorm1d(state_dim),
-            nn.ReLU(),
-            nn.Dropout(dropout))
-
-        self.__final_tower = nn.Sequential(
-            nn.Linear(state_dim * 2 + 1, state_dim, bias=True),
-            nn.BatchNorm1d(state_dim),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-
-            nn.Linear(state_dim, state_dim, bias=True),
-            nn.BatchNorm1d(state_dim),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-
-            nn.Linear(state_dim, state_dim, bias=True),
-            nn.BatchNorm1d(state_dim),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-
-            nn.Linear(state_dim, state_dim, bias=True),
-            nn.BatchNorm1d(state_dim),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-
-            nn.Linear(state_dim, 256, bias=True),
-            nn.BatchNorm1d(256),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-
-            nn.Linear(256, 64, bias=True),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-
-            nn.Linear(64, 1, bias=True))
-
-    def forward(self, cell_feature, drug_feature, concentration):
-
-        return self.__final_tower(
-            torch.cat((self.__cell_tower(cell_feature),
-                       self.__drug_tower(drug_feature),
-                       concentration), dim=-1))
 
 
 def get_cross_study_datasets(
@@ -204,9 +121,11 @@ def run_instance(
     tst_loaders = [torch.utils.data.DataLoader(
         _tst_dset, **dataloader_kwargs) for _tst_dset in tst_dsets]
 
-    model = SimpleUno(cell_dim=cell_dim,
-                      drug_dim=drug_dim,
-                      state_dim=state_dim).to(device)
+    model = SimpleUno(pred_state_dim=state_dim,
+                      cell_input_dim=cell_dim,
+                      cell_state_dim=1024,
+                      drug_input_dim=drug_dim,
+                      drug_state_dim=4096).to(device)
 
     optimizer = optimizer = torch.optim.Adam(
         model.parameters(), lr=1e-4, amsgrad=True)
@@ -233,7 +152,6 @@ def run_instance(
 
     def test():
         model.eval()
-
         tst_r2, tst_mae, tst_mse = [], [], []
 
         with torch.no_grad():
