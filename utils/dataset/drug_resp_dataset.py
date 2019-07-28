@@ -121,6 +121,7 @@ class CellProcessingMethod(Enum):
 
 
 def load_cell_data(data_dir: str,
+                   id_list: Optional[List[str]],
                    data_type: CellDataType or str,
                    subset_type: CellSubsetType or str,
                    processing_method: CellProcessingMethod or str,
@@ -166,6 +167,10 @@ def load_cell_data(data_dir: str,
             cell_type_df.loc[cell_type_df['Type'].isin(cell_type_list)].index)
     else:
         cell_set = None
+
+    # Down-sample the cell set
+    if id_list is not None:
+        cell_set = set(id_list) & cell_set if cell_set else set(id_list)
 
     file_name_list = ['combined', data_type.value]
     if subset_type != CellSubsetType.COMPLETE:
@@ -226,6 +231,7 @@ class NanProcessing(Enum):
 
 
 def load_drug_data(data_dir: str,
+                   id_list: Optional[List[str]],
                    data_type: DrugDataType or str,
                    nan_processing: NanProcessing or str):
 
@@ -236,23 +242,26 @@ def load_drug_data(data_dir: str,
     file_path = os.path.join(data_dir, file_name)
 
     if os.path.exists(file_path):
-        dataframe = pd.read_csv(file_path, header=0, index_col=0)
+        drug_df = pd.read_csv(file_path, header=0, index_col=0)
+
+        if id_list:
+            drug_df = drug_df[drug_df.index.isin(id_list)]
 
         if nan_processing == NanProcessing.FILL_ZERO:
-            dataframe.fillna(0., inplace=True)
+            drug_df.fillna(0., inplace=True)
         elif nan_processing == NanProcessing.DELETE_ROW:
             logger.warning('Deleting rows with NaN values for drug features '
                            'might remove all features!')
-            dataframe.dropna(inplace=True)
+            drug_df.dropna(inplace=True)
         elif nan_processing == NanProcessing.DELETE_COL:
-            dataframe.dropna(axis='columns', inplace=True)
+            drug_df.dropna(axis='columns', inplace=True)
         elif nan_processing == NanProcessing.FILL_COLUMN_AVERAGE:
-            dataframe.dropna(axis='columns', how='all', inplace=True)
-            dataframe.fillna(dataframe.mean(), inplace=True)
+            drug_df.dropna(axis='columns', how='all', inplace=True)
+            drug_df.fillna(drug_df.mean(), inplace=True)
         else:
             pass
 
-        return dataframe
+        return drug_df
     else:
         raise FileExistsError(
             f'{file_path} does not exist. '
@@ -462,7 +471,8 @@ class DrugRespDataset(Dataset):
                  cell_dict: dict,
                  drug_dict: dict,
                  resp_array: np.array,
-                 aggregated: bool):
+                 aggregated: bool,
+                 graph_feature: bool = False):
 
         super().__init__()
 
@@ -476,6 +486,8 @@ class DrugRespDataset(Dataset):
         self.__source_dict = deepcopy(DATA_SOURCE_DICT)
 
         self.__aggregated = aggregated
+        self.__graph_feature = graph_feature
+
         self.__dose_info = 'dose-independent' if self.__aggregated \
             else 'dose-dependent'
 
@@ -516,14 +528,26 @@ class DrugRespDataset(Dataset):
         source, cell_id, drug_id, target, dose = self.__resp_tuple[index]
 
         cell_data = self.__cell_dict[cell_id].float()
-        drug_data = self.__drug_dict[drug_id].float()
         source_data = self.__source_dict[source]
 
         # This part could still be optimized but the improvement is marginal
         target_data = torch.Tensor([target, ])
         dose_data = torch.Tensor([dose, ])
 
-        return source_data, cell_data, drug_data, target_data, dose_data
+        # Graph data is of special data type, which is not batchable with
+        # pytorch dataloader. Need pyg dataloader and its corresponding
+        # data type as returned data for __getitem__
+        if self.__graph_feature:
+            ret_data = self.__drug_dict[drug_id]
+            ret_data.source_data = source_data
+            ret_data.cell_data = cell_data
+            ret_data.target_data = target_data
+            ret_data.dose_data = dose_data
+
+            return ret_data
+        else:
+            drug_data = self.__drug_dict[drug_id].float()
+            return source_data, cell_data, drug_data, target_data, dose_data
 
     def subsample(self,
                   subsample_type: SubsampleType,
@@ -573,6 +597,7 @@ def get_datasets(
         resp_data_sources: Optional[List[str]],
 
         cell_data_dir: str,
+        cell_id_list: Optional[List[str]],
         cell_data_type: CellDataType or str,
         cell_subset_type: CellSubsetType or str,
         cell_processing_method: CellProcessingMethod or str,
@@ -580,6 +605,7 @@ def get_datasets(
         cell_type_subset: Optional[List[str]] or int,
 
         drug_data_dir: str,
+        drug_id_list: Optional[List[str]],
         drug_feature_type: DrugFeatureType or tuple,
         drug_nan_processing: NanProcessing or str,
         drug_scaling_method: ScalingMethod or Scaler,
@@ -599,12 +625,14 @@ def get_datasets(
     # 2. Convert all the data to numeric torch tensor
     cell_dict = dataframe_to_dict(
         load_cell_data(data_dir=cell_data_dir,
+                       id_list=cell_id_list,
                        data_type=cell_data_type,
                        subset_type=cell_subset_type,
                        processing_method=cell_processing_method,
                        cell_type_subset=cell_type_subset),
         dtype=np.float32)
 
+    drug_graph_feature = (drug_feature_type == DrugFeatureType.GRAPH)
     drug_data_type: DrugDataType = drug_feature_type.value[0]
     drug_featurizer: callable = drug_feature_type.value[1]
 
@@ -614,6 +642,7 @@ def get_datasets(
 
     tmp_drug_dict = dataframe_to_dict(
         load_drug_data(data_dir=drug_data_dir,
+                       id_list=drug_id_list,
                        data_type=drug_data_type,
                        nan_processing=drug_nan_processing),
         dtype=(str if drug_featurizer else np.float32))
@@ -665,12 +694,14 @@ def get_datasets(
     trn_dataset = DrugRespDataset(cell_dict=cell_dict,
                                   drug_dict=drug_dict,
                                   resp_array=trn_resp_array,
-                                  aggregated=resp_aggregated)
+                                  aggregated=resp_aggregated,
+                                  graph_feature=drug_graph_feature)
 
     tst_dataset = DrugRespDataset(cell_dict=cell_dict,
                                   drug_dict=drug_dict,
                                   resp_array=tst_resp_array,
-                                  aggregated=resp_aggregated)
+                                  aggregated=resp_aggregated,
+                                  graph_feature=drug_graph_feature)
 
     if summary:
         print(f'Training set length {len(trn_dataset)}; '
@@ -682,21 +713,42 @@ def get_datasets(
 # Testing segment
 if __name__ == '__main__':
 
-    # trn_dset, tst_dset = get_datasets(
-    #     resp_data_path='../../data/raw/combined_single_response_agg',
-    #     resp_target='AUC',
-    #
-    #     cell_data_dir='../../data/cell/',
-    #     cell_data_type=CellDataType.RNASEQ,
-    #     cell_subset_type=CellSubsetType.LINCS1000,
-    #     cell_processing_method=CellProcessingMethod.SOURCE_SCALE,
-    #     cell_scaling_method=ScalingMethod.NONE,
-    #
-    #     drug_data_dir='../../data/drug/',
-    #     drug_feature_type=DrugFeatureType.TOKENIZED_SMILES,
-    #     drug_nan_processing=NanProcessing.FILL_COLUMN_AVERAGE,
-    #     drug_scaling_method=ScalingMethod.STANDARD,
-    #     drug_featurizer_kwargs={'len_tokens': 256})
+    bigrun_cell_id_list = pd.read_csv(
+        '/raid/xduan7/Data/bigrun_cell_ids.csv',
+        index_col=None).values.reshape((-1)).tolist()
+    bigrun_drug_id_list = pd.read_csv(
+        '/raid/xduan7/Data/bigrun_drug_ids.csv',
+        index_col=None).values.reshape((-1)).tolist()
+    print(f'Using up to {len(bigrun_cell_id_list)} cell lines and '
+          f'{len(bigrun_drug_id_list)} drugs for big run ... ')
+
+    trn_dset, tst_dset, _, _ = get_datasets(
+        resp_data_path='/raid/xduan7/Data'
+                       '/combined_single_drug_response_aggregated.csv',
+        resp_aggregated=True,
+        resp_target='AUC',
+        resp_data_sources=DATA_SOURCES,
+
+        cell_data_dir='/raid/xduan7/Data/cell/',
+        cell_id_list=bigrun_cell_id_list,
+        cell_data_type=CellDataType.RNASEQ,
+        cell_subset_type=CellSubsetType.LINCS1000,
+        cell_processing_method=CellProcessingMethod.SOURCE_SCALE,
+        cell_scaling_method=ScalingMethod.NONE,
+        cell_type_subset=None,
+
+        drug_data_dir='/raid/xduan7/Data/drug/',
+        drug_id_list=bigrun_drug_id_list,
+        drug_feature_type=DrugFeatureType.GRAPH,
+        drug_nan_processing=NanProcessing.NONE,
+        drug_scaling_method=ScalingMethod.NONE,
+        drug_featurizer_kwargs=None,
+
+        disjoint_cells=False,
+        disjoint_drugs=False)
+
+    print('%' * 8 + ' Training Set Info:\n' + str(trn_dset))
+    print('%' * 8 + ' Testing Set Info:\n' + str(tst_dset))
 
     # trn_dset, tst_dset = get_datasets(
     #     resp_data_path='../../data/raw/combined_single_response_agg',
@@ -713,64 +765,64 @@ if __name__ == '__main__':
     #     drug_nan_processing=NanProcessing.NONE,
     #     drug_scaling_method=ScalingMethod.STANDARD)
 
-    import time
-    start_time = time.time()
-
-    trn_dset, _, trn_cell_dict, trn_drug_dict = get_datasets(
-        resp_data_path='/raid/xduan7/Data/combined_single_drug_response.csv',
-        resp_aggregated=False,
-        resp_target='GROWTH',
-        resp_data_sources=['CTRP', ],
-
-        cell_data_dir='/raid/xduan7/Data/cell/',
-        cell_data_type=CellDataType.RNASEQ,
-        cell_subset_type=CellSubsetType.LINCS1000,
-        cell_processing_method=CellProcessingMethod.SOURCE_SCALE,
-        cell_scaling_method=ScalingMethod.NONE,
-        cell_type_subset=None,
-
-        drug_data_dir='/raid/xduan7/Data/drug/',
-        drug_feature_type=DrugFeatureType.DRAGON7_DESCRIPTOR,
-        drug_nan_processing=NanProcessing.DELETE_COL,
-        drug_scaling_method=ScalingMethod.STANDARD,
-
-        rand_state=0,
-        test_ratio=0.,
-        disjoint_drugs=False,
-        disjoint_cells=False,
-
-        low_memory=True)
-
-    tmp_resp_array = get_resp_array(
-        data_path='/raid/xduan7/Data/combined_single_drug_response.csv',
-        aggregated=False,
-        target='GROWTH',
-        data_sources=['GDSC', ])
-    tmp_resp_array = trim_resp_array(
-        resp_array=tmp_resp_array,
-        cells=trn_cell_dict.keys(),
-        drugs=trn_drug_dict.keys(),
-        inclusive=True)
-    tst_dset = DrugRespDataset(
-        cell_dict=trn_cell_dict,
-        drug_dict=trn_drug_dict,
-        resp_array=tmp_resp_array,
-        aggregated=False)
-
-    print('%' * 8 + ' Training Set Info:\n' + str(trn_dset))
-    print('%' * 8 + ' Testing Set Info:\n' + str(tst_dset))
-
-    print(f'Created datasets in {time.time() - start_time: .2f} seconds.')
-
-    # Profiling the dataset data fetching function
-    from line_profiler import LineProfiler
-    lp = LineProfiler()
-    lp_wrapper = lp(trn_dset.__getitem__)
-
-    random_indices = np.random.randint(low=0, high=len(trn_dset), size=65536)
-    for i in random_indices:
-        lp_wrapper(i)
-    lp.print_stats()
+    # import time
+    # start_time = time.time()
+    #
+    # trn_dset, _, trn_cell_dict, trn_drug_dict = get_datasets(
+    #     resp_data_path='/raid/xduan7/Data/combined_single_drug_response.csv',
+    #     resp_aggregated=False,
+    #     resp_target='GROWTH',
+    #     resp_data_sources=['CTRP', ],
+    #
+    #     cell_data_dir='/raid/xduan7/Data/cell/',
+    #     cell_data_type=CellDataType.RNASEQ,
+    #     cell_subset_type=CellSubsetType.LINCS1000,
+    #     cell_processing_method=CellProcessingMethod.SOURCE_SCALE,
+    #     cell_scaling_method=ScalingMethod.NONE,
+    #     cell_type_subset=None,
+    #
+    #     drug_data_dir='/raid/xduan7/Data/drug/',
+    #     drug_feature_type=DrugFeatureType.DRAGON7_DESCRIPTOR,
+    #     drug_nan_processing=NanProcessing.DELETE_COL,
+    #     drug_scaling_method=ScalingMethod.STANDARD,
+    #
+    #     rand_state=0,
+    #     test_ratio=0.,
+    #     disjoint_drugs=False,
+    #     disjoint_cells=False,
+    #
+    #     low_memory=True)
+    #
+    # tmp_resp_array = get_resp_array(
+    #     data_path='/raid/xduan7/Data/combined_single_drug_response.csv',
+    #     aggregated=False,
+    #     target='GROWTH',
+    #     data_sources=['GDSC', ])
+    # tmp_resp_array = trim_resp_array(
+    #     resp_array=tmp_resp_array,
+    #     cells=trn_cell_dict.keys(),
+    #     drugs=trn_drug_dict.keys(),
+    #     inclusive=True)
+    # tst_dset = DrugRespDataset(
+    #     cell_dict=trn_cell_dict,
+    #     drug_dict=trn_drug_dict,
+    #     resp_array=tmp_resp_array,
+    #     aggregated=False)
+    #
+    # print('%' * 8 + ' Training Set Info:\n' + str(trn_dset))
+    # print('%' * 8 + ' Testing Set Info:\n' + str(tst_dset))
+    #
+    # print(f'Created datasets in {time.time() - start_time: .2f} seconds.')
+    #
+    # # Profiling the dataset data fetching function
+    # from line_profiler import LineProfiler
+    # lp = LineProfiler()
+    # lp_wrapper = lp(trn_dset.__getitem__)
+    #
+    # random_indices = np.random.randint(low=0, high=len(trn_dset), size=65536)
+    # for i in random_indices:
+    #     lp_wrapper(i)
+    # lp.print_stats()
 
     # # Test out the time consumption for batch fetching
     # num_batches = 1000
