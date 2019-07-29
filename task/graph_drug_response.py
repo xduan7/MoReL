@@ -131,10 +131,7 @@ for experiment in comet_opt.get_experiments():
     # Iterate through epochs
     best_r2 = float('-inf')
     early_stop_counter = 0
-
-
-    num_epochs_per_log = int(np.ceil(trn_loader / 20.))
-
+    num_epochs_per_log = int(np.ceil(len(trn_loader) / 20.))
 
     for epoch in range(max_num_epochs):
 
