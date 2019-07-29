@@ -99,28 +99,33 @@ for experiment in comet_opt.get_experiments():
                                      **dataloader_kwargs)
 
     # Construct graph model
-    graph_model_kwargs = {
-        'node_attr_dim': node_attr_dim,
-        'edge_attr_dim': edge_attr_dim,
-        'state_dim': graph_state_dim,
-        'num_conv': graph_num_conv,
-        'out_dim': graph_out_dim,
-        'attention_pooling': graph_attention_pooling, }
+    try:
+        graph_model_kwargs = {
+            'node_attr_dim': node_attr_dim,
+            'edge_attr_dim': edge_attr_dim,
+            'state_dim': graph_state_dim,
+            'num_conv': graph_num_conv,
+            'out_dim': graph_out_dim,
+            'attention_pooling': graph_attention_pooling, }
 
-    if graph_model == 'gcn':
-        drug_tower = EdgeGCNEncoder(**graph_model_kwargs)
-    elif graph_model == 'gat':
-        drug_tower = EdgeGATEncoder(**graph_model_kwargs)
-    else:
-        drug_tower = MPNN(**graph_model_kwargs)
+        if graph_model == 'gcn':
+            drug_tower = EdgeGCNEncoder(**graph_model_kwargs)
+        elif graph_model == 'gat':
+            drug_tower = EdgeGATEncoder(**graph_model_kwargs)
+        else:
+            drug_tower = MPNN(**graph_model_kwargs)
 
-    model = SimpleUno(
-        state_dim=uno_state_dim,
-        cell_state_dim=cell_state_dim,
-        drug_state_dim=graph_out_dim,
-        cell_input_dim=cell_input_dim,
-        drug_tower=drug_tower,
-        dropout=uno_dropout).to('cuda')
+        model = SimpleUno(
+            state_dim=uno_state_dim,
+            cell_state_dim=cell_state_dim,
+            drug_state_dim=graph_out_dim,
+            cell_input_dim=cell_input_dim,
+            drug_tower=drug_tower,
+            dropout=uno_dropout).to('cuda')
+
+    except RuntimeError as e:
+        print('Cannot allocate model probably due to insufficient memory.')
+        experiment.log_metric('best_r2', 0.)
 
     # Construct optimizer and scheduler
     optimizer = torch.optim.Adam(
@@ -131,7 +136,7 @@ for experiment in comet_opt.get_experiments():
     # Iterate through epochs
     best_r2 = float('-inf')
     early_stop_counter = 0
-    num_epochs_per_log = int(np.ceil(len(trn_loader) / 20.))
+    num_epochs_per_log = int(np.ceil(len(trn_loader) / 20))
 
     for epoch in range(max_num_epochs):
 
@@ -159,9 +164,9 @@ for experiment in comet_opt.get_experiments():
                 _sample_counter += __batch_size
 
                 if _log_counter >= num_epochs_per_log:
+                    print('log!')
                     experiment.log_metric('loss', _trn_loss / _sample_counter)
-                    _log_counter = 0
-                    _sample_counter = 0
+                    _trn_loss, _log_counter, _sample_counter = 0., 0, 0
 
             experiment.log_metric('loss', _trn_loss / _sample_counter)
 
@@ -220,6 +225,8 @@ for experiment in comet_opt.get_experiments():
                 experiment.log_metric('bal_acc', tst_bal_acc)
                 experiment.log_metric('mcc', tst_mcc)
                 experiment.log_metric('auc', tst_auc)
+
+        experiment.log_epoch_end(epoch)
 
         scheduler.step(tst_mse)
         if tst_r2 > best_r2:
