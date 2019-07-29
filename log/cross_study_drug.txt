@@ -546,3 +546,40 @@ Epoch 011, LR = 0.000100, Training Loss = 213.1315.
 	Test Results on GDSC: R2 = -0.0686, MAE = 20.9800, MSE = 873.2710.
 	Test Results on CCLE: R2 = 0.1913, MAE = 19.7596, MSE = 803.5493.
 --------------------------------------------------------------------------------
+Epoch 012, LR = 0.000100, Training Loss = 208.9616.
+	Test Results on GDSC: R2 = -0.0538, MAE = 20.5739, MSE = 861.1483.
+	Test Results on CCLE: R2 = 0.2006, MAE = 19.2705, MSE = 794.2625.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  40%% drug)
+Best Epoch 7:
+	Test Results on GDSC: R2 = 0.0043, MAE = 19.9884, MSE = 813.6965.
+	Test Results on CCLE: R2 = 0.2179, MAE = 19.2184, MSE = 777.1324.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  45%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	1774771 response records from 1 data source(s);
+	812 unique cell lines;
+	166 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################

@@ -66,8 +66,9 @@ edge_attr_dim = trn_dset[0].edge_attr.shape[1]
 cell_input_dim = trn_dset[0].cell_data.shape[0]
 
 # Iterate through all different experiment configurations
-experiment: Experiment
 for experiment in comet_opt.get_experiments():
+
+    experiment.log_metric(name='some random value', value=0.5)
 
     graph_model = experiment.get_parameter(name='graph_model')
     graph_state_dim = experiment.get_parameter(name='graph_state_dim')
