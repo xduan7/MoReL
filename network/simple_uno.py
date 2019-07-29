@@ -92,7 +92,8 @@ class SimpleUno(nn.Module):
 
     def forward(self, cell_data, drug_data, dose):
 
+        __cell_latent_vec = self.__cell_tower(cell_data)
+        __drug_latent_vec = self.__drug_tower(drug_data)
+
         return self.__pred_tower(
-            torch.cat((self.__cell_tower(cell_data),
-                       self.__drug_tower(drug_data),
-                       dose), dim=-1))
+            torch.cat((__cell_latent_vec, __drug_latent_vec, dose), dim=-1))
