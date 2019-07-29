@@ -10,10 +10,9 @@
 from comet_ml import Optimizer, Experiment
 import torch_geometric.data as pyg_data
 import torch.nn.functional as F
-
-# Constant to modify
 from sklearn import metrics
 
+# Constant to modify
 PROJ_LOCATION = '/vol/ml/xduan7/Projects/MoReL'
 DATA_LOCATION = '/vol/ml/xduan7/Data'
 
@@ -25,8 +24,7 @@ from network.gnn.gcn.gcn import EdgeGCNEncoder
 from network.gnn.mpnn.mpnn import MPNN
 from network.simple_uno import SimpleUno
 
-comet_opt = Optimizer(PROJ_LOCATION + '/task/graph_drug_response.config',
-                      project_name='Drug Response with Graph Models')
+comet_opt = Optimizer(project_name='Drug Response with Graph Models')
 
 # Construct the datasets for training and testing
 bigrun_cell_id_list = pd.read_csv(
@@ -66,6 +64,15 @@ trn_dset, tst_dset, _, _ = get_datasets(
 node_attr_dim = trn_dset[0].x.shape[1]
 edge_attr_dim = trn_dset[0].edge_attr.shape[1]
 cell_input_dim = trn_dset[0].cell_data.shape[0]
+
+
+experiment: Experiment
+while True:
+    experiment = comet_opt.next()
+    if experiment is None:
+        break
+    print('New experiment!')
+    experiment.log_metric("best_r2", 0.)
 
 # Iterate through all different experiment configurations
 experiment: Experiment
