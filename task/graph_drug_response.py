@@ -140,6 +140,7 @@ for experiment in comet_opt.get_experiments():
 
             for batch_data in trn_loader:
 
+                batch_data = batch_data.to('cuda')
                 cell_data = batch_data.cell_data.view(batch_size, -1)
                 trgt = batch_data.target_data.view(batch_size, -1)
                 dose = batch_data.dose_data.view(batch_size, -1)
@@ -163,6 +164,7 @@ for experiment in comet_opt.get_experiments():
             with torch.no_grad():
                 for batch_data in tst_loader:
 
+                    batch_data = batch_data.to('cuda')
                     cell_data = batch_data.cell_data.view(batch_size, -1)
                     trgt = batch_data.target_data.view(batch_size, -1)
                     dose = batch_data.dose_data.view(batch_size, -1)

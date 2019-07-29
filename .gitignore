@@ -160,3 +160,6 @@ fabric.properties
 .idea/
 data/raw/
 data/processed/
+/log/
+/data/
+/doc/
