@@ -78,8 +78,6 @@ while True:
 experiment: Experiment
 for experiment in comet_opt.get_experiments():
 
-    print('New experiment!')
-
     graph_model = experiment.get_parameter(name='graph_model')
     graph_state_dim = experiment.get_parameter(name='graph_state_dim')
     graph_num_conv = experiment.get_parameter(name='graph_num_conv')
