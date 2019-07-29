@@ -672,7 +672,7 @@ def get_datasets(
 
     # 4. Feature scaling for drugs and cells
     if (drug_featurizer is not None) and \
-        ((drug_scaling_method is not ScalingMethod.NONE) or
+        ((drug_scaling_method != ScalingMethod.NONE) or
          (drug_scaling_method is not None)):
         logger.warning(f'Cannot perform scaling on drug of featurizer '
                        f'function {drug_featurizer}. '
