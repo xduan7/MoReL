@@ -1,1 +1,1 @@
-CUDA_VISIBLE_DEVICES=4,5,6,7 comet optimize -j 4 graph_drug_reponse.py graph_drug_reponse.config
+CUDA_VISIBLE_DEVICES=4,5,6,7 comet optimize -j 4 graph_drug_response.py graph_drug_response.config
