@@ -65,15 +65,6 @@ node_attr_dim = trn_dset[0].x.shape[1]
 edge_attr_dim = trn_dset[0].edge_attr.shape[1]
 cell_input_dim = trn_dset[0].cell_data.shape[0]
 
-
-experiment: Experiment
-while True:
-    experiment = comet_opt.next()
-    if experiment is None:
-        break
-    print('New experiment!')
-    experiment.log_metric("best_r2", 0.)
-
 # Iterate through all different experiment configurations
 experiment: Experiment
 for experiment in comet_opt.get_experiments():
