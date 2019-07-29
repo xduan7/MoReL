@@ -17,10 +17,10 @@ class SimpleUno(nn.Module):
 
     def __init__(self,
                  state_dim: int,
+                 cell_state_dim: int,
+                 drug_state_dim: int,
                  cell_input_dim: Optional[int] = None,
-                 cell_state_dim: Optional[int] = None,
                  drug_input_dim: Optional[int] = None,
-                 drug_state_dim: Optional[int] = None,
                  cell_tower: Optional[nn.Module] = None,
                  drug_tower: Optional[nn.Module] = None,
                  dropout: float = 0.2):

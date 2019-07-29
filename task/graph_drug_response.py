@@ -116,8 +116,9 @@ for experiment in comet_opt.get_experiments():
 
     model = SimpleUno(
         state_dim=uno_state_dim,
-        cell_input_dim=cell_input_dim,
         cell_state_dim=cell_state_dim,
+        drug_state_dim=graph_out_dim,
+        cell_input_dim=cell_input_dim,
         drug_tower=drug_tower,
         dropout=uno_dropout).to('cuda')
 
