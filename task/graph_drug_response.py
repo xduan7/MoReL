@@ -14,8 +14,8 @@ import torch.nn.functional as F
 # Constant to modify
 from sklearn import metrics
 
-PROJ_LOCATION = '/raid/xduan7/Projects/MoReL'
-DATA_LOCATION = '/raid/xduan7/Data'
+PROJ_LOCATION = '/vol/ml/xduan7/Projects/MoReL'
+DATA_LOCATION = '/vol/ml/xduan7/Data'
 
 import sys
 sys.path.extend([PROJ_LOCATION])
@@ -51,7 +51,7 @@ trn_dset, tst_dset, _, _ = get_datasets(
     cell_scaling_method=ScalingMethod.NONE,
     cell_type_subset=None,
 
-    drug_data_dir=(DATA_LOCATION + '/cell/'),
+    drug_data_dir=(DATA_LOCATION + '/drug/'),
     drug_id_list=bigrun_drug_id_list,
     drug_feature_type=DrugFeatureType.GRAPH,
     drug_nan_processing=NanProcessing.NONE,
