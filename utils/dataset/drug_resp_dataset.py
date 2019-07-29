@@ -750,16 +750,6 @@ if __name__ == '__main__':
     print('%' * 8 + ' Training Set Info:\n' + str(trn_dset))
     print('%' * 8 + ' Testing Set Info:\n' + str(tst_dset))
 
-    import torch_geometric.data as pyg_data
-    dataloader_kwargs = {
-        'pin_memory': True,
-        'batch_size': 32,
-        'num_workers': 1, }
-    trn_loader = pyg_data.DataLoader(trn_dset,
-                                     shuffle=True,
-                                     **dataloader_kwargs)
-
-
     # trn_dset, tst_dset = get_datasets(
     #     resp_data_path='../../data/raw/combined_single_response_agg',
     #     resp_target='AUC',

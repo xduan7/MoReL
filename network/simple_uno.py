@@ -88,7 +88,8 @@ class SimpleUno(nn.Module):
             nn.BatchNorm1d(__inter_state_dim),
             nn.ReLU(),
 
-            nn.Linear(__inter_state_dim, 1, bias=True))
+            nn.Linear(__inter_state_dim, 1, bias=True),
+            nn.Sigmoid())
 
     def forward(self, cell_data, drug_data, dose):
 

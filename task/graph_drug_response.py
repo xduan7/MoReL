@@ -132,11 +132,15 @@ for experiment in comet_opt.get_experiments():
     best_r2 = float('-inf')
     early_stop_counter = 0
 
+
+    num_epochs_per_log = int(np.ceil(trn_loader / 20.))
+
+
     for epoch in range(max_num_epochs):
 
         with experiment.train():
             model.train()
-            _trn_loss = 0.
+            _trn_loss, _log_counter, _sample_counter = 0., 0, 0
 
             for batch_data in trn_loader:
 
@@ -153,9 +157,16 @@ for experiment in comet_opt.get_experiments():
                 loss.backward()
                 optimizer.step()
 
-                _trn_loss += loss.item() * trgt.shape[0]
+                _trn_loss += loss.item() * __batch_size
+                _log_counter += 1
+                _sample_counter += __batch_size
 
-            experiment.log_metric('loss', _trn_loss)
+                if _log_counter >= num_epochs_per_log:
+                    experiment.log_metric('loss', _trn_loss / _sample_counter)
+                    _log_counter = 0
+                    _sample_counter = 0
+
+            experiment.log_metric('loss', _trn_loss / _sample_counter)
 
         with experiment.test():
             model.eval()
