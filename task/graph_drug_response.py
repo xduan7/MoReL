@@ -186,6 +186,7 @@ for experiment in comet_opt.get_experiments():
 
                         __avg_trn_loss = (__trn_loss / __sample_counter)
                         __step = epoch + (__batch_counter / len(trn_loader))
+                        __step = int(__step * num_logs_per_epoch)
 
                         experiment.log_metric(
                             name='loss', value=__avg_trn_loss, step=__step)
