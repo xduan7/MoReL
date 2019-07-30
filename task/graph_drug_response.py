@@ -101,13 +101,7 @@ for experiment in comet_opt.get_experiments():
 
     experiment.add_tags(tags=[
         f'graph_model={graph_model}',
-        f'graph_state_dim={graph_state_dim}',
-        f'graph_num_conv={graph_num_conv}',
-        f'graph_out_dim={graph_out_dim}',
-        f'graph_attention_pooling={graph_attention_pooling}',
-        f'uno_dropout={uno_dropout}',
-        f'uno_state_dim={uno_state_dim}',
-        f'cell_state_dim={cell_state_dim}', ])
+        f'graph_attention_pooling={graph_attention_pooling}', ])
 
     # Everything in the experiment will be put inside this try statement
     # If exception happens, clean things up and move to the next experiment
