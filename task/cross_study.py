@@ -30,6 +30,7 @@ def get_cross_study_datasets(
         resp_data_sources=trn_sources,
 
         cell_data_dir='/raid/xduan7/Data/cell/',
+        cell_id_list=None,
         cell_data_type=CellDataType.RNASEQ,
         cell_subset_type=CellSubsetType.LINCS1000,
         cell_processing_method=CellProcessingMethod.SOURCE_SCALE,
@@ -37,6 +38,7 @@ def get_cross_study_datasets(
         cell_type_subset=None,
 
         drug_data_dir='/raid/xduan7/Data/drug/',
+        drug_id_list=None,
         drug_feature_type=DrugFeatureType.DRAGON7_DESCRIPTOR,
         drug_nan_processing=NanProcessing.DELETE_COL,
         drug_scaling_method=ScalingMethod.STANDARD,
@@ -121,11 +123,13 @@ def run_instance(
     tst_loaders = [torch.utils.data.DataLoader(
         _tst_dset, **dataloader_kwargs) for _tst_dset in tst_dsets]
 
-    model = SimpleUno(pred_state_dim=state_dim,
+    model = SimpleUno(state_dim=state_dim,
+                      dose_info=True,
                       cell_input_dim=cell_dim,
                       cell_state_dim=1024,
                       drug_input_dim=drug_dim,
-                      drug_state_dim=4096).to(device)
+                      drug_state_dim=4096,
+                      sigmoid_output=False).to(device)
 
     optimizer = optimizer = torch.optim.Adam(
         model.parameters(), lr=1e-4, amsgrad=True)

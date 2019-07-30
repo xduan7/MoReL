@@ -7,7 +7,7 @@ python ./cross_study.py \
     --higher_percentage 1.00 \
     --state_dim 1024 \
     --cuda_device 0 \
-    >> ./log/cross_study_cell.txt &
+    >> ../log/cross_study_cell.txt &
 echo $!
 
 python ./cross_study.py \
@@ -18,5 +18,5 @@ python ./cross_study.py \
     --higher_percentage 1.00 \
     --state_dim 1024 \
     --cuda_device 1 \
-    >> ./log/cross_study_drug.txt &
+    >> ../log/cross_study_drug.txt &
 echo $!

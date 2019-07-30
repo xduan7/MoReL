@@ -566,8 +566,8 @@ Datasets Summary:
 --------------------------------------------------------------------------------
 Training Dataset (['CTRP']):
 This dose-dependent drug response dataset contains:
-	1774771 response records from 1 data source(s);
-	812 unique cell lines;
+	1777332 response records from 1 data source(s);
+	811 unique cell lines;
 	166 unique drugs.
 --------------------------------------------------------------------------------
 Testing Dataset(s):

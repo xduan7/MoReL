@@ -547,38 +547,3 @@ Best Epoch 5:
 ################################################################################
 ################################################################################
 
-
-################################################################################
-################################################################################
-Training Sources: ['CTRP'] (using only  45%% cell)
-Datasets Summary:
---------------------------------------------------------------------------------
-Training Dataset (['CTRP']):
-This dose-dependent drug response dataset contains:
-	1807945 response records from 1 data source(s);
-	365 unique cell lines;
-	370 unique drugs.
---------------------------------------------------------------------------------
-Testing Dataset(s):
-Data Source [GDSC]
-This dose-dependent drug response dataset contains:
-	1134744 response records from 1 data source(s);
-	672 unique cell lines;
-	236 unique drugs.
-Data Source [CCLE]
-This dose-dependent drug response dataset contains:
-	87665 response records from 1 data source(s);
-	474 unique cell lines;
-	24 unique drugs.
---------------------------------------------------------------------------------
-################################################################################
-Epoch 001, LR = 0.000100, Training Loss = 378.8812.
-	Test Results on GDSC: R2 = 0.2152, MAE = 17.8177, MSE = 641.3314.
-	Test Results on CCLE: R2 = 0.5239, MAE = 15.6689, MSE = 473.0494.
-Best Avg R2: 0.3695644424496482
---------------------------------------------------------------------------------
-Epoch 002, LR = 0.000100, Training Loss = 308.1447.
-	Test Results on GDSC: R2 = 0.2224, MAE = 17.3502, MSE = 635.4845.
-	Test Results on CCLE: R2 = 0.5350, MAE = 15.2638, MSE = 462.0572.
-Best Avg R2: 0.3786710422204517
---------------------------------------------------------------------------------

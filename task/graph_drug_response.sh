@@ -1,4 +1,3 @@
-conda activate pytorch
 export COMET_OPTIMIZER_ID=$(comet optimize graph_drug_response.config)
 CUDA_VISIBLE_DEVICES=4 python graph_drug_response.py &
 CUDA_VISIBLE_DEVICES=5 python graph_drug_response.py &
