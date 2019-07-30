@@ -185,12 +185,11 @@ for experiment in comet_opt.get_experiments():
                        (__batch_counter == len(trn_loader)):
 
                         __avg_trn_loss = (__trn_loss / __sample_counter)
-                        __step = epoch + (__batch_counter / len(trn_loader))
-                        __step = int(__step * num_logs_per_epoch)
+                        # __step = epoch + (__batch_counter / len(trn_loader))
+                        # __step = int(__step * num_logs_per_epoch)
 
-                        experiment.log_metric(
-                            name='loss', value=__avg_trn_loss, step=__step)
-
+                        experiment.log_metric(name='loss',
+                                              value=__avg_trn_loss)
                         __trn_loss, __sample_counter = 0., 0
 
             with experiment.test():
@@ -258,20 +257,19 @@ for experiment in comet_opt.get_experiments():
                     fpr, fnr = (1 - tnr), (1 - tpr)
 
                     # Comet log metrics
-                    experiment.log_metric('r2', tst_r2, step=(epoch + 1))
-                    experiment.log_metric('mae', tst_mae, step=(epoch + 1))
-                    experiment.log_metric('mse', tst_mse, step=(epoch + 1))
+                    experiment.log_metric('r2', tst_r2)
+                    experiment.log_metric('mae', tst_mae)
+                    experiment.log_metric('mse', tst_mse)
 
-                    experiment.log_metric('acc', tst_acc, step=(epoch + 1))
-                    experiment.log_metric('bal_acc', tst_bal_acc,
-                                          step=(epoch + 1))
-                    experiment.log_metric('mcc', tst_mcc, step=(epoch + 1))
+                    experiment.log_metric('acc', tst_acc)
+                    experiment.log_metric('bal_acc', tst_bal_acc)
+                    experiment.log_metric('mcc', tst_mcc)
                     # experiment.log_metric('auc', tst_auc)
 
-                    experiment.log_metric('tpr', tpr, step=(epoch + 1))
-                    experiment.log_metric('tnr', tnr, step=(epoch + 1))
-                    experiment.log_metric('fpr', fpr, step=(epoch + 1))
-                    experiment.log_metric('fnr', fnr, step=(epoch + 1))
+                    experiment.log_metric('tpr', tpr)
+                    experiment.log_metric('tnr', tnr)
+                    experiment.log_metric('fpr', fpr)
+                    experiment.log_metric('fnr', fnr)
 
             experiment.log_epoch_end(epoch)
 
