@@ -3,7 +3,7 @@ python ./cross_study.py \
     --train_on CTRP \
     --test_on GDSC CCLE \
     --subsample_on cell \
-    --lower_percentage 0.05 \
+    --lower_percentage 0.75 \
     --higher_percentage 1.00 \
     --state_dim 1024 \
     --cuda_device 0 \
@@ -14,7 +14,7 @@ python ./cross_study.py \
     --train_on CTRP \
     --test_on GDSC CCLE \
     --subsample_on drug \
-    --lower_percentage 0.05 \
+    --lower_percentage 1.00 \
     --higher_percentage 1.00 \
     --state_dim 1024 \
     --cuda_device 1 \

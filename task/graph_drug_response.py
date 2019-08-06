@@ -243,12 +243,14 @@ for experiment in comet_opt.get_experiments():
                     tst_mcc = metrics.matthews_corrcoef(**bin_kwargs)
                     # tst_auc = metrics.roc_auc_score(**bin_kwargs)
 
-                    tn, fp, fn, tp = \
+                    __tn, __fp, __fn, __tp = \
                         metrics.confusion_matrix(**bin_kwargs).ravel()
 
-                    tpr = 1. if (tp + fn) == 0 else (tp / (tp + fn))
-                    tnr = 1. if (tn + fp) == 0 else (tn / (tn + fp))
-                    fpr, fnr = (1 - tnr), (1 - tpr)
+                    tst_tpr = 1. if (__tp + __fn) == 0 \
+                        else (__tp / (__tp + __fn))
+                    tst_tnr = 1. if (__tn + __fp) == 0 \
+                        else (__tn / (__tn + __fp))
+                    tst_fpr, tst_fnr = (1 - tst_tnr), (1 - tst_tpr)
 
                     # Comet log metrics
                     experiment.log_metric('r2', tst_r2)
@@ -260,16 +262,38 @@ for experiment in comet_opt.get_experiments():
                     experiment.log_metric('mcc', tst_mcc)
                     # experiment.log_metric('auc', tst_auc)
 
-                    experiment.log_metric('tpr', tpr)
-                    experiment.log_metric('tnr', tnr)
-                    experiment.log_metric('fpr', fpr)
-                    experiment.log_metric('fnr', fnr)
+                    experiment.log_metric('tpr', tst_tpr)
+                    experiment.log_metric('tnr', tst_tnr)
+                    experiment.log_metric('fpr', tst_fpr)
+                    experiment.log_metric('fnr', tst_fnr)
 
             experiment.log_epoch_end(epoch)
 
             scheduler.step(tst_mse)
             if tst_r2 > best_r2:
                 best_r2 = tst_r2
+
+                experiment.log_metric('best_mae*', tst_mae,
+                                      include_context=False)
+                experiment.log_metric('best_mse*', tst_mse,
+                                      include_context=False)
+
+                experiment.log_metric('best_acc*', tst_acc,
+                                      include_context=False)
+                experiment.log_metric('best_bal_acc*', tst_bal_acc,
+                                      include_context=False)
+                experiment.log_metric('best_mcc*', tst_mcc,
+                                      include_context=False)
+
+                experiment.log_metric('best_tpr*', tst_tpr,
+                                      include_context=False)
+                experiment.log_metric('best_tnr*', tst_tnr,
+                                      include_context=False)
+                experiment.log_metric('best_fpr*', tst_fpr,
+                                      include_context=False)
+                experiment.log_metric('best_fnr*', tst_fnr,
+                                      include_context=False)
+
                 early_stop_counter = 0
             else:
                 early_stop_counter += 1

@@ -37,3 +37,1229 @@ Epoch 003, LR = 0.000100, Training Loss = 279.5867.
 	Test Results on GDSC: R2 = -0.0963, MAE = 20.4203, MSE = 895.8595.
 	Test Results on CCLE: R2 = 0.1026, MAE = 20.0106, MSE = 891.7091.
 --------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 261.2913.
+	Test Results on GDSC: R2 = -0.1212, MAE = 20.5649, MSE = 916.2629.
+	Test Results on CCLE: R2 = 0.0836, MAE = 20.1777, MSE = 910.5679.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 244.4518.
+	Test Results on GDSC: R2 = -0.1003, MAE = 20.4782, MSE = 899.1254.
+	Test Results on CCLE: R2 = 0.1103, MAE = 19.9709, MSE = 884.0399.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 235.2636.
+	Test Results on GDSC: R2 = -0.1312, MAE = 20.5541, MSE = 924.3873.
+	Test Results on CCLE: R2 = 0.0662, MAE = 20.3855, MSE = 927.8441.
+--------------------------------------------------------------------------------
+Epoch 007, LR = 0.000080, Training Loss = 219.2874.
+	Test Results on GDSC: R2 = -0.1292, MAE = 20.9734, MSE = 922.7391.
+	Test Results on CCLE: R2 = 0.1066, MAE = 20.0568, MSE = 887.7267.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  5%% drug)
+Best Epoch 2:
+	Test Results on GDSC: R2 = -0.0565, MAE = 19.8726, MSE = 863.3287.
+	Test Results on CCLE: R2 = 0.1124, MAE = 19.9221, MSE = 881.9368.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  10%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	392236 response records from 1 data source(s);
+	810 unique cell lines;
+	37 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 549.2447.
+	Test Results on GDSC: R2 = -0.0547, MAE = 19.5673, MSE = 861.9325.
+	Test Results on CCLE: R2 = -0.0152, MAE = 21.1920, MSE = 1008.7025.
+Best Avg R2: -0.034955640260693865
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 328.7424.
+	Test Results on GDSC: R2 = -0.0897, MAE = 20.0078, MSE = 890.4839.
+	Test Results on CCLE: R2 = -0.0190, MAE = 21.2003, MSE = 1012.5070.
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 303.0223.
+	Test Results on GDSC: R2 = -0.0937, MAE = 20.4796, MSE = 893.8080.
+	Test Results on CCLE: R2 = -0.0034, MAE = 21.3991, MSE = 997.0491.
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 280.9193.
+	Test Results on GDSC: R2 = -0.1037, MAE = 20.2283, MSE = 901.9427.
+	Test Results on CCLE: R2 = -0.0458, MAE = 21.5973, MSE = 1039.1450.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 265.7126.
+	Test Results on GDSC: R2 = -0.1370, MAE = 20.9709, MSE = 929.1450.
+	Test Results on CCLE: R2 = -0.0586, MAE = 21.9585, MSE = 1051.8434.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 252.2484.
+	Test Results on GDSC: R2 = -0.1724, MAE = 21.2896, MSE = 958.0392.
+	Test Results on CCLE: R2 = -0.0765, MAE = 22.2064, MSE = 1069.5989.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  10%% drug)
+Best Epoch 1:
+	Test Results on GDSC: R2 = -0.0547, MAE = 19.5673, MSE = 861.9325.
+	Test Results on CCLE: R2 = -0.0152, MAE = 21.1920, MSE = 1008.7025.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  15%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	602759 response records from 1 data source(s);
+	812 unique cell lines;
+	55 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 618.8487.
+	Test Results on GDSC: R2 = 0.0104, MAE = 19.7297, MSE = 808.6659.
+	Test Results on CCLE: R2 = 0.2998, MAE = 17.9447, MSE = 695.7889.
+Best Avg R2: 0.1550954305256823
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 336.0589.
+	Test Results on GDSC: R2 = -0.0270, MAE = 20.5555, MSE = 839.2832.
+	Test Results on CCLE: R2 = 0.2925, MAE = 18.3653, MSE = 703.0064.
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 312.1342.
+	Test Results on GDSC: R2 = -0.0329, MAE = 20.2035, MSE = 844.0851.
+	Test Results on CCLE: R2 = 0.2927, MAE = 17.9551, MSE = 702.7498.
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 295.1743.
+	Test Results on GDSC: R2 = -0.0310, MAE = 20.1743, MSE = 842.5510.
+	Test Results on CCLE: R2 = 0.2597, MAE = 18.3872, MSE = 735.5480.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 279.7889.
+	Test Results on GDSC: R2 = -0.0458, MAE = 20.3997, MSE = 854.6146.
+	Test Results on CCLE: R2 = 0.2746, MAE = 18.3502, MSE = 720.8240.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 265.9031.
+	Test Results on GDSC: R2 = -0.1249, MAE = 21.5186, MSE = 919.2606.
+	Test Results on CCLE: R2 = 0.2262, MAE = 19.1191, MSE = 768.8296.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  15%% drug)
+Best Epoch 1:
+	Test Results on GDSC: R2 = 0.0104, MAE = 19.7297, MSE = 808.6659.
+	Test Results on CCLE: R2 = 0.2998, MAE = 17.9447, MSE = 695.7889.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  20%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	781713 response records from 1 data source(s);
+	812 unique cell lines;
+	74 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 489.1150.
+	Test Results on GDSC: R2 = 0.0713, MAE = 19.0983, MSE = 758.9545.
+	Test Results on CCLE: R2 = 0.4254, MAE = 16.8090, MSE = 570.9574.
+Best Avg R2: 0.24832893926148114
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 318.5292.
+	Test Results on GDSC: R2 = 0.0626, MAE = 18.9423, MSE = 766.0727.
+	Test Results on CCLE: R2 = 0.4692, MAE = 16.1252, MSE = 527.4178.
+Best Avg R2: 0.2658802504160103
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 291.5714.
+	Test Results on GDSC: R2 = 0.0399, MAE = 19.2536, MSE = 784.5625.
+	Test Results on CCLE: R2 = 0.4219, MAE = 16.8882, MSE = 574.4453.
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 271.3858.
+	Test Results on GDSC: R2 = 0.0309, MAE = 19.8077, MSE = 791.9078.
+	Test Results on CCLE: R2 = 0.4671, MAE = 16.5051, MSE = 529.5289.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 255.0359.
+	Test Results on GDSC: R2 = 0.0316, MAE = 19.5483, MSE = 791.3404.
+	Test Results on CCLE: R2 = 0.4720, MAE = 16.3059, MSE = 524.6332.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 241.2324.
+	Test Results on GDSC: R2 = 0.0471, MAE = 19.3758, MSE = 778.7160.
+	Test Results on CCLE: R2 = 0.4796, MAE = 16.1215, MSE = 517.1339.
+--------------------------------------------------------------------------------
+Epoch 007, LR = 0.000100, Training Loss = 231.6810.
+	Test Results on GDSC: R2 = -0.0311, MAE = 20.2078, MSE = 842.6020.
+	Test Results on CCLE: R2 = 0.4374, MAE = 16.6433, MSE = 559.0244.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  20%% drug)
+Best Epoch 2:
+	Test Results on GDSC: R2 = 0.0626, MAE = 18.9423, MSE = 766.0727.
+	Test Results on CCLE: R2 = 0.4692, MAE = 16.1252, MSE = 527.4178.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  25%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	961814 response records from 1 data source(s);
+	811 unique cell lines;
+	92 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 401.5729.
+	Test Results on GDSC: R2 = 0.0121, MAE = 19.4463, MSE = 807.3361.
+	Test Results on CCLE: R2 = 0.3356, MAE = 17.9885, MSE = 660.2012.
+Best Avg R2: 0.1738171223363691
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 293.3520.
+	Test Results on GDSC: R2 = -0.0238, MAE = 19.6691, MSE = 836.6294.
+	Test Results on CCLE: R2 = 0.3711, MAE = 17.3004, MSE = 624.8592.
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 269.6361.
+	Test Results on GDSC: R2 = -0.0405, MAE = 20.0823, MSE = 850.2738.
+	Test Results on CCLE: R2 = 0.3520, MAE = 17.6319, MSE = 643.9208.
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 251.9160.
+	Test Results on GDSC: R2 = -0.0135, MAE = 19.6217, MSE = 828.2041.
+	Test Results on CCLE: R2 = 0.3455, MAE = 17.5785, MSE = 650.3593.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 236.7589.
+	Test Results on GDSC: R2 = -0.0542, MAE = 20.1602, MSE = 861.4664.
+	Test Results on CCLE: R2 = 0.3493, MAE = 17.6858, MSE = 646.5936.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 224.0096.
+	Test Results on GDSC: R2 = -0.0776, MAE = 20.6708, MSE = 880.6315.
+	Test Results on CCLE: R2 = 0.3407, MAE = 17.9636, MSE = 655.1183.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  25%% drug)
+Best Epoch 1:
+	Test Results on GDSC: R2 = 0.0121, MAE = 19.4463, MSE = 807.3361.
+	Test Results on CCLE: R2 = 0.3356, MAE = 17.9885, MSE = 660.2012.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  30%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	1173978 response records from 1 data source(s);
+	811 unique cell lines;
+	111 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 477.4504.
+	Test Results on GDSC: R2 = 0.0107, MAE = 20.1603, MSE = 808.4651.
+	Test Results on CCLE: R2 = 0.4172, MAE = 17.1653, MSE = 579.1387.
+Best Avg R2: 0.21391573364007527
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 314.0086.
+	Test Results on GDSC: R2 = 0.0298, MAE = 19.8772, MSE = 792.8207.
+	Test Results on CCLE: R2 = 0.4158, MAE = 17.0208, MSE = 580.5242.
+Best Avg R2: 0.22279076310735973
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 286.0981.
+	Test Results on GDSC: R2 = -0.0687, MAE = 20.9243, MSE = 873.2950.
+	Test Results on CCLE: R2 = 0.3733, MAE = 17.6174, MSE = 622.7062.
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 266.7079.
+	Test Results on GDSC: R2 = -0.0219, MAE = 20.4976, MSE = 835.0557.
+	Test Results on CCLE: R2 = 0.3934, MAE = 17.3374, MSE = 602.7868.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 251.2520.
+	Test Results on GDSC: R2 = -0.0194, MAE = 20.2228, MSE = 833.0458.
+	Test Results on CCLE: R2 = 0.3778, MAE = 17.4071, MSE = 618.1907.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 240.3776.
+	Test Results on GDSC: R2 = -0.0645, MAE = 20.9487, MSE = 869.9427.
+	Test Results on CCLE: R2 = 0.4019, MAE = 17.2020, MSE = 594.2514.
+--------------------------------------------------------------------------------
+Epoch 007, LR = 0.000100, Training Loss = 230.8814.
+	Test Results on GDSC: R2 = -0.0090, MAE = 20.4315, MSE = 824.5287.
+	Test Results on CCLE: R2 = 0.3840, MAE = 17.5846, MSE = 612.0346.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  30%% drug)
+Best Epoch 2:
+	Test Results on GDSC: R2 = 0.0298, MAE = 19.8772, MSE = 792.8207.
+	Test Results on CCLE: R2 = 0.4158, MAE = 17.0208, MSE = 580.5242.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  35%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	1427803 response records from 1 data source(s);
+	811 unique cell lines;
+	129 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 412.5712.
+	Test Results on GDSC: R2 = 0.0980, MAE = 18.3237, MSE = 737.1187.
+	Test Results on CCLE: R2 = 0.3053, MAE = 17.9994, MSE = 690.2520.
+Best Avg R2: 0.2016586238586015
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 301.1296.
+	Test Results on GDSC: R2 = 0.0790, MAE = 18.6357, MSE = 752.6291.
+	Test Results on CCLE: R2 = 0.2959, MAE = 18.0991, MSE = 699.6274.
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 276.7297.
+	Test Results on GDSC: R2 = 0.0598, MAE = 18.8031, MSE = 768.3159.
+	Test Results on CCLE: R2 = 0.2605, MAE = 18.5479, MSE = 734.7865.
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 258.2517.
+	Test Results on GDSC: R2 = 0.0269, MAE = 19.3297, MSE = 795.2510.
+	Test Results on CCLE: R2 = 0.2785, MAE = 18.4665, MSE = 716.8912.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 245.2245.
+	Test Results on GDSC: R2 = 0.0486, MAE = 18.8428, MSE = 777.4510.
+	Test Results on CCLE: R2 = 0.2451, MAE = 18.4658, MSE = 750.1202.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 233.5222.
+	Test Results on GDSC: R2 = 0.0391, MAE = 19.2607, MSE = 785.2403.
+	Test Results on CCLE: R2 = 0.3022, MAE = 18.0471, MSE = 693.3294.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  35%% drug)
+Best Epoch 1:
+	Test Results on GDSC: R2 = 0.0980, MAE = 18.3237, MSE = 737.1187.
+	Test Results on CCLE: R2 = 0.3053, MAE = 17.9994, MSE = 690.2520.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  40%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	1599177 response records from 1 data source(s);
+	812 unique cell lines;
+	148 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 417.0474.
+	Test Results on GDSC: R2 = -0.0199, MAE = 20.3132, MSE = 833.4879.
+	Test Results on CCLE: R2 = 0.1976, MAE = 19.6942, MSE = 797.3303.
+Best Avg R2: 0.0888111668414362
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 287.6400.
+	Test Results on GDSC: R2 = 0.0035, MAE = 19.7801, MSE = 814.3399.
+	Test Results on CCLE: R2 = 0.2300, MAE = 19.0124, MSE = 765.1302.
+Best Avg R2: 0.11673023445967501
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 263.0427.
+	Test Results on GDSC: R2 = -0.0268, MAE = 20.1786, MSE = 839.0949.
+	Test Results on CCLE: R2 = 0.2050, MAE = 19.1395, MSE = 789.9338.
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 245.0866.
+	Test Results on GDSC: R2 = -0.0628, MAE = 20.7432, MSE = 868.5391.
+	Test Results on CCLE: R2 = 0.2141, MAE = 19.3210, MSE = 780.9438.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 231.9880.
+	Test Results on GDSC: R2 = -0.0591, MAE = 20.6671, MSE = 865.5092.
+	Test Results on CCLE: R2 = 0.1796, MAE = 19.8148, MSE = 815.1362.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 222.0217.
+	Test Results on GDSC: R2 = -0.0316, MAE = 20.0326, MSE = 843.0318.
+	Test Results on CCLE: R2 = 0.1684, MAE = 19.5471, MSE = 826.2633.
+--------------------------------------------------------------------------------
+Epoch 007, LR = 0.000100, Training Loss = 213.7621.
+	Test Results on GDSC: R2 = -0.0294, MAE = 20.2370, MSE = 841.2067.
+	Test Results on CCLE: R2 = 0.1864, MAE = 19.4141, MSE = 808.3967.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  40%% drug)
+Best Epoch 2:
+	Test Results on GDSC: R2 = 0.0035, MAE = 19.7801, MSE = 814.3399.
+	Test Results on CCLE: R2 = 0.2300, MAE = 19.0124, MSE = 765.1302.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  45%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	1774771 response records from 1 data source(s);
+	812 unique cell lines;
+	166 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 405.6415.
+	Test Results on GDSC: R2 = 0.0243, MAE = 19.0491, MSE = 797.3635.
+	Test Results on CCLE: R2 = 0.3366, MAE = 17.3516, MSE = 659.1988.
+Best Avg R2: 0.1804214989978607
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 295.4933.
+	Test Results on GDSC: R2 = 0.0012, MAE = 19.4501, MSE = 816.2497.
+	Test Results on CCLE: R2 = 0.3607, MAE = 17.0249, MSE = 635.2205.
+Best Avg R2: 0.18093388677740596
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 271.6621.
+	Test Results on GDSC: R2 = 0.0259, MAE = 19.3137, MSE = 796.0123.
+	Test Results on CCLE: R2 = 0.4009, MAE = 16.6086, MSE = 595.3337.
+Best Avg R2: 0.21338903912561386
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 254.6398.
+	Test Results on GDSC: R2 = 0.0055, MAE = 19.3524, MSE = 812.7350.
+	Test Results on CCLE: R2 = 0.3730, MAE = 16.9397, MSE = 622.9893.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 241.7095.
+	Test Results on GDSC: R2 = -0.0008, MAE = 19.4074, MSE = 817.8854.
+	Test Results on CCLE: R2 = 0.3537, MAE = 17.1873, MSE = 642.1797.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 231.3054.
+	Test Results on GDSC: R2 = 0.0236, MAE = 19.2417, MSE = 797.9208.
+	Test Results on CCLE: R2 = 0.3746, MAE = 16.8860, MSE = 621.3902.
+--------------------------------------------------------------------------------
+Epoch 007, LR = 0.000100, Training Loss = 222.7830.
+	Test Results on GDSC: R2 = 0.0199, MAE = 19.3563, MSE = 800.9083.
+	Test Results on CCLE: R2 = 0.3947, MAE = 16.7180, MSE = 601.4668.
+--------------------------------------------------------------------------------
+Epoch 008, LR = 0.000100, Training Loss = 215.9109.
+	Test Results on GDSC: R2 = -0.0020, MAE = 19.2827, MSE = 818.8409.
+	Test Results on CCLE: R2 = 0.3695, MAE = 16.9681, MSE = 626.5009.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  45%% drug)
+Best Epoch 3:
+	Test Results on GDSC: R2 = 0.0259, MAE = 19.3137, MSE = 796.0123.
+	Test Results on CCLE: R2 = 0.4009, MAE = 16.6086, MSE = 595.3337.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  50%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	1969967 response records from 1 data source(s);
+	812 unique cell lines;
+	185 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 385.1242.
+	Test Results on GDSC: R2 = 0.0188, MAE = 19.4932, MSE = 801.8659.
+	Test Results on CCLE: R2 = 0.3868, MAE = 17.5199, MSE = 609.3458.
+Best Avg R2: 0.20275529055867259
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 288.1018.
+	Test Results on GDSC: R2 = 0.0006, MAE = 19.2612, MSE = 816.7303.
+	Test Results on CCLE: R2 = 0.3901, MAE = 17.3611, MSE = 605.9754.
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 262.8925.
+	Test Results on GDSC: R2 = -0.0174, MAE = 19.6575, MSE = 831.4122.
+	Test Results on CCLE: R2 = 0.3692, MAE = 17.5065, MSE = 626.7615.
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 246.4254.
+	Test Results on GDSC: R2 = -0.0099, MAE = 19.4853, MSE = 825.3008.
+	Test Results on CCLE: R2 = 0.3829, MAE = 17.3210, MSE = 613.1386.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 234.3459.
+	Test Results on GDSC: R2 = -0.0304, MAE = 19.5857, MSE = 842.0372.
+	Test Results on CCLE: R2 = 0.3515, MAE = 17.6803, MSE = 644.4131.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 223.6436.
+	Test Results on GDSC: R2 = -0.0217, MAE = 19.5877, MSE = 834.9576.
+	Test Results on CCLE: R2 = 0.3725, MAE = 17.4162, MSE = 623.4634.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  50%% drug)
+Best Epoch 1:
+	Test Results on GDSC: R2 = 0.0188, MAE = 19.4932, MSE = 801.8659.
+	Test Results on CCLE: R2 = 0.3868, MAE = 17.5199, MSE = 609.3458.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  55%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	2157439 response records from 1 data source(s);
+	812 unique cell lines;
+	203 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 382.9591.
+	Test Results on GDSC: R2 = 0.0863, MAE = 18.7035, MSE = 746.6956.
+	Test Results on CCLE: R2 = 0.3539, MAE = 17.1472, MSE = 641.9741.
+Best Avg R2: 0.22009115278681735
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 285.8826.
+	Test Results on GDSC: R2 = 0.0607, MAE = 19.1381, MSE = 767.5566.
+	Test Results on CCLE: R2 = 0.3437, MAE = 17.1209, MSE = 652.1696.
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 262.2431.
+	Test Results on GDSC: R2 = 0.0799, MAE = 18.5922, MSE = 751.9040.
+	Test Results on CCLE: R2 = 0.3321, MAE = 17.2489, MSE = 663.6619.
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 244.7699.
+	Test Results on GDSC: R2 = 0.0474, MAE = 19.2732, MSE = 778.4706.
+	Test Results on CCLE: R2 = 0.3576, MAE = 17.0949, MSE = 638.2642.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 231.0746.
+	Test Results on GDSC: R2 = 0.0093, MAE = 19.5939, MSE = 809.6248.
+	Test Results on CCLE: R2 = 0.3383, MAE = 17.2892, MSE = 657.5316.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 220.1436.
+	Test Results on GDSC: R2 = 0.0300, MAE = 19.5391, MSE = 792.7133.
+	Test Results on CCLE: R2 = 0.3343, MAE = 17.3621, MSE = 661.5054.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  55%% drug)
+Best Epoch 1:
+	Test Results on GDSC: R2 = 0.0863, MAE = 18.7035, MSE = 746.6956.
+	Test Results on CCLE: R2 = 0.3539, MAE = 17.1472, MSE = 641.9741.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  60%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	2410192 response records from 1 data source(s);
+	812 unique cell lines;
+	222 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 370.6552.
+	Test Results on GDSC: R2 = 0.1019, MAE = 18.6753, MSE = 733.8904.
+	Test Results on CCLE: R2 = 0.3390, MAE = 17.3094, MSE = 656.7471.
+Best Avg R2: 0.2204936507157354
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 274.1320.
+	Test Results on GDSC: R2 = 0.0642, MAE = 19.1654, MSE = 764.7331.
+	Test Results on CCLE: R2 = 0.2817, MAE = 17.9767, MSE = 713.7169.
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 250.8141.
+	Test Results on GDSC: R2 = 0.0501, MAE = 19.0989, MSE = 776.2618.
+	Test Results on CCLE: R2 = 0.3435, MAE = 16.9914, MSE = 652.2733.
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 233.9553.
+	Test Results on GDSC: R2 = 0.0618, MAE = 19.0233, MSE = 766.7021.
+	Test Results on CCLE: R2 = 0.3187, MAE = 17.3895, MSE = 676.9626.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 221.2619.
+	Test Results on GDSC: R2 = 0.0385, MAE = 19.1518, MSE = 785.7360.
+	Test Results on CCLE: R2 = 0.3306, MAE = 17.1709, MSE = 665.1849.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 211.8236.
+	Test Results on GDSC: R2 = 0.0834, MAE = 18.5067, MSE = 749.0490.
+	Test Results on CCLE: R2 = 0.3170, MAE = 17.2904, MSE = 678.6305.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  60%% drug)
+Best Epoch 1:
+	Test Results on GDSC: R2 = 0.1019, MAE = 18.6753, MSE = 733.8904.
+	Test Results on CCLE: R2 = 0.3390, MAE = 17.3094, MSE = 656.7471.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  65%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	2541094 response records from 1 data source(s);
+	812 unique cell lines;
+	240 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 369.7606.
+	Test Results on GDSC: R2 = 0.1702, MAE = 18.0778, MSE = 678.1337.
+	Test Results on CCLE: R2 = 0.5142, MAE = 15.5547, MSE = 482.7183.
+Best Avg R2: 0.3421802193370519
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 276.8503.
+	Test Results on GDSC: R2 = 0.1544, MAE = 18.1825, MSE = 691.0421.
+	Test Results on CCLE: R2 = 0.5162, MAE = 15.4277, MSE = 480.6761.
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 255.2232.
+	Test Results on GDSC: R2 = 0.1308, MAE = 18.5809, MSE = 710.3098.
+	Test Results on CCLE: R2 = 0.4945, MAE = 15.8809, MSE = 502.3150.
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 239.2794.
+	Test Results on GDSC: R2 = 0.1232, MAE = 18.4587, MSE = 716.4838.
+	Test Results on CCLE: R2 = 0.5008, MAE = 15.7738, MSE = 496.0685.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 226.8207.
+	Test Results on GDSC: R2 = 0.1565, MAE = 17.9645, MSE = 689.2856.
+	Test Results on CCLE: R2 = 0.4929, MAE = 16.0680, MSE = 503.8914.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 216.7863.
+	Test Results on GDSC: R2 = 0.1007, MAE = 18.9332, MSE = 734.9010.
+	Test Results on CCLE: R2 = 0.4910, MAE = 15.9612, MSE = 505.7795.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  65%% drug)
+Best Epoch 1:
+	Test Results on GDSC: R2 = 0.1702, MAE = 18.0778, MSE = 678.1337.
+	Test Results on CCLE: R2 = 0.5142, MAE = 15.5547, MSE = 482.7183.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  70%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	2787309 response records from 1 data source(s);
+	812 unique cell lines;
+	259 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 363.4617.
+	Test Results on GDSC: R2 = 0.1019, MAE = 18.7320, MSE = 733.9191.
+	Test Results on CCLE: R2 = 0.2738, MAE = 18.1427, MSE = 721.6108.
+Best Avg R2: 0.18783587218358455
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 279.6556.
+	Test Results on GDSC: R2 = 0.1273, MAE = 18.2679, MSE = 713.1627.
+	Test Results on CCLE: R2 = 0.3073, MAE = 17.5523, MSE = 688.3023.
+Best Avg R2: 0.21729700803438545
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 257.3128.
+	Test Results on GDSC: R2 = 0.1374, MAE = 18.2439, MSE = 704.9413.
+	Test Results on CCLE: R2 = 0.3106, MAE = 17.4960, MSE = 685.0266.
+Best Avg R2: 0.22397360246219777
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 241.5878.
+	Test Results on GDSC: R2 = 0.1472, MAE = 18.2637, MSE = 696.9377.
+	Test Results on CCLE: R2 = 0.3046, MAE = 17.6875, MSE = 691.0023.
+Best Avg R2: 0.22586515690141784
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 229.6104.
+	Test Results on GDSC: R2 = 0.1274, MAE = 18.2662, MSE = 713.1169.
+	Test Results on CCLE: R2 = 0.3500, MAE = 17.0260, MSE = 645.8284.
+Best Avg R2: 0.2386969928308328
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 219.8883.
+	Test Results on GDSC: R2 = 0.1078, MAE = 18.5083, MSE = 729.0688.
+	Test Results on CCLE: R2 = 0.2916, MAE = 17.6776, MSE = 703.8864.
+--------------------------------------------------------------------------------
+Epoch 007, LR = 0.000080, Training Loss = 209.5229.
+	Test Results on GDSC: R2 = 0.1240, MAE = 18.5173, MSE = 715.8749.
+	Test Results on CCLE: R2 = 0.3400, MAE = 17.2788, MSE = 655.8175.
+--------------------------------------------------------------------------------
+Epoch 008, LR = 0.000080, Training Loss = 203.0590.
+	Test Results on GDSC: R2 = 0.1436, MAE = 18.3403, MSE = 699.8856.
+	Test Results on CCLE: R2 = 0.3200, MAE = 17.4886, MSE = 675.7195.
+--------------------------------------------------------------------------------
+Epoch 009, LR = 0.000080, Training Loss = 198.1672.
+	Test Results on GDSC: R2 = 0.1123, MAE = 18.6279, MSE = 725.4325.
+	Test Results on CCLE: R2 = 0.3185, MAE = 17.4818, MSE = 677.1273.
+--------------------------------------------------------------------------------
+Epoch 010, LR = 0.000080, Training Loss = 193.5285.
+	Test Results on GDSC: R2 = 0.1146, MAE = 18.4824, MSE = 723.5825.
+	Test Results on CCLE: R2 = 0.3152, MAE = 17.4949, MSE = 680.4342.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  70%% drug)
+Best Epoch 5:
+	Test Results on GDSC: R2 = 0.1274, MAE = 18.2662, MSE = 713.1169.
+	Test Results on CCLE: R2 = 0.3500, MAE = 17.0260, MSE = 645.8284.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  75%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	3004177 response records from 1 data source(s);
+	812 unique cell lines;
+	277 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 363.5576.
+	Test Results on GDSC: R2 = 0.1793, MAE = 17.8724, MSE = 670.6981.
+	Test Results on CCLE: R2 = 0.5285, MAE = 15.3283, MSE = 468.4890.
+Best Avg R2: 0.35388827803741946
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 276.2263.
+	Test Results on GDSC: R2 = 0.1603, MAE = 18.3048, MSE = 686.2281.
+	Test Results on CCLE: R2 = 0.5328, MAE = 15.3210, MSE = 464.2167.
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 253.4502.
+	Test Results on GDSC: R2 = 0.1800, MAE = 17.9355, MSE = 670.1280.
+	Test Results on CCLE: R2 = 0.5333, MAE = 15.2590, MSE = 463.7509.
+Best Avg R2: 0.35662067909564515
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 237.2665.
+	Test Results on GDSC: R2 = 0.1550, MAE = 18.2324, MSE = 690.5560.
+	Test Results on CCLE: R2 = 0.5457, MAE = 15.0110, MSE = 451.3696.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 224.2280.
+	Test Results on GDSC: R2 = 0.1649, MAE = 18.2507, MSE = 682.4480.
+	Test Results on CCLE: R2 = 0.5249, MAE = 15.4964, MSE = 472.0743.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 214.7885.
+	Test Results on GDSC: R2 = 0.1601, MAE = 18.2269, MSE = 686.3953.
+	Test Results on CCLE: R2 = 0.5514, MAE = 15.0894, MSE = 445.7852.
+--------------------------------------------------------------------------------
+Epoch 007, LR = 0.000100, Training Loss = 207.2454.
+	Test Results on GDSC: R2 = 0.1619, MAE = 18.1202, MSE = 684.9313.
+	Test Results on CCLE: R2 = 0.5420, MAE = 15.2231, MSE = 455.0682.
+--------------------------------------------------------------------------------
+Epoch 008, LR = 0.000100, Training Loss = 200.1669.
+	Test Results on GDSC: R2 = 0.1753, MAE = 17.9803, MSE = 673.9024.
+	Test Results on CCLE: R2 = 0.5470, MAE = 15.0747, MSE = 450.1270.
+Best Avg R2: 0.36116825471954767
+--------------------------------------------------------------------------------
+Epoch 009, LR = 0.000100, Training Loss = 194.5865.
+	Test Results on GDSC: R2 = 0.1717, MAE = 18.1574, MSE = 676.8615.
+	Test Results on CCLE: R2 = 0.5334, MAE = 15.3584, MSE = 463.6356.
+--------------------------------------------------------------------------------
+Epoch 010, LR = 0.000100, Training Loss = 189.1336.
+	Test Results on GDSC: R2 = 0.1268, MAE = 18.5498, MSE = 713.5486.
+	Test Results on CCLE: R2 = 0.5319, MAE = 15.1728, MSE = 465.1595.
+--------------------------------------------------------------------------------
+Epoch 011, LR = 0.000100, Training Loss = 184.4206.
+	Test Results on GDSC: R2 = 0.1647, MAE = 18.0900, MSE = 682.6021.
+	Test Results on CCLE: R2 = 0.5414, MAE = 15.1721, MSE = 455.6410.
+--------------------------------------------------------------------------------
+Epoch 012, LR = 0.000100, Training Loss = 180.1744.
+	Test Results on GDSC: R2 = 0.1626, MAE = 17.9344, MSE = 684.2939.
+	Test Results on CCLE: R2 = 0.5509, MAE = 14.9922, MSE = 446.2448.
+--------------------------------------------------------------------------------
+Epoch 013, LR = 0.000100, Training Loss = 176.6158.
+	Test Results on GDSC: R2 = 0.1212, MAE = 18.6836, MSE = 718.1637.
+	Test Results on CCLE: R2 = 0.5414, MAE = 15.1023, MSE = 455.6716.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  75%% drug)
+Best Epoch 8:
+	Test Results on GDSC: R2 = 0.1753, MAE = 17.9803, MSE = 673.9024.
+	Test Results on CCLE: R2 = 0.5470, MAE = 15.0747, MSE = 450.1270.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  80%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	3198443 response records from 1 data source(s);
+	812 unique cell lines;
+	296 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 357.4391.
+	Test Results on GDSC: R2 = 0.1289, MAE = 18.2540, MSE = 711.8844.
+	Test Results on CCLE: R2 = 0.5054, MAE = 15.7837, MSE = 491.4175.
+Best Avg R2: 0.31715246235118777
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 266.9344.
+	Test Results on GDSC: R2 = 0.1219, MAE = 18.2129, MSE = 717.5425.
+	Test Results on CCLE: R2 = 0.5088, MAE = 15.6469, MSE = 488.1044.
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 244.2310.
+	Test Results on GDSC: R2 = 0.1033, MAE = 18.6017, MSE = 732.7869.
+	Test Results on CCLE: R2 = 0.4937, MAE = 15.8700, MSE = 503.0351.
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 228.1797.
+	Test Results on GDSC: R2 = 0.0974, MAE = 18.4410, MSE = 737.6205.
+	Test Results on CCLE: R2 = 0.5130, MAE = 15.4983, MSE = 483.9323.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 216.4420.
+	Test Results on GDSC: R2 = 0.1044, MAE = 18.3956, MSE = 731.8632.
+	Test Results on CCLE: R2 = 0.4987, MAE = 15.7804, MSE = 498.0744.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 207.7744.
+	Test Results on GDSC: R2 = 0.0965, MAE = 18.5860, MSE = 738.3120.
+	Test Results on CCLE: R2 = 0.5143, MAE = 15.4795, MSE = 482.6044.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  80%% drug)
+Best Epoch 1:
+	Test Results on GDSC: R2 = 0.1289, MAE = 18.2540, MSE = 711.8844.
+	Test Results on CCLE: R2 = 0.5054, MAE = 15.7837, MSE = 491.4175.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  85%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	3389731 response records from 1 data source(s);
+	812 unique cell lines;
+	314 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 353.6678.
+	Test Results on GDSC: R2 = 0.1928, MAE = 17.8785, MSE = 659.6191.
+	Test Results on CCLE: R2 = 0.4689, MAE = 16.4703, MSE = 527.6980.
+Best Avg R2: 0.3308739390544307
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 270.6979.
+	Test Results on GDSC: R2 = 0.1813, MAE = 18.0370, MSE = 669.0391.
+	Test Results on CCLE: R2 = 0.5287, MAE = 15.5116, MSE = 468.2632.
+Best Avg R2: 0.3550176605717442
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 247.8792.
+	Test Results on GDSC: R2 = 0.1480, MAE = 18.1813, MSE = 696.2198.
+	Test Results on CCLE: R2 = 0.5152, MAE = 15.5241, MSE = 481.7420.
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 231.5954.
+	Test Results on GDSC: R2 = 0.1570, MAE = 17.9658, MSE = 688.9131.
+	Test Results on CCLE: R2 = 0.5318, MAE = 15.2786, MSE = 465.2166.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 218.7837.
+	Test Results on GDSC: R2 = 0.1508, MAE = 18.0911, MSE = 693.9899.
+	Test Results on CCLE: R2 = 0.5137, MAE = 15.6480, MSE = 483.2152.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 209.8322.
+	Test Results on GDSC: R2 = 0.1697, MAE = 18.0139, MSE = 678.5128.
+	Test Results on CCLE: R2 = 0.5401, MAE = 15.2525, MSE = 456.9432.
+--------------------------------------------------------------------------------
+Epoch 007, LR = 0.000080, Training Loss = 200.4166.
+	Test Results on GDSC: R2 = 0.1316, MAE = 18.4136, MSE = 709.6356.
+	Test Results on CCLE: R2 = 0.5392, MAE = 15.0463, MSE = 457.8852.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  85%% drug)
+Best Epoch 2:
+	Test Results on GDSC: R2 = 0.1813, MAE = 18.0370, MSE = 669.0391.
+	Test Results on CCLE: R2 = 0.5287, MAE = 15.5116, MSE = 468.2632.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  90%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	3583850 response records from 1 data source(s);
+	812 unique cell lines;
+	333 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 352.2127.
+	Test Results on GDSC: R2 = 0.1618, MAE = 17.9912, MSE = 684.9528.
+	Test Results on CCLE: R2 = 0.5625, MAE = 14.7106, MSE = 434.7588.
+Best Avg R2: 0.3621390243490904
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 273.8272.
+	Test Results on GDSC: R2 = 0.1776, MAE = 18.0231, MSE = 672.0566.
+	Test Results on CCLE: R2 = 0.5881, MAE = 14.4351, MSE = 409.2802.
+Best Avg R2: 0.3828526143553105
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 250.9157.
+	Test Results on GDSC: R2 = 0.1617, MAE = 18.1902, MSE = 685.0441.
+	Test Results on CCLE: R2 = 0.5912, MAE = 14.4192, MSE = 406.1992.
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 234.0289.
+	Test Results on GDSC: R2 = 0.1645, MAE = 17.9062, MSE = 682.7826.
+	Test Results on CCLE: R2 = 0.5751, MAE = 14.5724, MSE = 422.1671.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 221.7874.
+	Test Results on GDSC: R2 = 0.1414, MAE = 18.4301, MSE = 701.6392.
+	Test Results on CCLE: R2 = 0.6036, MAE = 14.1997, MSE = 393.9099.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 212.7515.
+	Test Results on GDSC: R2 = 0.1538, MAE = 18.1604, MSE = 691.5090.
+	Test Results on CCLE: R2 = 0.6047, MAE = 14.1597, MSE = 392.7598.
+--------------------------------------------------------------------------------
+Epoch 007, LR = 0.000080, Training Loss = 202.9202.
+	Test Results on GDSC: R2 = 0.1131, MAE = 18.7391, MSE = 724.7874.
+	Test Results on CCLE: R2 = 0.6126, MAE = 13.9223, MSE = 384.8996.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  90%% drug)
+Best Epoch 2:
+	Test Results on GDSC: R2 = 0.1776, MAE = 18.0231, MSE = 672.0566.
+	Test Results on CCLE: R2 = 0.5881, MAE = 14.4351, MSE = 409.2802.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  95%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	3783955 response records from 1 data source(s);
+	812 unique cell lines;
+	351 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 339.1829.
+	Test Results on GDSC: R2 = 0.1364, MAE = 18.2836, MSE = 705.7591.
+	Test Results on CCLE: R2 = 0.3870, MAE = 16.6711, MSE = 609.0488.
+Best Avg R2: 0.26170716265524785
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 265.6401.
+	Test Results on GDSC: R2 = 0.1468, MAE = 18.0620, MSE = 697.2623.
+	Test Results on CCLE: R2 = 0.4064, MAE = 16.3794, MSE = 589.7831.
+Best Avg R2: 0.276601002404963
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 243.7050.
+	Test Results on GDSC: R2 = 0.1596, MAE = 17.9434, MSE = 686.7469.
+	Test Results on CCLE: R2 = 0.4052, MAE = 16.3608, MSE = 591.0253.
+Best Avg R2: 0.28240961811421733
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 227.6485.
+	Test Results on GDSC: R2 = 0.1586, MAE = 17.9814, MSE = 687.6254.
+	Test Results on CCLE: R2 = 0.4053, MAE = 16.4893, MSE = 590.8835.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 215.9997.
+	Test Results on GDSC: R2 = 0.1371, MAE = 18.1908, MSE = 705.1790.
+	Test Results on CCLE: R2 = 0.4015, MAE = 16.4501, MSE = 594.6860.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 207.1405.
+	Test Results on GDSC: R2 = 0.1382, MAE = 18.2151, MSE = 704.2892.
+	Test Results on CCLE: R2 = 0.4040, MAE = 16.4989, MSE = 592.2278.
+--------------------------------------------------------------------------------
+Epoch 007, LR = 0.000080, Training Loss = 197.8235.
+	Test Results on GDSC: R2 = 0.1380, MAE = 18.3025, MSE = 704.3851.
+	Test Results on CCLE: R2 = 0.4187, MAE = 16.2617, MSE = 577.6140.
+--------------------------------------------------------------------------------
+Epoch 008, LR = 0.000080, Training Loss = 192.2959.
+	Test Results on GDSC: R2 = 0.1287, MAE = 18.4392, MSE = 712.0502.
+	Test Results on CCLE: R2 = 0.4143, MAE = 16.3006, MSE = 581.9826.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  95%% drug)
+Best Epoch 3:
+	Test Results on GDSC: R2 = 0.1596, MAE = 17.9434, MSE = 686.7469.
+	Test Results on CCLE: R2 = 0.4052, MAE = 16.3608, MSE = 591.0253.
+################################################################################
+################################################################################
+
+
+################################################################################
+################################################################################
+Training Sources: ['CTRP'] (using only  100%% drug)
+Datasets Summary:
+--------------------------------------------------------------------------------
+Training Dataset (['CTRP']):
+This dose-dependent drug response dataset contains:
+	3983631 response records from 1 data source(s);
+	812 unique cell lines;
+	370 unique drugs.
+--------------------------------------------------------------------------------
+Testing Dataset(s):
+Data Source [GDSC]
+This dose-dependent drug response dataset contains:
+	1134744 response records from 1 data source(s);
+	672 unique cell lines;
+	236 unique drugs.
+Data Source [CCLE]
+This dose-dependent drug response dataset contains:
+	87665 response records from 1 data source(s);
+	474 unique cell lines;
+	24 unique drugs.
+--------------------------------------------------------------------------------
+################################################################################
+Epoch 001, LR = 0.000100, Training Loss = 347.1969.
+	Test Results on GDSC: R2 = 0.1934, MAE = 17.7289, MSE = 659.1632.
+	Test Results on CCLE: R2 = 0.5328, MAE = 15.2387, MSE = 464.1878.
+Best Avg R2: 0.3631127516476769
+--------------------------------------------------------------------------------
+Epoch 002, LR = 0.000100, Training Loss = 269.0284.
+	Test Results on GDSC: R2 = 0.1979, MAE = 17.4921, MSE = 655.4531.
+	Test Results on CCLE: R2 = 0.5530, MAE = 14.9518, MSE = 444.1187.
+Best Avg R2: 0.37548038350108914
+--------------------------------------------------------------------------------
+Epoch 003, LR = 0.000100, Training Loss = 246.2175.
+	Test Results on GDSC: R2 = 0.1912, MAE = 17.6269, MSE = 660.9836.
+	Test Results on CCLE: R2 = 0.5264, MAE = 15.3968, MSE = 470.6024.
+--------------------------------------------------------------------------------
+Epoch 004, LR = 0.000100, Training Loss = 229.0671.
+	Test Results on GDSC: R2 = 0.2022, MAE = 17.7291, MSE = 651.9633.
+	Test Results on CCLE: R2 = 0.5399, MAE = 15.2243, MSE = 457.2002.
+--------------------------------------------------------------------------------
+Epoch 005, LR = 0.000100, Training Loss = 217.0374.
+	Test Results on GDSC: R2 = 0.1831, MAE = 17.7924, MSE = 667.5991.
+	Test Results on CCLE: R2 = 0.5608, MAE = 14.8668, MSE = 436.3787.
+--------------------------------------------------------------------------------
+Epoch 006, LR = 0.000100, Training Loss = 208.0797.
+	Test Results on GDSC: R2 = 0.1892, MAE = 17.6860, MSE = 662.5547.
+	Test Results on CCLE: R2 = 0.5548, MAE = 14.9765, MSE = 442.3994.
+--------------------------------------------------------------------------------
+Epoch 007, LR = 0.000100, Training Loss = 200.9727.
+	Test Results on GDSC: R2 = 0.1759, MAE = 17.8697, MSE = 673.4482.
+	Test Results on CCLE: R2 = 0.5555, MAE = 14.9540, MSE = 441.7010.
+No improvement on testing results. Stopping ... 
+################################################################################
+Training Sources: ['CTRP'] (using only  100%% drug)
+Best Epoch 2:
+	Test Results on GDSC: R2 = 0.1979, MAE = 17.4921, MSE = 655.4531.
+	Test Results on CCLE: R2 = 0.5530, MAE = 14.9518, MSE = 444.1187.
+################################################################################
+################################################################################
+
