@@ -303,11 +303,14 @@ for experiment in comet_opt.get_experiments():
         experiment.log_metric('best_r2', best_r2, include_context=False)
 
     except Exception as e:
-        print('Cannot finish the current experiment.')
-        print(e)
 
+        print('Cannot finish the current experiment.')
+        print(f'Error message: {e}')
+
+        experiment.log_other('error_msg', str(e))
         experiment.log_metric('best_r2', 0., include_context=False)
 
+        # Clear all the existing models if they exist
         try:
             del model, optimizer, scheduler, trn_loader, tst_loader
         except NameError:
@@ -315,6 +318,6 @@ for experiment in comet_opt.get_experiments():
 
         torch.cuda.empty_cache()
         experiment.end()
-
         continue
 
+    experiment.end()
